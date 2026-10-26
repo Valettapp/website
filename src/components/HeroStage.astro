@@ -7,11 +7,12 @@
  */
 import GuestPhone from './GuestPhone.astro';
 import Icon from './Icon.astro';
+// Each card echoes the element of the screen it floats beside (state 4: driver on the way).
 const cards = [
-  { k: 'a', icon: 'check', tone: 'gold', title: 'Checked in · 01:06', body: 'Land Rover Defender · V777', pos: 'start-0 top-[9%] md:start-[6%] lg:start-[12%]', speed: '1.2' },
-  { k: 'b', icon: 'camera', tone: 'ink', title: 'Parked · Zone P3 · Bay 55', body: '6 photos saved', pos: 'hidden sm:flex end-[2%] top-[30%] md:end-[6%] lg:end-[12%]', speed: '0.8' },
-  { k: 'c', icon: 'bolt', tone: 'gold', title: 'Shift manager pinged', body: 'V772 passed its promised time', pos: 'hidden sm:flex start-[4%] top-[58%] md:start-[9%] lg:start-[15%]', speed: '1' },
-  { k: 'd', icon: 'sms', tone: 'ink', title: 'Receipt sent by text', body: 'Tip 80 AED · rated 5 stars', pos: 'end-0 top-[70%] md:end-[8%] lg:end-[14%]', speed: '1.4' },
+  { k: 'a', icon: 'camera', tone: 'ink', title: 'Land Rover Defender', body: 'M 95378 · Ticket V777 · 01:06 AM', pos: 'start-0 top-[9%] md:start-[6%] lg:start-[12%]', speed: '1.2' },
+  { k: 'b', icon: 'sms', tone: 'gold', title: 'Text from The Marquee', body: 'Your driver is bringing your car. 4 min.', pos: 'end-0 top-[22%] md:end-[6%] md:top-[31%] lg:end-[12%]', speed: '0.8' },
+  { k: 'c', icon: 'bolt', tone: 'gold', title: 'Driver on it', body: 'Zone P3 · Bay 55 · keys from hook 55', pos: 'hidden sm:flex start-[4%] top-[57%] md:start-[9%] lg:start-[15%]', speed: '1' },
+  { k: 'd', icon: 'apple', tone: 'ink', title: 'Tip 80 AED · Apple Pay', body: 'Receipt by text, no account', pos: 'hidden sm:flex end-[3%] top-[79%] md:end-[8%] lg:end-[14%]', speed: '1.4' },
 ];
 ---
 <div class="hero-stage relative mx-auto mt-20 w-full max-w-[1100px] md:mt-28" data-hero-stage style="--enter:1;--leave:0;--tx:0deg;--ty:0deg;--mx:0;--my:0">
@@ -26,9 +27,9 @@ const cards = [
   </div>
 
   {cards.map((c) => (
-    <div class:list={['glass-card hero-card absolute flex w-[184px] items-center gap-2.5 px-3.5 py-2.5 text-[12px] sm:w-[236px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px]', c.pos]} data-card style={`--speed:${c.speed}`} aria-hidden="true">
+    <div class:list={['glass-card hero-card absolute flex w-[196px] items-center gap-2.5 px-3.5 py-2.5 text-start text-[12px] sm:w-[256px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px]', c.pos]} data-card style={`--speed:${c.speed}`} aria-hidden="true">
       <span class:list={['inline-flex size-8 shrink-0 items-center justify-center rounded-full', c.tone === 'gold' ? 'border border-gold text-gold' : 'bg-ink text-white']}><Icon name={c.icon as any} size={15} /></span>
-      <span><strong class="font-semibold">{c.title}</strong><br /><span class="text-ink-2">{c.body}</span></span>
+      <span class="min-w-0"><strong class="block font-semibold">{c.title}</strong><span class="block text-ink-2">{c.body}</span></span>
     </div>
   ))}
 </div>
