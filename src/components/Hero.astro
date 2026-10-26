@@ -1,39 +1,16 @@
 ---
 import Film from './Film.astro';
-import HeroScreens from './HeroScreens.astro';
+import HeroStage from './HeroStage.astro';
 import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
 const hasFilm = Boolean(site.film.mp4);
-const lines = [
-  'Every car photographed before it moves',
-  'Every guest reachable without an app',
-  'Every incident traceable',
-];
 ---
-<section class="pt-14 pb-24 md:pt-28 md:pb-40" aria-labelledby="hero-title">
-  <div class="container-page">
-    <div class:list={['grid gap-16 lg:gap-12', hasFilm ? 'justify-items-center text-center' : 'items-center lg:grid-cols-12']}>
-      <div class:list={['flex flex-col', hasFilm ? 'items-center' : 'items-start text-start lg:col-span-6 lg:pe-8']}>
-        <Wordmark class="text-[20px] text-ink md:text-[24px]" />
-        <h1 id="hero-title" class="t-display mt-10 max-w-[9.5em] md:mt-12 lg:!text-[72px] xl:!text-[84px]" style="text-wrap: balance">{site.slogan}</h1>
-        <p class="t-body measure mt-7 text-ink-2 md:mt-8 md:text-[20px]">
-          One record of every car, from the first photo to the last text. Built for the venues guests remember.
-        </p>
-        <div class="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
-          <a href="#demo" class="btn-primary">Book a demo</a>
-          <a href="#why" class="btn-link">Watch the film <span aria-hidden="true">↓</span></a>
-        </div>
-      </div>
-      {hasFilm ? (
-        <Film variant="hero" priority class="w-full max-w-[1200px]" />
-      ) : (
-        <div class="lg:col-span-6"><HeroScreens /></div>
-      )}
-    </div>
-    <ul class="mt-20 grid grid-cols-1 gap-y-0 md:mt-28 md:grid-cols-3 md:gap-x-10">
-      {lines.map((l) => (
-        <li class="hairline-t py-5 text-[15px] text-ink-2 md:text-[16px]">{l}</li>
-      ))}
-    </ul>
+<section class="pt-20 pb-28 md:pt-36 md:pb-48" aria-labelledby="hero-title">
+  <div class="container-page flex flex-col items-center text-center">
+    <Wordmark class="text-[20px] text-ink md:text-[24px]" />
+    <h1 id="hero-title" class="t-display mt-10 max-w-[10em] md:mt-14 lg:!text-[112px]" style="text-wrap: balance">{site.slogan}</h1>
+    <p class="mt-8 text-[18px] text-ink-2 md:mt-10 md:text-[22px]">Valet management for Dubai’s best venues.</p>
+    <a href="#demo" class="btn-primary mt-10 md:mt-12 md:!px-8 md:!py-4 md:!text-[17px]">Book a demo</a>
+    {hasFilm ? <Film variant="hero" priority class="mt-20 w-full max-w-[1100px] md:mt-28" /> : <HeroStage />}
   </div>
 </section>

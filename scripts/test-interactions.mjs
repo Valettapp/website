@@ -16,15 +16,20 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on('pageerror', (e) => { console.log('pageerror', e.message); failures++; });
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
-  // Hero sample autoplays until tapped.
-  const hero = page.locator('[data-guest][data-autoplay]');
-  const heroState = async () => hero.locator('[data-state]:not([hidden])').getAttribute('data-state');
-  const s0 = await heroState();
-  await page.waitForTimeout(3200);
-  check((await heroState()) !== s0, 'hero sample advances on its own');
-  await hero.locator('[data-dot="1"]').click();
-  await page.waitForTimeout(3200);
-  check((await heroState()) === '1', 'hero autoplay stops after a tap');
+  // Hero stage: scroll-driven variables move, pointer tilt responds.
+  const stage = page.locator('[data-hero-stage]');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(200);
+  const enter0 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
+  await page.evaluate(() => window.scrollTo(0, 500));
+  await page.waitForTimeout(300);
+  const enter1 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
+  check(Number(enter1) >= Number(enter0) && enter1 !== '', `hero stage enter progress responds to scroll (${enter0} → ${enter1})`);
+  await stage.hover({ position: { x: 40, y: 40 } });
+  await page.waitForTimeout(100);
+  const ty = await stage.evaluate((el) => el.style.getPropertyValue('--ty'));
+  check(ty !== '' && ty !== '0deg', `hero phone tilts with the pointer (${ty})`);
+  await page.evaluate(() => window.scrollTo(0, 0));
 
   const guest = page.locator('#guest [data-guest]');
   await guest.scrollIntoViewIfNeeded();

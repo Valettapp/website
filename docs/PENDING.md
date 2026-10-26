@@ -28,7 +28,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Logo stays the serif VALETT wordmark (Leon's call after seeing both). `Wordmark.astro` keeps a `variant="brand"` that renders the brand-file "Valett." if ever needed.
 - Slogan "A new era for a timeless service." sits under the logo in the hero and replaces "Valet, without the wait." in the title, OG image and footer line. The old line is one edit in `src/data/site.ts` if wanted back.
 - Type is Geist (variable) instead of Inter, heavier and tighter at display sizes; the serif wordmark is unchanged.
-- Hero is left-aligned: small wordmark, slogan as the headline, sub-line, CTAs; the right column is the live guest sample cycling through its five states until tapped, with floating matte-glass cards (`HeroScreens.astro`). When `site.film.mp4` is set, the film frame takes that place automatically and the hero re-centres.
+- Hero is centred, Apple-style, copy cut to the bone: wordmark, slogan, one line ("Valet management for Dubai's best venues."), one button. Below it the guest page sits large and centred on a field stage with four matte-glass UI cards; the stage has scroll-driven motion (phone rises and settles, cards parallax, slight tilt on exit) and pointer tilt on desktop (`HeroStage.astro`). Reduced motion renders the composition static. The brief's hero sub-line and three hairline lines are dropped. When `site.film.mp4` is set, the film frame replaces the stage.
 - Section padding raised to 112/200 px for more air.
 - Poster placeholder (used in §2 until the film exists) is the film's end card: black with the white serif wordmark and the slogan.
 

@@ -1,0 +1,102 @@
+---
+/**
+ * Hero stage: the guest page, large and centred, with matte-glass UI cards floating around it.
+ * Motion: scroll-driven (enter/leave progress → transforms) and pointer tilt on desktop.
+ * Everything is driven by CSS variables with static defaults, so without JS or under
+ * reduced motion the final composition renders as is.
+ */
+import GuestPhone from './GuestPhone.astro';
+import Icon from './Icon.astro';
+const cards = [
+  { k: 'a', icon: 'check', tone: 'gold', title: 'Checked in · 01:06', body: 'Land Rover Defender · V777', pos: 'start-0 top-[9%] md:start-[6%] lg:start-[12%]', speed: '1.2' },
+  { k: 'b', icon: 'camera', tone: 'ink', title: 'Parked · Zone P3 · Bay 55', body: '6 photos saved', pos: 'hidden sm:flex end-[2%] top-[30%] md:end-[6%] lg:end-[12%]', speed: '0.8' },
+  { k: 'c', icon: 'bolt', tone: 'gold', title: 'Shift manager pinged', body: 'V772 passed its promised time', pos: 'hidden sm:flex start-[4%] top-[58%] md:start-[9%] lg:start-[15%]', speed: '1' },
+  { k: 'd', icon: 'sms', tone: 'ink', title: 'Receipt sent by text', body: 'Tip 80 AED · rated 5 stars', pos: 'end-0 top-[70%] md:end-[8%] lg:end-[14%]', speed: '1.4' },
+];
+---
+<div class="hero-stage relative mx-auto mt-20 w-full max-w-[1100px] md:mt-28" data-hero-stage style="--enter:1;--leave:0;--tx:0deg;--ty:0deg;--mx:0;--my:0">
+  <div class="absolute inset-x-0 top-[8%] bottom-0 rounded-[40px] bg-field" aria-hidden="true"></div>
+
+  <div class="relative flex justify-center pt-12 pb-0 md:pt-20" style="perspective: 1400px">
+    <div class="hero-phone-scroll w-[360px] max-w-full" data-phone>
+      <div class="hero-phone-tilt">
+        <GuestPhone static priority class="hero-phone" />
+      </div>
+    </div>
+  </div>
+
+  {cards.map((c) => (
+    <div class:list={['glass-card hero-card absolute flex w-[184px] items-center gap-2.5 px-3.5 py-2.5 text-[12px] sm:w-[236px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px]', c.pos]} data-card style={`--speed:${c.speed}`} aria-hidden="true">
+      <span class:list={['inline-flex size-8 shrink-0 items-center justify-center rounded-full', c.tone === 'gold' ? 'border border-gold text-gold' : 'bg-ink text-white']}><Icon name={c.icon as any} size={15} /></span>
+      <span><strong class="font-semibold">{c.title}</strong><br /><span class="text-ink-2">{c.body}</span></span>
+    </div>
+  ))}
+</div>
+
+<style>
+  :global(.hero-phone) { zoom: 0.74; }
+  @media (min-width: 48rem) { :global(.hero-phone) { zoom: 1; } }
+  .hero-stage :global(.phone-frame) { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 60px 120px -50px rgba(0,0,0,.32); }
+
+  /* Scroll-driven: enter 0→1 as the stage rises into view, leave 0→1 as it scrolls out. */
+  .hero-phone-scroll {
+    transform: translateY(calc((1 - var(--enter)) * 90px)) scale(calc(0.92 + var(--enter) * 0.08)) rotateX(calc(var(--leave) * 10deg));
+    transform-origin: 50% 20%;
+    will-change: transform;
+  }
+  /* Pointer tilt on a separate layer so it can ease independently of scroll. */
+  .hero-phone-tilt {
+    transform: rotateX(var(--tx)) rotateY(var(--ty));
+    transform-style: preserve-3d;
+    transition: transform 240ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
+  }
+  .hero-card {
+    transform:
+      translateY(calc((1 - var(--enter)) * var(--speed) * 140px + var(--leave) * var(--speed) * -80px))
+      translate(calc(var(--mx) * var(--speed) * -14px), calc(var(--my) * var(--speed) * -10px));
+    transition: transform 240ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-phone-scroll, .hero-phone-tilt, .hero-card { transform: none !important; transition: none !important; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-hero-stage]').forEach((stage) => {
+    if (reduce) return;
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = stage.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Enter: stage top from the viewport bottom up to 55% of the viewport. Leave: stage scrolling past the top.
+      const enter = clamp((vh - r.top) / (vh * 0.55));
+      const leave = clamp(-r.top / (r.height * 0.9));
+      stage.style.setProperty('--enter', enter.toFixed(3));
+      stage.style.setProperty('--leave', leave.toFixed(3));
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    update();
+
+    // Pointer tilt (desktop, fine pointers only).
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const reset = () => { stage.style.setProperty('--tx', '0deg'); stage.style.setProperty('--ty', '0deg'); stage.style.setProperty('--mx', '0'); stage.style.setProperty('--my', '0'); };
+      stage.addEventListener('pointermove', (e) => {
+        const r = stage.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        stage.style.setProperty('--tx', `${(-y * 10).toFixed(2)}deg`);
+        stage.style.setProperty('--ty', `${(x * 12).toFixed(2)}deg`);
+        stage.style.setProperty('--mx', x.toFixed(3));
+        stage.style.setProperty('--my', y.toFixed(3));
+      });
+      stage.addEventListener('pointerleave', reset);
+    }
+  });
+</script>
