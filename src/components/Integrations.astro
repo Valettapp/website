@@ -1,32 +1,50 @@
 ---
 import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
+import BrowserFrame from './BrowserFrame.astro';
 import type { Status } from '../data/site';
 // No partner names until Leon confirms in writing.
-const rows: { label: string; status: Status }[] = [
-  { label: 'Online card payments, Apple Pay and digital tipping', status: 'live' },
-  { label: 'Hotel PMS', status: 'dev' },
-  { label: 'Parking and barrier systems', status: 'dev' },
-  { label: 'Salik and Dubai payments', status: 'exploring' },
-  { label: 'Crypto payments', status: 'exploring' },
-  { label: 'Car care while parked (cleaning, fuel)', status: 'exploring' },
+const rows: { label: string; status: Status; note: string }[] = [
+  { label: 'Online card payments, Apple Pay and digital tipping', status: 'live', note: 'Guests pay and tip on the receipt' },
+  { label: 'Hotel PMS', status: 'dev', note: 'Room charge and guest profile' },
+  { label: 'Parking and barrier systems', status: 'dev', note: 'Barriers open on the ticket' },
+  { label: 'Salik and Dubai payments', status: 'exploring', note: '' },
+  { label: 'Crypto payments', status: 'exploring', note: '' },
+  { label: 'Car care while parked (cleaning, fuel)', status: 'exploring', note: '' },
 ];
 ---
 <section id="integrations" class="section-pad scroll-mt-20" aria-labelledby="integrations-title">
   <div class="container-page">
-    <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-4">
         <SectionHead id="integrations-title" eyebrow="Integrations and partners" title="Built to plug into the venue." />
       </div>
-      <ul class="lg:col-span-8">
-        {rows.map((r) => (
-          <li class="hairline-t flex items-center justify-between gap-6 py-5">
-            <span class="t-body">{r.label}</span>
-            <Pill status={r.status} />
-          </li>
-        ))}
-        <li class="hairline-t"></li>
-      </ul>
+      <div class="lg:col-span-8">
+        <div class="rounded-frame bg-field p-4 md:p-8">
+          <BrowserFrame url="admin.valettuae.com/settings/integrations">
+            <div class="px-5 py-4 md:px-7 md:py-5">
+              <div class="flex items-center justify-between border-b border-line pb-3">
+                <p class="text-[15px] font-semibold">Integrations</p>
+                <span class="t-caption">The Marquee</span>
+              </div>
+              <ul>
+                {rows.map((r) => (
+                  <li class="flex items-center gap-4 border-b border-line py-4 last:border-b-0">
+                    <div class="min-w-0 flex-1">
+                      <p class="text-[15px] md:text-[16px]">{r.label}</p>
+                      {r.note && <p class="t-caption mt-0.5">{r.note}</p>}
+                    </div>
+                    <Pill status={r.status} class="hidden sm:inline-flex" />
+                    <span class:list={['relative inline-block h-6 w-10 shrink-0 rounded-pill border border-line transition-colors', r.status === 'live' ? 'bg-ink' : 'bg-field']} aria-hidden="true">
+                      <span class:list={['absolute top-[3px] size-[16px] rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,.15)]', r.status === 'live' ? 'end-[3px]' : 'start-[3px]']}></span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </BrowserFrame>
+        </div>
+      </div>
     </div>
   </div>
 </section>

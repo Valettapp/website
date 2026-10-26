@@ -4,6 +4,7 @@ import Pill from './Pill.astro';
 import ScanAnimation from './ScanAnimation.astro';
 import StaffScreen from './StaffScreen.astro';
 import KeyBoard from './KeyBoard.astro';
+import BrowserFrame from './BrowserFrame.astro';
 const steps = [
   { title: 'Photograph.', body: 'One photo reads the plate, make, model and colour. No typing at the door.' },
   { title: 'Ticket.', body: 'Code and QR appear instantly: show it, send it by SMS, or print.' },
@@ -47,7 +48,11 @@ const steps = [
         <p class="t-eyebrow">The key board</p>
         <h3 class="t-h3 max-w-[24em]">Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does. <Pill status="live" class="ms-1 align-[3px]" /></h3>
       </div>
-      <KeyBoard />
+      <div class="rounded-frame bg-field p-3 md:p-8">
+        <BrowserFrame url="board.valettuae.com/the-marquee">
+          <KeyBoard />
+        </BrowserFrame>
+      </div>
     </div>
   </div>
 </section>

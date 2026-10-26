@@ -5,12 +5,18 @@ import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
 const hasFilm = Boolean(site.film.mp4);
 ---
-<section class="pt-20 pb-28 md:pt-36 md:pb-48" aria-labelledby="hero-title">
+<section class="pt-16 pb-24 md:pt-28 md:pb-40" aria-labelledby="hero-title">
   <div class="container-page flex flex-col items-center text-center">
     <Wordmark class="text-[20px] text-ink md:text-[24px]" />
-    <h1 id="hero-title" class="t-display mt-10 max-w-[10em] md:mt-14 lg:!text-[112px]" style="text-wrap: balance">{site.slogan}</h1>
-    <p class="mt-8 text-[18px] text-ink-2 md:mt-10 md:text-[22px]">Valet management for Dubai’s best venues.</p>
-    <a href="#demo" class="btn-primary mt-10 md:mt-12 md:!px-8 md:!py-4 md:!text-[17px]">Book a demo</a>
-    {hasFilm ? <Film variant="hero" priority class="mt-20 w-full max-w-[1100px] md:mt-28" /> : <HeroStage />}
+    <span class="glass mt-10 inline-flex items-center gap-2 rounded-pill px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.14em] text-ink-2 md:mt-12">
+      <span class="size-1.5 rounded-full bg-gold" aria-hidden="true"></span>Launching in Dubai · 2026
+    </span>
+    <h1 id="hero-title" class="t-display mt-7 max-w-[10em] md:mt-8 lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>
+    <p class="mt-7 max-w-[30em] text-[18px] text-ink-2 md:mt-8 md:text-[21px]">Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text.</p>
+    <div class="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:gap-4 md:mt-10">
+      <a href="#demo" class="btn-primary md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>
+      <a href="#why" class="btn-ghost glass !px-6 !py-3.5 !text-[15px] md:!text-[16px]">Watch the film</a>
+    </div>
+    {hasFilm ? <Film variant="hero" priority class="mt-16 w-full max-w-[1100px] md:mt-20" /> : <HeroStage />}
   </div>
 </section>

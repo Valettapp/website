@@ -1,0 +1,146 @@
+---
+/**
+ * Back-office mini mockups (demo data) for the eight gallery tiles. Built at a 360 px design width
+ * and scaled with zoom by the parent. Single-series marks in one hue; recessive grid; thin, rounded data ends.
+ */
+import Icon from './Icon.astro';
+interface Props { kind: 'reports' | 'tickets' | 'residents' | 'validation' | 'incidents' | 'drivers' | 'cash' | 'network' }
+const { kind } = Astro.props;
+const bars = [38, 52, 44, 70, 61, 88, 64];
+const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const tickets = [
+  ['V777', 'Land Rover Defender', 'VIP', '01:06'],
+  ['V776', 'Bentley Bentayga', '', '00:52'],
+  ['V775', 'BMW X7', '', '00:41'],
+  ['V773', 'Range Rover Sport', 'VIP', '00:18'],
+];
+const residents = [
+  ['Apt 1204', 'M 95378', 'Resident · 2 bays'],
+  ['Apt 907', 'B 2210', 'Resident · 1 bay'],
+  ['Apt 311', 'A 8871', 'Visitor · until 23:00'],
+];
+const validations = [
+  ['The Marquee · Restaurant', 'V777', '01:40'],
+  ['The Marquee · Spa', 'V775', '01:12'],
+  ['The Marquee · Lobby bar', 'V773', '00:58'],
+];
+const drivers = [
+  ['Y. Khan', '4:52', '4.9', '340'],
+  ['S. Mendes', '5:10', '4.8', '295'],
+  ['A. Rahman', '5:36', '4.8', '260'],
+  ['D. Osei', '6:04', '4.7', '210'],
+];
+const cash = [
+  ['Cash taken', '2,340'],
+  ['Card and Apple Pay', '5,120'],
+  ['Validated (no charge)', '18 tickets'],
+  ['Variance', '0'],
+];
+const venues = [
+  ['The Marquee', 'Hotel', '42', true],
+  ['Arcadia Mall', 'Mall', '318', true],
+  ['Maison Lune', 'Restaurant', '27', true],
+  ['One Marina', 'Residences', '64', true],
+  ['The Marquee Beach', 'Hotel', '0', false],
+  ['Harbour House', 'Restaurant', '12', true],
+];
+---
+<div class="mini w-[360px] text-[11px] leading-[1.35] text-ink" data-kind={kind}>
+  {kind === 'reports' && (
+    <div class="p-4">
+      <div class="grid grid-cols-4 gap-2">
+        {[['Cars', '212'], ['Revenue', '7,460'], ['Avg wait', '6:40'], ['Tips', '1,105']].map(([k, v]) => (
+          <div class="rounded-[8px] border border-line px-2 py-1.5"><p class="text-[9px] uppercase tracking-[0.1em] text-ink-3">{k}</p><p class="mt-0.5 text-[14px] font-semibold tracking-[-0.02em]">{v}</p></div>
+        ))}
+      </div>
+      <p class="mt-3 text-[9px] uppercase tracking-[0.1em] text-ink-3">Cars per day · this week</p>
+      <div class="mt-1.5 grid h-[62px] grid-cols-7 items-end gap-1.5 border-b border-line" role="img" aria-label="Cars per day this week, demo data">
+        {bars.map((h, i) => <span class:list={['rounded-t-[4px]', i === 5 ? 'bg-gold' : 'bg-ink/80']} style={`height:${h}%`}></span>)}
+      </div>
+      <div class="mt-1 grid grid-cols-7 text-center text-[9px] text-ink-3">{days.map((d) => <span>{d}</span>)}</div>
+    </div>
+  )}
+  {kind === 'tickets' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Tickets · tonight</p><span class="text-ink-3">The Marquee</span></div>
+      <ul class="mt-2 divide-y divide-line">
+        {tickets.map(([id, car, vip, t]) => (
+          <li class="flex items-center gap-2 py-1.5"><span class="w-9 font-semibold tabular-nums">{id}</span><span class="flex-1 truncate">{car}</span>{vip && <span class="rounded-pill border border-gold px-1.5 py-px text-[8px] uppercase tracking-[0.1em] text-gold-text">VIP</span>}<span class="tabular-nums text-ink-3">{t}</span></li>
+        ))}
+      </ul>
+      <div class="mt-2 rounded-[8px] bg-field px-2.5 py-2"><p class="text-[9px] uppercase tracking-[0.1em] text-ink-3">Guest record</p><p class="mt-0.5">+971 58 ···· ···· · 14 visits · VIP since Mar 2026</p></div>
+    </div>
+  )}
+  {kind === 'residents' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">One Marina Residences</p><span class="text-ink-3">64 plans</span></div>
+      <ul class="mt-2 divide-y divide-line">
+        {residents.map(([apt, plate, plan]) => (
+          <li class="flex items-center gap-2 py-1.5"><span class="w-14 font-semibold">{apt}</span><span class="rounded-[4px] border border-ink/20 px-1.5 text-[10px] tracking-[0.06em]">{plate}</span><span class="flex-1 truncate text-ink-2">{plan}</span></li>
+        ))}
+      </ul>
+      <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+        <div class="rounded-[8px] border border-line px-2 py-1.5"><p class="text-[9px] uppercase tracking-[0.1em] text-ink-3">Rule</p><p>Visitors: 4 h free, then 10 / h</p></div>
+        <div class="rounded-[8px] border border-line px-2 py-1.5"><p class="text-[9px] uppercase tracking-[0.1em] text-ink-3">Rule</p><p>Residents: keys held, no fee</p></div>
+      </div>
+    </div>
+  )}
+  {kind === 'validation' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Validations · tonight</p><span class="inline-flex items-center gap-1 text-gold-text"><span class="size-1.5 rounded-full bg-gold"></span>Leakage 0</span></div>
+      <ul class="mt-2 divide-y divide-line">
+        {validations.map(([venue, id, t]) => (
+          <li class="flex items-center gap-2 py-1.5"><span class="inline-flex size-4 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={9} /></span><span class="flex-1 truncate">{venue}</span><span class="font-semibold tabular-nums">{id}</span><span class="tabular-nums text-ink-3">{t}</span></li>
+        ))}
+      </ul>
+      <p class="mt-2 text-ink-2">Every validation is a scan, logged against a venue and a ticket.</p>
+    </div>
+  )}
+  {kind === 'incidents' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Incident · V771</p><span class="text-ink-3">Mercedes G 63</span></div>
+      <div class="mt-2 grid grid-cols-3 gap-1.5">
+        {['00:41 check-in', '00:42 walkaround', '02:10 check-out'].map((t) => (
+          <div class="aspect-[4/3] rounded-[6px] bg-[#e3e3e0] p-1.5"><span class="rounded-[3px] bg-white/80 px-1 text-[8px]">{t}</span></div>
+        ))}
+      </div>
+      <ul class="mt-2 space-y-1 text-[10px]">
+        <li class="flex gap-2"><span class="w-9 tabular-nums text-ink-3">00:41</span><span>Checked in by Y. Khan · 6 photos</span></li>
+        <li class="flex gap-2"><span class="w-9 tabular-nums text-ink-3">02:10</span><span>Guest reports scratch, rear left</span></li>
+        <li class="flex gap-2"><span class="w-9 tabular-nums text-ink-3">02:14</span><span>Check-in photo shows scratch present · closed, 0 paid</span></li>
+      </ul>
+    </div>
+  )}
+  {kind === 'drivers' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Drivers · this shift</p><span class="text-ink-3">4 on</span></div>
+      <div class="mt-2 grid grid-cols-[1fr_auto_auto_auto] gap-x-3 text-[9px] uppercase tracking-[0.1em] text-ink-3"><span>Driver</span><span>Avg</span><span>Rating</span><span>Tips</span></div>
+      <ul class="mt-1 divide-y divide-line">
+        {drivers.map(([n, avg, r, tips]) => (
+          <li class="grid grid-cols-[1fr_auto_auto_auto] items-center gap-x-3 py-1.5"><span class="font-semibold">{n}</span><span class="tabular-nums">{avg}</span><span class="inline-flex items-center gap-0.5 tabular-nums"><Icon name="star" size={9} class="fill-current text-gold" />{r}</span><span class="tabular-nums text-ink-2">{tips}</span></li>
+        ))}
+      </ul>
+    </div>
+  )}
+  {kind === 'cash' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Shift close · 02:30</p><span class="text-ink-3">Manager: R. Haddad</span></div>
+      <ul class="mt-2 divide-y divide-line">
+        {cash.map(([k, v], i) => (
+          <li class="flex items-center justify-between py-1.5"><span class:list={[i === 3 ? 'font-semibold' : 'text-ink-2']}>{k}</span><span class:list={['tabular-nums', i === 3 ? 'font-semibold text-gold-text' : '']}>{v}</span></li>
+        ))}
+      </ul>
+      <div class="mt-2 flex items-center gap-2 rounded-[8px] bg-field px-2.5 py-2"><span class="inline-flex size-4 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={9} /></span><span>Who was on, what came in, what is missing. Nothing missing.</span></div>
+    </div>
+  )}
+  {kind === 'network' && (
+    <div class="p-4">
+      <div class="flex items-center justify-between"><p class="font-semibold">Network · live</p><span class="text-ink-3">6 venues · 463 cars</span></div>
+      <ul class="mt-2 grid grid-cols-2 gap-1.5">
+        {venues.map(([n, t, c, on]) => (
+          <li class="rounded-[8px] border border-line px-2 py-1.5"><p class="flex items-center gap-1.5 font-semibold"><span class:list={['size-1.5 rounded-full', on ? 'bg-gold' : 'bg-ink/15']}></span><span class="truncate">{n}</span></p><p class="text-[10px] text-ink-3">{t} · {c} parked</p></li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>

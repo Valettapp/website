@@ -10,7 +10,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 | LinkedIn URL | `src/data/site.ts` → `linkedin` | linkedin.com/company/valett |
 | The film (16:9 + 9:16 cuts, captions .vtt) | `public/film/`, then `src/data/site.ts` → `film` | Poster placeholder (#F2F2F0 frame with the wordmark) in hero and §2 |
 | Logo SVG | `public/favicon.svg`, `Wordmark.astro` | Serif VALETT wordmark set live in Cormorant Garamond; geometric V favicon. Drop the official SVG in when it exists |
-| Reports mockup PDF (`Valett_Reports___polish_mockup.pdf`) | §5 tiles, one page per tile | Hairline report skeletons labelled "Preview pending" |
+| Reports mockup PDF (`Valett_Reports___polish_mockup.pdf`) | §5 tiles, one page per tile | Eight HTML mini-UIs with demo data in browser chrome (`MiniUI.astro`) |
 | Founder and investor photos | `Plan.astro` | Initials on #F2F2F0 circles |
 | Wording for "AI scanning camera on every driver's device" | `Technology.astro` | Shown as written, pill `live` |
 | Partner names (PMS, barrier systems, car care) | `Integrations.astro` | Generic names, statuses from the brief |
@@ -28,9 +28,11 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Logo stays the serif VALETT wordmark (Leon's call after seeing both). `Wordmark.astro` keeps a `variant="brand"` that renders the brand-file "Valett." if ever needed.
 - Slogan "A new era for a timeless service." sits under the logo in the hero and replaces "Valet, without the wait." in the title, OG image and footer line. The old line is one edit in `src/data/site.ts` if wanted back.
 - Type is Geist (variable) instead of Inter, heavier and tighter at display sizes; the serif wordmark is unchanged.
-- Hero is centred, Apple-style, copy cut to the bone: wordmark, slogan, one line ("Valet management for Dubai's best venues."), one button. Below it the guest page sits large and centred on a field stage with four matte-glass UI cards; the stage has scroll-driven motion (phone rises and settles, cards parallax, slight tilt on exit) and pointer tilt on desktop (`HeroStage.astro`). Reduced motion renders the composition static. The brief's hero sub-line and three hairline lines are dropped. When `site.film.mp4` is set, the film frame replaces the stage.
+- Hero is centred, Apple-style: wordmark, pill eyebrow ("Launching in Dubai · 2026"), slogan, one line, two buttons. Below it a large rounded panel with three fanned phones (staff request, guest page, staff ticket) and two matte-glass cards echoing the centre screen; the stage has scroll-driven motion (phone rises and settles, cards parallax, slight tilt on exit) and pointer tilt on desktop (`HeroStage.astro`). Reduced motion renders the composition static. The brief's hero sub-line and three hairline lines are dropped. When `site.film.mp4` is set, the film frame replaces the stage.
 - Section padding raised to 112/200 px for more air.
 - Poster placeholder (used in §2 until the film exists) is the film's end card: black with the white serif wordmark and the slogan.
+
+- Mockups across the page: key board in browser chrome (§4), eight back-office mini-UIs (§5), a guest receipt (§6), integrations as a settings panel with toggles (§7), white-label venue headers for fictional venues The Marquee, Arcadia Mall, Maison Lune, One Marina (§9). All demo data.
 
 ## Copy added outside the brief
 
