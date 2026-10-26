@@ -2,10 +2,11 @@ export const site = {
   name: 'Valett',
   domain: 'valettuae.com',
   url: 'https://valettuae.com',
-  title: 'Valett — Valet, without the wait.',
+  title: 'Valett — A new era for a timeless service.',
   description:
     'Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text. Built for the venues guests remember.',
-  tagline: 'Valet, without the wait.',
+  tagline: 'A new era for a timeless service.',
+  slogan: 'A new era for a timeless service.',
   email: 'hello@valettuae.com', // pending confirmation from Leon
   linkedin: 'https://www.linkedin.com/company/valett', // pending confirmation
   location: 'Dubai, UAE',

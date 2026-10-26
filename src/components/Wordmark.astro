@@ -1,16 +1,20 @@
 ---
-/** VALETT wordmark: letter-spaced Cormorant Garamond. Logo + hero only (and footer). */
+/**
+ * Brand logo per the brand guidelines: "Valett." in a heavy sans, black on light, gold on dark.
+ * `variant="serif"` is the letter-spaced VALETT the product screens use; keep it for those only.
+ */
 interface Props {
   class?: string;
   as?: 'span' | 'a' | 'div';
   href?: string;
   label?: string;
+  variant?: 'brand' | 'serif';
 }
-const { class: className = '', as = 'span', href, label = 'Valett' } = Astro.props;
+const { class: className = '', as = 'span', href, label = 'Valett', variant = 'brand' } = Astro.props;
 const Tag = as;
 ---
 <Tag
-  class:list={['t-wordmark inline-block select-none', className]}
+  class:list={[variant === 'brand' ? 't-logo' : 't-wordmark', 'inline-block select-none', className]}
   {...(as === 'a' ? { href: href ?? '/', 'aria-label': `${label} — home` } : {})}
   translate="no"
->Valett</Tag>
+>{variant === 'brand' ? 'Valett.' : 'Valett'}</Tag>

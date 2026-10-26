@@ -30,6 +30,8 @@ const page_ = (body, w, h) => `<!doctype html><html><head><meta charset="utf-8">
 @font-face{font-family:Inter;src:url(data:font/woff2;base64,${inter}) format('woff2');font-weight:100 900;}
 html,body{margin:0;width:${w}px;height:${h}px;overflow:hidden;background:#F2F2F0;}
 .wm{font-family:CG;letter-spacing:.3em;text-transform:uppercase;color:#0A0A0A;margin-right:-.3em;}
+.logo{font-family:Inter;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.slogan{font-family:Inter;font-weight:400;letter-spacing:-.02em;line-height:1.15;}
 .wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
 .eyebrow{font-family:Inter;font-weight:500;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:#666}
 .h1{font-family:Inter;font-weight:500;font-size:88px;letter-spacing:-.03em;color:#0A0A0A;line-height:1}
@@ -45,11 +47,13 @@ async function shot(html, w, h, out) {
   writeFileSync(out, buf);
 }
 
-await shot(page_(`<div class="wrap"><div class="wm" style="font-size:96px">Valett</div></div>`, 1600, 900), 1600, 900, resolve(assets, 'poster-placeholder.png'));
-await shot(page_(`<div class="wrap"><div class="wm" style="font-size:72px">Valett</div></div>`, 900, 1600), 900, 1600, resolve(assets, 'poster-placeholder-portrait.png'));
+// Poster placeholder = the film's end card: black, gold logo, slogan.
+const endCard = (logo, slogan) => `<div class="wrap" style="background:#0A0A0A;gap:${Math.round(logo*0.2)}px"><div class="logo" style="font-size:${logo}px;color:#C5A253">Valett.</div><div class="slogan" style="font-size:${slogan}px;color:rgba(255,255,255,.72)">A new era for a timeless service.</div></div>`;
+await shot(page_(endCard(140, 34), 1600, 900), 1600, 900, resolve(assets, 'poster-placeholder.png'));
+await shot(page_(endCard(104, 28), 900, 1600), 900, 1600, resolve(assets, 'poster-placeholder-portrait.png'));
 await shot(
   page_(
-    `<div class="wrap" style="background:#fff;gap:28px"><div class="wm" style="font-size:40px">Valett</div><div class="h1">Valet, without the wait.</div><div class="eyebrow">Valet management for Dubai’s best venues</div></div>`,
+    `<div class="wrap" style="background:#fff;gap:22px"><div class="logo" style="font-size:168px;color:#0A0A0A">Valett.</div><div class="slogan" style="font-size:40px;color:#0A0A0A">A new era for a timeless service.</div><div class="eyebrow" style="margin-top:14px">Valet management for Dubai’s best venues</div></div>`,
     1200,
     630,
   ),
