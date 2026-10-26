@@ -14,14 +14,16 @@ interface Props {
   static?: boolean;
   /** Load the car photo eagerly (above the fold). */
   priority?: boolean;
+  /** Cycle through the five states on a fixed clock until the visitor taps. */
+  autoplay?: boolean;
   class?: string;
 }
-const { static: isStatic = false, priority = false, class: className = '' } = Astro.props;
+const { static: isStatic = false, priority = false, autoplay = false, class: className = '' } = Astro.props;
 const stateNames = ['Parked', 'Get a text', 'Request received', 'Driver on the way', 'All done'];
 const track = ['Requested', 'On it', 'Bringing', 'Outside'];
 const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
 ---
-<div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })}>
+<div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })} {...(autoplay ? { 'data-autoplay': '' } : {})}>
   <div class="phone-frame w-full max-w-[360px]">
     <div class="phone-screen bg-field text-ink" {...(isStatic ? {} : { 'aria-live': 'polite' })}>
       {/* Header: car photo fading to the field */}
@@ -29,7 +31,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
         <Picture src={carGuest} formats={['avif', 'webp']} widths={[360, 720]} sizes="360px" alt="" class="guest-photo absolute inset-0 h-full w-full object-cover object-top" loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" />
         <div class="absolute inset-x-0 top-0 flex items-start justify-between p-4">
           <span class="w-9"></span>
-          <span class="t-wordmark pt-1 text-[14px] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.45)]">The Marquee</span>
+          <span class="t-wordmark shrink-0 whitespace-nowrap pt-1 text-[14px] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.45)]">The Marquee</span>
           <span class="inline-flex items-center gap-1 rounded-pill bg-white/80 px-2.5 py-1 text-[11px] text-ink" aria-hidden="true">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>
             عربي
@@ -42,7 +44,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
         {/* 1 PARKED */}
         <section data-state="1" class="flex h-full flex-col items-center" hidden={hiddenIf(1)}>
           <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
-          <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</h3>
+          <p class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</p>
           <div class="mt-3 flex items-center gap-2 text-[13px]">
             <span class="plate">M <i></i> 95378</span>
             <span class="text-ink-3">·</span>
@@ -65,11 +67,11 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
         <section data-state="2" class="relative flex h-full flex-col" hidden={hiddenIf(2)}>
           <div class="pointer-events-none select-none opacity-30" aria-hidden="true">
             <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
-            <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</h3>
+            <p class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</p>
           </div>
           <div class="sheet -mx-5 -mb-5 mt-auto rounded-t-[22px] bg-white px-5 pb-6 pt-4 text-start shadow-[0_-8px_30px_-20px_rgba(0,0,0,.25)]">
             <div class="mx-auto mb-4 h-1 w-9 rounded-pill bg-ink/15"></div>
-            <h3 class="text-[20px] font-medium leading-tight tracking-[-0.01em]">Get a text when it’s ready</h3>
+            <p class="text-[20px] font-medium leading-tight tracking-[-0.01em]">Get a text when it’s ready</p>
             <p class="mt-2 text-[13px] leading-snug text-ink-2">We’ll text you when your car is on its way and when it’s at the door. No account, no spam.</p>
             <div class="mt-4 flex items-center gap-2 rounded-card border border-ink/15 bg-field px-3 py-2.5 text-[15px]" aria-hidden="true">
               <span class="text-ink-2">+971</span><span class="text-ink-3">58 ··· ····</span>
@@ -137,7 +139,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
         <section data-state="5" class="flex h-full flex-col items-center" hidden={hiddenIf(5)}>
           <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">All done</p>
           <span class="mt-3 inline-flex size-11 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={20} /></span>
-          <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Safe travels</h3>
+          <p class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Safe travels</p>
           <p class="mt-2 text-[13px] text-ink-2"><span class="uppercase tracking-[0.14em] text-[11px] font-medium">Tip</span> <span class="ms-1 font-medium text-ink" data-tip-out>80</span> AED</p>
           <p class="mt-1 text-[12px] text-ink-3">Receipt sent to +971 58 ···· ····</p>
           <div class="mt-5">
@@ -201,16 +203,22 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
     const announce = root.querySelector<HTMLElement>('[data-announce]');
     let state = 1;
     let timer: number | undefined;
+    let loop: number | undefined;
     let tip = 80;
+    const autoplay = 'autoplay' in root.dataset;
+    let interacted = false;
+    let visible = true;
 
     const show = (n: number, { auto = true } = {}) => {
       state = Math.min(5, Math.max(1, n));
       panels.forEach((p) => { p.hidden = Number(p.dataset.state) !== state; });
       dots.forEach((d) => d.setAttribute('aria-selected', Number(d.dataset.dot) === state ? 'true' : 'false'));
       if (announce) announce.textContent = `Guest page: ${names[state - 1]}`;
-      window.clearTimeout(timer);
+      window.clearTimeout(timer); window.clearTimeout(loop);
       // Deterministic auto-advance: request received → driver assigned after 2.4 s.
       if (auto && !reduce && state === 3) timer = window.setTimeout(() => show(4), 2400);
+      // Autoplay (hero): walk through the five states on a fixed clock until the visitor taps.
+      else if (autoplay && !reduce && !interacted && visible) loop = window.setTimeout(() => show(state === 5 ? 1 : state + 1), state === 4 ? 3600 : 2800);
     };
     const syncTip = () => {
       root.querySelectorAll<HTMLElement>('[data-tip]').forEach((b) => { if (Number(b.dataset.tip) === tip) b.setAttribute('data-on', ''); else b.removeAttribute('data-on'); });
@@ -223,6 +231,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
     root.addEventListener('click', (e) => {
       const t = (e.target as HTMLElement).closest<HTMLElement>('[data-go],[data-dot],[data-prev],[data-next],[data-reset],[data-tip],[data-star]');
       if (!t || !root.contains(t)) return;
+      interacted = true; window.clearTimeout(loop);
       if (t.dataset.go) show(Number(t.dataset.go));
       else if (t.dataset.dot) show(Number(t.dataset.dot));
       else if ('prev' in t.dataset) show(state - 1);
@@ -232,6 +241,11 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
       else if (t.dataset.star) syncStars(Number(t.dataset.star));
     });
 
+    if (autoplay && 'IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((en) => { visible = en.isIntersecting; if (visible && !interacted) show(state); else window.clearTimeout(loop); });
+      }, { threshold: 0.3 }).observe(root);
+    }
     // Reduced motion: render the final state first.
     show(reduce ? 5 : 1, { auto: false });
   });

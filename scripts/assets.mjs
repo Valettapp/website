@@ -21,9 +21,9 @@ await sharp(svg).resize(32, 32).png().toFile(resolve(pub, 'favicon.ico'));
 
 // --- Poster + OG via Chromium -----------------------------------------------
 const fontDir = resolve(root, 'node_modules/@fontsource/cormorant-garamond/files');
-const interDir = resolve(root, 'node_modules/@fontsource-variable/inter/files');
+const interDir = resolve(root, 'node_modules/@fontsource-variable/geist/files');
 const serif = readFileSync(resolve(fontDir, 'cormorant-garamond-latin-400-normal.woff2')).toString('base64');
-const inter = readFileSync(resolve(interDir, 'inter-latin-wght-normal.woff2')).toString('base64');
+const inter = readFileSync(resolve(interDir, 'geist-latin-wght-normal.woff2')).toString('base64');
 
 const page_ = (body, w, h) => `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:CG;src:url(data:font/woff2;base64,${serif}) format('woff2');}
@@ -31,7 +31,7 @@ const page_ = (body, w, h) => `<!doctype html><html><head><meta charset="utf-8">
 html,body{margin:0;width:${w}px;height:${h}px;overflow:hidden;background:#F2F2F0;}
 .wm{font-family:CG;letter-spacing:.3em;text-transform:uppercase;color:#0A0A0A;margin-right:-.3em;}
 .logo{font-family:Inter;font-weight:800;letter-spacing:-.04em;line-height:1;}
-.slogan{font-family:Inter;font-weight:400;letter-spacing:-.02em;line-height:1.15;}
+.slogan{font-family:Inter;font-weight:600;letter-spacing:-.035em;line-height:1.1;}
 .wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
 .eyebrow{font-family:Inter;font-weight:500;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:#666}
 .h1{font-family:Inter;font-weight:500;font-size:88px;letter-spacing:-.03em;color:#0A0A0A;line-height:1}

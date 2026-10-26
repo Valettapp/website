@@ -1,23 +1,32 @@
 ---
-/** Hero imagery until the film exists: the real guest page in front of the staff request screen. */
+/** Hero: the live guest sample, cycling on its own until tapped, with floating glass UI around it. */
 import GuestPhone from './GuestPhone.astro';
-import StaffScreen from './StaffScreen.astro';
+import Icon from './Icon.astro';
 ---
-<div class="hero-screens relative overflow-hidden rounded-frame bg-field aspect-[4/5] sm:aspect-[5/4] lg:aspect-[10/12]" aria-label="The guest page and the staff app, side by side" role="img">
-  <p class="t-eyebrow absolute start-6 top-6 z-10 max-w-[60%] md:start-8 md:top-8">Valet management for Dubai’s best venues</p>
-  <div class="hero-staff absolute end-[8%] top-[14%] w-[300px]">
-    <StaffScreen screen="request" />
+<div class="hero-stage relative mx-auto w-full max-w-[520px] pt-8 md:pt-10">
+  <div class="absolute inset-x-0 top-0 bottom-10 rounded-[32px] bg-field" aria-hidden="true"></div>
+  <div class="relative flex justify-center">
+    <GuestPhone autoplay priority class="hero-phone" />
   </div>
-  <div class="hero-guest absolute start-[6%] top-[27%] w-[340px]">
-    <GuestPhone static priority />
+
+  {/* Floating glass UI */}
+  <div class="glass-card absolute start-0 top-[12%] flex w-[188px] items-center gap-2.5 px-3.5 py-2.5 text-[12px] [animation:v-float-in_.7s_.25s_ease_both] sm:w-[228px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px] md:start-[-24px]" aria-hidden="true">
+    <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={15} /></span>
+    <span><strong class="font-semibold">Checked in · 01:06</strong><br /><span class="text-ink-2">Land Rover Defender · V777</span></span>
+  </div>
+  <div class="glass-card absolute end-0 top-[52%] flex w-[196px] items-center gap-2.5 px-3.5 py-2.5 text-[12px] [animation:v-float-in_.7s_.55s_ease_both] sm:w-[236px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px] md:end-[-28px]" aria-hidden="true">
+    <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-ink text-white"><Icon name="camera" size={15} /></span>
+    <span><strong class="font-semibold">Parked · Zone P3 · Bay 55</strong><br /><span class="text-ink-2">6 photos saved</span></span>
+  </div>
+  <div class="glass-card absolute start-[4%] top-[72%] hidden w-[224px] items-center gap-3 px-4 py-3 text-[13px] [animation:v-float-in_.7s_.85s_ease_both] sm:flex md:start-[-8px]" aria-hidden="true">
+    <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-gold text-gold"><Icon name="bolt" size={15} /></span>
+    <span><strong class="font-semibold">Receipt sent by text</strong><br /><span class="text-ink-2">Tip 80 AED · rated 5 stars</span></span>
   </div>
 </div>
 
 <style>
-  .hero-staff { zoom: 0.46; }
-  .hero-guest { zoom: 0.52; }
-  @media (min-width: 40rem) { .hero-staff { zoom: 0.62; } .hero-guest { zoom: 0.72; } }
-  @media (min-width: 64rem) { .hero-staff { zoom: 0.62; } .hero-guest { zoom: 0.74; } }
-  @media (min-width: 80rem) { .hero-staff { zoom: 0.68; } .hero-guest { zoom: 0.8; } }
-  .hero-guest :global(.phone-frame) { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 40px 80px -40px rgba(0,0,0,.28); }
+  .hero-phone { zoom: 0.8; }
+  @media (min-width: 48rem) { .hero-phone { zoom: 0.9; } }
+  .hero-stage :global(.phone-frame) { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 48px 96px -48px rgba(0,0,0,.3); }
+  @media (prefers-reduced-motion: reduce) { .glass-card { animation: none !important; } }
 </style>

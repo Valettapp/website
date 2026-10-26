@@ -16,7 +16,17 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on('pageerror', (e) => { console.log('pageerror', e.message); failures++; });
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
-  const guest = page.locator('[data-guest]');
+  // Hero sample autoplays until tapped.
+  const hero = page.locator('[data-guest][data-autoplay]');
+  const heroState = async () => hero.locator('[data-state]:not([hidden])').getAttribute('data-state');
+  const s0 = await heroState();
+  await page.waitForTimeout(3200);
+  check((await heroState()) !== s0, 'hero sample advances on its own');
+  await hero.locator('[data-dot="1"]').click();
+  await page.waitForTimeout(3200);
+  check((await heroState()) === '1', 'hero autoplay stops after a tap');
+
+  const guest = page.locator('#guest [data-guest]');
   await guest.scrollIntoViewIfNeeded();
   const visible = async () => guest.locator('[data-state]:not([hidden])').getAttribute('data-state');
   check((await visible()) === '1', 'guest starts at state 1 (Parked)');
@@ -78,7 +88,7 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const ctx = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
-  const guest = page.locator('[data-guest]');
+  const guest = page.locator('#guest [data-guest]');
   await guest.scrollIntoViewIfNeeded();
   check((await guest.locator('[data-state]:not([hidden])').getAttribute('data-state')) === '5', 'reduced motion: guest renders final state (5)');
   const kb = page.locator('[data-keyboard]');
