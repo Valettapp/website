@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+}
+const { title = site.title, description = site.description, path = '/' } = Astro.props;
+const canonical = new URL(path, site.url).href;
+const og = new URL('/og.png', site.url).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Valett',
+  url: site.url,
+  logo: new URL('/icon-512.png', site.url).href,
+  email: site.email,
+  address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
+  sameAs: [site.linkedin],
+  slogan: site.tagline,
+};
+---
+<!doctype html>
+<html lang={site.lang} dir={site.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Valett" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Valett — Valet, without the wait." />
+    <meta property="og:locale" content="en_AE" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script defer data-domain={site.plausibleDomain} src="https://plausible.io/js/script.outbound-links.js"></script>
+  </head>
+  <body class="min-h-dvh bg-bg text-ink antialiased" id="top">
+    <a href="#main" class="sr-only-focusable z-[100] btn-primary">Skip to content</a>
+    <slot />
+  </body>
+</html>

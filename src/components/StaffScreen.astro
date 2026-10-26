@@ -1,0 +1,102 @@
+---
+/** Static dark staff-app screens rebuilt in HTML: ticket, park, request. */
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+import { Picture } from 'astro:assets';
+import carStaff from '../assets/car-staff.png';
+interface Props { screen: 'ticket' | 'park' | 'request'; class?: string }
+const { screen, class: className = '' } = Astro.props;
+// Deterministic pseudo-QR pattern (not scannable; demo data).
+const qr = (() => {
+  const n = 21; let seed = 7; const cells: string[] = [];
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const finder = (x: number, y: number) => (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    let on = false;
+    if (finder(x, y)) {
+      const fx = x < 7 ? x : x - (n - 7), fy = y < 7 ? y : y - (n - 7);
+      on = fx === 0 || fx === 6 || fy === 0 || fy === 6 || (fx >= 2 && fx <= 4 && fy >= 2 && fy <= 4);
+    } else on = rnd() > 0.55;
+    if (on) cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`);
+  }
+  return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" fill="#0a0a0a" aria-hidden="true">${cells.join('')}</svg>`;
+})();
+---
+<div class:list={['phone-frame w-full max-w-[300px]', className]}>
+  <div class="phone-screen bg-ink text-white">
+    <div class="absolute inset-x-0 top-0 flex items-center justify-center px-5 pt-5">
+      <Wordmark class="text-[13px] text-white/90" />
+    </div>
+
+    {screen === 'ticket' && (
+      <div class="absolute inset-x-5 top-[11%] bottom-5 flex flex-col items-center text-center">
+        <p class="text-[12px] text-white/60">Checked in · 01:06</p>
+        <p class="mt-1 text-[44px] font-light leading-none tracking-[0.12em]">V777</p>
+        <div class="mt-4 rounded-[10px] bg-white p-2.5" style="width:50%">
+          <div class="aspect-square w-full" set:html={qr} />
+        </div>
+        <p class="mt-4 text-[17px] font-medium">Land Rover Defender</p>
+        <p class="text-[12px] text-white/50">White · Dubai</p>
+        <p class="plate-dark mt-2">DUBAI M <i></i> 95378</p>
+        <div class="mt-auto w-full">
+          <span class="btn-primary w-full !bg-white !py-3 !text-[14px] !text-ink">Park car</span>
+          <p class="mt-3 text-center text-[11px] text-white/50">Wrong car? <u>Retake</u> · <u>Send by SMS</u> · <u>Print</u></p>
+        </div>
+      </div>
+    )}
+
+    {screen === 'park' && (
+      <div class="absolute inset-x-5 top-[11%] bottom-5 flex flex-col">
+        <p class="text-[12px] text-white/60">V777 · Land Rover Defender</p>
+        <p class="mt-2 text-[22px] font-medium leading-tight tracking-[-0.02em]">Where did you park?</p>
+        <div class="mt-5 grid grid-cols-2 gap-2">
+          <div class="rounded-[10px] border border-white/10 bg-white/[.06] p-3">
+            <p class="text-[10px] uppercase tracking-[0.12em] text-white/50">Zone</p>
+            <p class="mt-1 text-[28px] font-medium leading-none">P3</p>
+          </div>
+          <div class="rounded-[10px] border border-white/10 bg-white/[.06] p-3">
+            <p class="text-[10px] uppercase tracking-[0.12em] text-white/50">Bay</p>
+            <p class="mt-1 text-[28px] font-medium leading-none">55</p>
+          </div>
+        </div>
+        <div class="mt-3 grid grid-cols-4 gap-1.5 text-center text-[12px] text-white/60">
+          {['P1', 'P2', 'P3', 'P4'].map((z) => <span class:list={['rounded-[8px] border py-1.5', z === 'P3' ? 'border-white bg-white text-ink' : 'border-white/10']}>{z}</span>)}
+        </div>
+        <div class="mt-3 flex items-center justify-between rounded-[10px] border border-white/10 px-3 py-2.5 text-[12px]">
+          <span class="text-white/60">Keys</span><span>Hook 55</span>
+        </div>
+        <div class="mt-2 flex items-center justify-between rounded-[10px] border border-white/10 px-3 py-2.5 text-[12px]">
+          <span class="text-white/60">Walkaround</span><span class="inline-flex items-center gap-1"><Icon name="camera" size={12} /> 6 photos</span>
+        </div>
+        <div class="mt-auto">
+          <div class="flex items-center gap-2 rounded-[10px] border border-gold/60 px-3 py-2.5 text-[12px]">
+            <Icon name="check" size={13} class="text-gold" />
+            <span>Parked · Zone P3 · Bay 55 · Photos saved</span>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {screen === 'request' && (
+      <div class="absolute inset-x-5 top-[12%] bottom-5 flex flex-col items-center text-center">
+        <p class="text-[11px] font-medium uppercase tracking-[0.16em] text-gold">New request · Just now</p>
+        <p class="mt-2 text-[30px] font-normal leading-[1.05] tracking-[-0.02em]">Land Rover Defender</p>
+        <p class="plate-dark mt-3 !bg-white !text-ink">M <i class="!bg-ink"></i> 95378</p>
+        <Picture src={carStaff} formats={['avif', 'webp']} widths={[330, 660]} sizes="200px" alt="" class="mt-2 w-[62%]" loading="lazy" decoding="async" />
+        <div class="mt-1 w-full text-start text-[13px]">
+          <div class="flex items-center justify-between border-b border-white/10 py-2.5"><span class="text-[11px] uppercase tracking-[0.14em] text-white/55">Parked</span><span>Zone P3 · Bay 55</span></div>
+          <div class="flex items-center justify-between py-2.5"><span class="text-[11px] uppercase tracking-[0.14em] text-white/55">Colour</span><span>White</span></div>
+        </div>
+        <div class="mt-auto w-full">
+          <span class="btn-primary w-full !bg-white !py-3 !text-[14px] !text-ink">On my way</span>
+          <p class="mt-2.5 text-[11px] text-white/50">On shift · 02:15:03</p>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .plate-dark { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid rgba(255,255,255,.85); border-radius: 5px; padding: 2px 9px; font-weight: 600; font-size: 13px; letter-spacing: 0.06em; color: #fff; }
+  .plate-dark i { display: inline-block; width: 1.5px; height: 14px; background: rgba(255,255,255,.85); }
+</style>

@@ -1,0 +1,229 @@
+---
+/**
+ * GuestPhone — the real guest page rebuilt in HTML (reference: guest screens + recording 2).
+ * Five deterministic, resettable states. Venue: THE MARQUEE (fictional).
+ * Under reduced motion the final state renders first and no timers run.
+ */
+import { Picture } from 'astro:assets';
+import carGuest from '../assets/car-guest.jpg';
+import Icon from './Icon.astro';
+import SampleLabel from './SampleLabel.astro';
+
+const stateNames = ['Parked', 'Get a text', 'Request received', 'Driver on the way', 'All done'];
+const track = ['Requested', 'On it', 'Bringing', 'Outside'];
+---
+<div class="guest-phone flex flex-col items-center gap-6" data-guest>
+  <div class="phone-frame w-full max-w-[360px]">
+    <div class="phone-screen bg-field text-ink" aria-live="polite">
+      {/* Header: car photo fading to the field */}
+      <div class="absolute inset-x-0 top-0 h-[34%]">
+        <Picture src={carGuest} formats={['avif', 'webp']} widths={[360, 720]} sizes="360px" alt="" class="guest-photo absolute inset-0 h-full w-full object-cover object-top" loading="lazy" decoding="async" />
+        <div class="absolute inset-x-0 top-0 flex items-start justify-between p-4">
+          <span class="w-9"></span>
+          <span class="t-wordmark pt-1 text-[14px] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.45)]">The Marquee</span>
+          <span class="inline-flex items-center gap-1 rounded-pill bg-white/80 px-2.5 py-1 text-[11px] text-ink" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>
+            عربي
+          </span>
+        </div>
+      </div>
+
+      {/* Panels */}
+      <div class="absolute inset-x-0 bottom-0 top-[33%] flex flex-col px-5 pb-5 text-center" data-panels>
+        {/* 1 PARKED */}
+        <section data-state="1" class="flex h-full flex-col items-center">
+          <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
+          <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</h3>
+          <div class="mt-3 flex items-center gap-2 text-[13px]">
+            <span class="plate">M <i></i> 95378</span>
+            <span class="text-ink-3">·</span>
+            <span class="text-ink-2">Ticket V777</span>
+          </div>
+          <p class="mt-3 text-[13px]"><span class="text-ink-3">Validation</span> <span class="ms-1 font-medium text-gold-text">Ask your server</span></p>
+          <p class="mt-3 inline-flex items-center gap-1 text-[13px] text-ink-2" aria-hidden="true">Details <Icon name="chevron" size={14} /></p>
+          <div class="mt-auto flex w-full flex-col items-center gap-3">
+            <button type="button" class="btn-primary w-full !py-3.5 !text-[15px]" data-go="2">Request My Car</button>
+            <span class="text-[13px] text-ink-2 underline underline-offset-2" aria-hidden="true">Show QR</span>
+            <div class="flex w-full items-center gap-3 rounded-[14px] bg-white px-3.5 py-3 text-start text-[13px] shadow-[0_1px_2px_rgba(0,0,0,.04)]">
+              <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-field text-[13px] font-medium">M</span>
+              <div class="min-w-0 flex-1"><p class="font-medium">Shift manager</p><p class="truncate text-[12px] text-ink-3">The Marquee · replies in a few minutes</p></div>
+              <span class="inline-flex items-center gap-1 text-ink underline underline-offset-2">Message <Icon name="chevron" size={12} class="-rotate-90" /></span>
+            </div>
+          </div>
+        </section>
+
+        {/* 2 SHEET */}
+        <section data-state="2" class="relative flex h-full flex-col" hidden>
+          <div class="pointer-events-none select-none opacity-30" aria-hidden="true">
+            <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
+            <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Land Rover Defender</h3>
+          </div>
+          <div class="sheet -mx-5 -mb-5 mt-auto rounded-t-[22px] bg-white px-5 pb-6 pt-4 text-start shadow-[0_-8px_30px_-20px_rgba(0,0,0,.25)]">
+            <div class="mx-auto mb-4 h-1 w-9 rounded-pill bg-ink/15"></div>
+            <h3 class="text-[20px] font-medium leading-tight tracking-[-0.01em]">Get a text when it’s ready</h3>
+            <p class="mt-2 text-[13px] leading-snug text-ink-2">We’ll text you when your car is on its way and when it’s at the door. No account, no spam.</p>
+            <div class="mt-4 flex items-center gap-2 rounded-card border border-ink/15 bg-field px-3 py-2.5 text-[15px]" aria-hidden="true">
+              <span class="text-ink-2">+971</span><span class="text-ink-3">58 ··· ····</span>
+            </div>
+            <button type="button" class="btn-primary mt-3 w-full !py-3.5 !text-[15px]" data-go="3">Text me when it’s ready</button>
+            <button type="button" class="mt-3 w-full text-center text-[13px] text-ink-2 underline-offset-2 hover:underline" data-go="3">Skip, I’ll keep this page open</button>
+          </div>
+        </section>
+
+        {/* 3 REQUEST RECEIVED */}
+        <section data-state="3" class="flex h-full flex-col items-center" hidden>
+          <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Request received</p>
+          <p class="mt-3 text-[64px] font-light leading-none tracking-[-0.03em]">5<span class="ms-2 text-[22px] font-normal tracking-normal text-ink-2">min</span></p>
+          <p class="mt-3 text-[13px] text-ink-2">Finding your valet, usually under a minute</p>
+          <ol class="mt-6 grid w-full grid-cols-4 gap-1.5" aria-label="Progress">
+            {track.map((t, i) => (
+              <li class="flex flex-col gap-2">
+                <span class:list={['text-[11px]', i < 1 ? 'font-medium text-ink' : 'text-ink-3']}>{t}</span>
+                <span class:list={['h-[2px] rounded-pill', i < 1 ? 'bg-ink' : 'bg-ink/10']}></span>
+              </li>
+            ))}
+          </ol>
+          <div class="mt-auto w-full">
+            <button type="button" class="btn-ghost w-full bg-white" data-go="1">Cancel request</button>
+          </div>
+        </section>
+
+        {/* 4 BRINGING */}
+        <section data-state="4" class="flex h-full flex-col items-center" hidden>
+          <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Your driver is bringing your car</p>
+          <p class="mt-2 text-[60px] font-light leading-none tracking-[-0.03em]">4<span class="ms-2 text-[20px] font-normal tracking-normal text-ink-2">min</span></p>
+          <p class="mt-2 text-[12px] text-ink-2">Your driver is bringing your car to main entrance</p>
+          <ol class="mt-3 grid w-full grid-cols-4 gap-1.5" aria-label="Progress">
+            {track.map((t, i) => (
+              <li class="flex flex-col gap-1.5">
+                <span class:list={['text-[11px]', i < 3 ? 'font-medium text-ink' : 'text-ink-3']}>{t}</span>
+                <span class:list={['h-[2px] rounded-pill', i < 3 ? 'bg-ink' : 'bg-ink/10']}></span>
+              </li>
+            ))}
+          </ol>
+          <div class="mt-3 flex w-full flex-col gap-2 text-start text-[13px]">
+            <div class="flex items-center gap-3 rounded-[14px] bg-white px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,.04)]">
+              <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-ink text-[13px] font-medium text-white">Y</span>
+              <div class="min-w-0 flex-1"><p class="font-medium">Your driver</p><p class="truncate text-[12px] text-ink-3">To the main entrance</p></div>
+              <span class="underline underline-offset-2">Message</span>
+            </div>
+            <div class="flex items-center gap-3 rounded-[14px] bg-white px-3.5 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,.04)]">
+              <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-field text-[13px] font-medium">M</span>
+              <div class="min-w-0 flex-1"><p class="font-medium">Shift manager</p><p class="truncate text-[12px] text-ink-3">Replies in a few minutes</p></div>
+              <span class="underline underline-offset-2">Message</span>
+            </div>
+          </div>
+          <div class="mt-auto w-full">
+            <div class="flex items-center gap-2" role="group" aria-label="Tip amount, AED">
+              <span class="me-1 text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Tip</span>
+              {[20, 40, 80].map((v) => (
+                <button type="button" class="flex-1 rounded-pill border border-ink/15 bg-white py-2 text-[14px] font-medium transition-colors data-[on]:border-ink data-[on]:bg-ink data-[on]:text-white" data-tip={v} {...(v === 80 ? { 'data-on': '' } : {})}>{v}</button>
+              ))}
+            </div>
+            <button type="button" class="btn-primary mt-2.5 w-full !py-3.5 !text-[15px]" data-go="5"><Icon name="apple" size={16} /> Pay with Apple Pay</button>
+          </div>
+        </section>
+
+        {/* 5 ALL DONE */}
+        <section data-state="5" class="flex h-full flex-col items-center" hidden>
+          <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">All done</p>
+          <span class="mt-3 inline-flex size-11 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={20} /></span>
+          <h3 class="mt-2 text-[26px] font-medium leading-tight tracking-[-0.02em]">Safe travels</h3>
+          <p class="mt-2 text-[13px] text-ink-2"><span class="uppercase tracking-[0.14em] text-[11px] font-medium">Tip</span> <span class="ms-1 font-medium text-ink" data-tip-out>80</span> AED</p>
+          <p class="mt-1 text-[12px] text-ink-3">Receipt sent to +971 58 ···· ····</p>
+          <div class="mt-5">
+            <p class="text-[14px] font-medium">How was it today?</p>
+            <div class="mt-2 flex justify-center gap-1.5" role="group" aria-label="Rating">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button type="button" class="text-ink/15 data-[on]:text-gold" data-star={n} aria-label={`${n} star${n > 1 ? 's' : ''}`} data-on=""><Icon name="star" size={22} class="fill-current" /></button>
+              ))}
+            </div>
+          </div>
+          <div class="mt-auto flex w-full flex-col gap-2.5">
+            <span class="btn-primary w-full !py-3.5 !text-[15px]" aria-hidden="true">Send rating</span>
+            <span class="btn-ghost w-full bg-white" aria-hidden="true"><Icon name="download" size={15} /> Download receipt</span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  {/* Stepper + reset */}
+  <div class="flex w-full max-w-[360px] flex-col items-center gap-3">
+    <div class="flex items-center gap-3">
+      <button type="button" class="btn-ghost !p-2" data-prev aria-label="Previous state"><Icon name="arrow-left" size={16} /></button>
+      <div class="flex items-center gap-2" role="tablist" aria-label="Guest page states">
+        {stateNames.map((n, i) => (
+          <button type="button" role="tab" class="group p-1" data-dot={i + 1} aria-label={`${i + 1}. ${n}`} aria-selected={i === 0 ? 'true' : 'false'}>
+            <span class="block size-2 rounded-full bg-ink/15 transition-colors group-aria-selected:bg-ink"></span>
+          </button>
+        ))}
+      </div>
+      <button type="button" class="btn-ghost !p-2" data-next aria-label="Next state"><Icon name="arrow-right" size={16} /></button>
+    </div>
+    <div class="flex items-center gap-4">
+      <SampleLabel />
+      <button type="button" class="inline-flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-ink" data-reset><Icon name="reset" size={14} /> Reset</button>
+    </div>
+    <p class="sr-only" data-announce></p>
+  </div>
+</div>
+
+<style>
+  .guest-photo {
+    -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  }
+  .plate { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid #0a0a0a; border-radius: 5px; padding: 2px 8px; font-weight: 600; font-size: 13px; letter-spacing: 0.04em; background: #fff; }
+  .plate i { display: inline-block; width: 1.5px; height: 14px; background: #0a0a0a; }
+  .sheet { animation: v-sheet 320ms cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes v-sheet { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+  [data-state]:not([hidden]) { animation: v-fade-up 300ms ease both; }
+  @media (prefers-reduced-motion: reduce) { .sheet, [data-state]:not([hidden]) { animation: none; } }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const names = ['Parked', 'Get a text when it’s ready', 'Request received', 'Your driver is bringing your car', 'All done'];
+
+  document.querySelectorAll<HTMLElement>('[data-guest]').forEach((root) => {
+    const panels = root.querySelectorAll<HTMLElement>('[data-state]');
+    const dots = root.querySelectorAll<HTMLButtonElement>('[data-dot]');
+    const announce = root.querySelector<HTMLElement>('[data-announce]');
+    let state = 1;
+    let timer: number | undefined;
+    let tip = 80;
+
+    const show = (n: number, { auto = true } = {}) => {
+      state = Math.min(5, Math.max(1, n));
+      panels.forEach((p) => { p.hidden = Number(p.dataset.state) !== state; });
+      dots.forEach((d) => d.setAttribute('aria-selected', Number(d.dataset.dot) === state ? 'true' : 'false'));
+      if (announce) announce.textContent = `Guest page: ${names[state - 1]}`;
+      window.clearTimeout(timer);
+      // Deterministic auto-advance: request received → driver assigned after 2.4 s.
+      if (auto && !reduce && state === 3) timer = window.setTimeout(() => show(4), 2400);
+    };
+    const syncTip = () => {
+      root.querySelectorAll<HTMLElement>('[data-tip]').forEach((b) => { if (Number(b.dataset.tip) === tip) b.setAttribute('data-on', ''); else b.removeAttribute('data-on'); });
+      const out = root.querySelector('[data-tip-out]'); if (out) out.textContent = String(tip);
+    };
+    const syncStars = (n: number) => {
+      root.querySelectorAll<HTMLElement>('[data-star]').forEach((s) => { if (Number(s.dataset.star) <= n) s.setAttribute('data-on', ''); else s.removeAttribute('data-on'); });
+    };
+
+    root.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-go],[data-dot],[data-prev],[data-next],[data-reset],[data-tip],[data-star]');
+      if (!t || !root.contains(t)) return;
+      if (t.dataset.go) show(Number(t.dataset.go));
+      else if (t.dataset.dot) show(Number(t.dataset.dot));
+      else if ('prev' in t.dataset) show(state - 1);
+      else if ('next' in t.dataset) show(state + 1);
+      else if ('reset' in t.dataset) { tip = 80; syncTip(); syncStars(5); show(1, { auto: false }); }
+      else if (t.dataset.tip) { tip = Number(t.dataset.tip); syncTip(); }
+      else if (t.dataset.star) syncStars(Number(t.dataset.star));
+    });
+
+    // Reduced motion: render the final state first.
+    show(reduce ? 5 : 1, { auto: false });
+  });
+</script>

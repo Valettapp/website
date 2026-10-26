@@ -1,0 +1,14 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  id?: string;
+  center?: boolean;
+  class?: string;
+}
+const { eyebrow, title, id, center = false, class: className = '' } = Astro.props;
+---
+<header class:list={['flex flex-col gap-4', center ? 'items-center text-center' : 'items-start text-start', className]}>
+  {eyebrow && <p class="t-eyebrow">{eyebrow}</p>}
+  <h2 id={id} class="t-h2 max-w-[18em]">{title}</h2>
+</header>

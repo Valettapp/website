@@ -1,0 +1,16 @@
+---
+/** VALETT wordmark: letter-spaced Cormorant Garamond. Logo + hero only (and footer). */
+interface Props {
+  class?: string;
+  as?: 'span' | 'a' | 'div';
+  href?: string;
+  label?: string;
+}
+const { class: className = '', as = 'span', href, label = 'Valett' } = Astro.props;
+const Tag = as;
+---
+<Tag
+  class:list={['t-wordmark inline-block select-none', className]}
+  {...(as === 'a' ? { href: href ?? '/', 'aria-label': `${label} — home` } : {})}
+  translate="no"
+>Valett</Tag>

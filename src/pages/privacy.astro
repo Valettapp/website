@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+---
+<Base title="Privacy — Valett" description="How Valett handles personal data on this website." path="/privacy">
+  <Nav />
+  <main id="main" class="section-pad">
+    <div class="container-page">
+      <p class="t-eyebrow">Privacy</p>
+      <h1 class="t-h2 mt-4">Privacy notice.</h1>
+      <div class="measure mt-8 flex flex-col gap-5 text-ink-2 t-body">
+        <p>This website collects only what you give us through the demo form: your name, venue, role, phone number and preferred time. We use it to arrange your demo and for nothing else.</p>
+        <p>Form submissions are processed by Formspree and protected by Cloudflare Turnstile. Site analytics run on Plausible, which does not use cookies and does not collect personal data.</p>
+        <p>To see, correct or delete your data, email <a class="underline underline-offset-2 text-ink" href={`mailto:${site.email}`}>{site.email}</a>.</p>
+        <p class="t-caption">This notice is a placeholder pending legal review.</p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

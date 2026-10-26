@@ -1,0 +1,22 @@
+---
+import Film from './Film.astro';
+import SectionHead from './SectionHead.astro';
+---
+<section id="why" class="section-pad scroll-mt-20" aria-labelledby="why-title">
+  <div class="container-page">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        <SectionHead id="why-title" title="The last part of a five-star evening is still run on paper." />
+      </div>
+      <div class="flex flex-col gap-6 lg:col-span-7 lg:pt-3">
+        <p class="t-body measure">
+          A card torn in half. A radio call. A guest standing in 40-degree heat wondering if anyone wrote down their plate. When something goes wrong, nobody can prove what happened, and the hotel pays.
+        </p>
+        <p class="t-body measure text-ink-2">
+          Valett was built after its founders waited thirty minutes for their car in the Dubai summer and realised the most convenience-focused industry in hospitality had no convenience in it. So we replaced the ticket with a system: a camera at the door, a page on the guest’s phone, and a board the whole operation runs on. Every car is documented before it moves, every guest is a text away, and every minute is on the record.
+        </p>
+      </div>
+    </div>
+    <Film variant="full" class="mt-16 w-full md:mt-24" />
+  </div>
+</section>

@@ -1,0 +1,47 @@
+---
+import SectionHead from './SectionHead.astro';
+import Pill from './Pill.astro';
+// Tiles are placeholders until Valett_Reports___polish_mockup.pdf arrives; then crop one page per tile.
+const tiles = [
+  { title: 'Reports', body: 'Cars, revenue, wait times and tips per shift, per venue, per driver.' },
+  { title: 'Tickets and customers', body: 'Every visit on one record; VIP tiers that follow the guest.' },
+  { title: 'Residents', body: 'Permanent plans for buildings, with their own rules.' },
+  { title: 'Validation', body: 'Venues stamp the ticket digitally; leakage ends.' },
+  { title: 'Incidents and compensation', body: 'Photos, timestamps, who touched the car, what was paid.' },
+  { title: 'Driver performance', body: 'Speed, ratings and tips, per driver, per shift.' },
+  { title: 'Shift manager and cash variances', body: 'Who was on, what came in, what is missing.' },
+  { title: 'Network overview', body: 'Every venue on one map for operators and groups.' },
+];
+---
+<section id="back-office" class="section-pad scroll-mt-20" aria-labelledby="backoffice-title">
+  <div class="container-page">
+    <SectionHead id="backoffice-title" eyebrow="Back office" title="Run one door or forty from the same screen." />
+    <ul class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 md:mt-24">
+      {tiles.map((t, i) => (
+        <li class="hairline flex flex-col overflow-hidden rounded-card bg-white">
+          <div class="relative aspect-[16/10] bg-field" role="img" aria-label={`${t.title} screen, preview pending`}>
+            {/* Placeholder: report skeleton in hairlines */}
+            <div class="absolute inset-4 flex flex-col gap-2" aria-hidden="true">
+              <div class="flex items-center justify-between">
+                <span class="h-1.5 w-1/3 rounded-pill bg-ink/10"></span>
+                <span class="h-1.5 w-8 rounded-pill bg-ink/10"></span>
+              </div>
+              <div class="mt-1 grid flex-1 grid-cols-6 items-end gap-1.5">
+                {[0.5, 0.7, 0.45, 0.85, 0.6, 0.75].map((h) => (
+                  <span class:list={['rounded-[3px] border border-ink/10', i % 2 === 0 ? 'bg-white' : 'bg-ink/[.04]']} style={`height:${Math.round(h * 100)}%`}></span>
+                ))}
+              </div>
+              <span class="h-1 w-1/2 rounded-pill bg-ink/[.07]"></span>
+            </div>
+            <span class="absolute bottom-3 end-3 t-caption !text-[11px]">Preview pending</span>
+          </div>
+          <div class="flex flex-1 flex-col gap-2 p-5">
+            <h3 class="t-h3 !text-[18px] md:!text-[20px]">{t.title}</h3>
+            <p class="text-[15px] leading-relaxed text-ink-2">{t.body}</p>
+            <div class="mt-auto pt-2"><Pill status="live" /></div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+---
+import Wordmark from './Wordmark.astro';
+import { site } from '../data/site';
+const year = 2026;
+---
+<footer class="bg-ink text-white">
+  <div class="container-page py-16 md:py-20">
+    <div class="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5">
+        <Wordmark class="text-[28px] md:text-[32px]" />
+        <p class="text-ink-text-2 text-[15px]">{site.location}</p>
+      </div>
+      <ul class="flex flex-wrap gap-x-8 gap-y-3 text-[15px] text-ink-text-2">
+        <li><a class="hover:text-white transition-colors" href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a class="hover:text-white transition-colors" href={site.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        <li><a class="hover:text-white transition-colors" href="/privacy">Privacy</a></li>
+      </ul>
+    </div>
+    <div class="mt-12 flex flex-col gap-2 border-t border-ink-line pt-6 text-[14px] text-ink-text-3 md:flex-row md:justify-between">
+      <p>© {year} Valett</p>
+      <p>{site.tagline}</p>
+    </div>
+  </div>
+</footer>

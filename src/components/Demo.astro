@@ -1,0 +1,109 @@
+---
+/**
+ * Book a demo — Formspree (FORMSPREE_ID env), honeypot + Cloudflare Turnstile (PUBLIC_TURNSTILE_SITE_KEY).
+ * Fields: Name, Venue, Role, Phone, Preferred time. Success: "Thank you. We will text you to confirm."
+ */
+import { site } from '../data/site';
+const action = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : '';
+const fields = [
+  { id: 'name', label: 'Name', type: 'text' as const, auto: 'name', required: true },
+  { id: 'venue', label: 'Venue', type: 'text' as const, auto: 'organization', required: true },
+  { id: 'role', label: 'Role', type: 'text' as const, auto: 'organization-title', required: false },
+  { id: 'phone', label: 'Phone', type: 'tel' as const, auto: 'tel', required: true },
+  { id: 'preferred_time', label: 'Preferred time', type: 'text' as const, auto: 'off', required: false, placeholder: 'e.g. Tuesday after 4 pm' },
+];
+---
+<section id="demo" class="section-pad scroll-mt-20" aria-labelledby="demo-title">
+  <div class="container-page">
+    <div class="glass mx-auto max-w-[920px] rounded-frame p-7 md:p-14">
+      <div class="flex flex-col items-center text-center">
+        <h2 id="demo-title" class="t-h2">See it at your door.</h2>
+        <p class="t-body measure mt-5 text-ink-2">Thirty minutes, on a call or at your venue, with the real app in your hands.</p>
+      </div>
+      <form
+        class="mt-10 grid gap-5 sm:grid-cols-2"
+        method="POST"
+        action={action}
+        data-demo-form
+        data-turnstile={site.turnstileSiteKey}
+        novalidate
+      >
+        {fields.map((f) => (
+          <div class:list={['flex flex-col gap-2', f.id === 'preferred_time' ? 'sm:col-span-2' : '']}>
+            <label for={`f-${f.id}`} class="text-[14px] font-medium">{f.label}{f.required ? '' : <span class="ms-1 font-normal text-ink-3">(optional)</span>}</label>
+            <input
+              id={`f-${f.id}`}
+              name={f.id}
+              type={f.type}
+              autocomplete={f.auto}
+              required={f.required}
+              placeholder={f.placeholder}
+              class="w-full rounded-card border border-line bg-white px-4 py-3 text-[16px] text-ink placeholder:text-ink-3 focus:border-ink/40 focus:outline-none"
+            />
+          </div>
+        ))}
+        {/* Honeypot */}
+        <div class="absolute -left-[9999px] opacity-0" aria-hidden="true">
+          <label for="f-website">Website</label>
+          <input id="f-website" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="_subject" value="Demo request — valettuae.com" />
+        {site.turnstileSiteKey && <div class="cf-turnstile sm:col-span-2" data-sitekey={site.turnstileSiteKey} data-size="flexible" data-theme="light"></div>}
+        <div class="flex flex-col items-center gap-4 sm:col-span-2 sm:mt-2">
+          <button type="submit" class="btn-primary w-full sm:w-auto sm:min-w-[220px]">Book a demo</button>
+          <p class="text-[14px] text-ink-2" role="status" aria-live="polite" data-form-status></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const SUCCESS = 'Thank you. We will text you to confirm.';
+  document.querySelectorAll<HTMLFormElement>('[data-demo-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+
+    // Load Turnstile only when the form approaches the viewport.
+    const key = form.dataset.turnstile;
+    if (key && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          const s = document.createElement('script');
+          s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+          s.async = true; s.defer = true;
+          document.head.appendChild(s);
+        }
+      }, { rootMargin: '600px' });
+      io.observe(form);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      if (!form.checkValidity()) {
+        form.querySelector<HTMLInputElement>(':invalid')?.focus();
+        status.textContent = 'Please fill in your name, venue and phone number.';
+        return;
+      }
+      if (!form.action) { status.textContent = 'The form is not connected yet. Email hello@valettuae.com and we will call you.'; return; }
+      button.disabled = true;
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (res.ok) {
+          form.querySelectorAll('input, button').forEach((el) => ((el as HTMLInputElement).disabled = true));
+          status.textContent = SUCCESS;
+          (window as any).plausible?.('Demo request');
+        } else {
+          const data = await res.json().catch(() => ({}));
+          status.textContent = data?.errors?.[0]?.message ?? 'Something went wrong. Please try again or email hello@valettuae.com.';
+          button.disabled = false;
+        }
+      } catch {
+        status.textContent = 'No connection. Please try again or email hello@valettuae.com.';
+        button.disabled = false;
+      }
+    });
+  });
+</script>

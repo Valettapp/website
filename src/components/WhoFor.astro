@@ -1,0 +1,23 @@
+---
+import SectionHead from './SectionHead.astro';
+const doors = [
+  { title: 'Hotels and resorts', body: 'The guest page carries the hotel’s name, not ours. Concierge sees every car.' },
+  { title: 'Malls', body: 'Thousands of tickets a day, validation by store, no paper to reconcile.' },
+  { title: 'Restaurants', body: 'Guests request from the table and walk out to a car at the kerb.' },
+  { title: 'Residences', body: 'Residents’ permanent plans, visitor tickets, one record per building.' },
+];
+---
+<section id="who" class="section-pad scroll-mt-20" aria-labelledby="who-title">
+  <div class="container-page">
+    <SectionHead id="who-title" title="One system, four kinds of door." />
+    <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 md:mt-20">
+      {doors.map((d, i) => (
+        <li class="hairline flex flex-col gap-3 rounded-card bg-white p-6">
+          <p class="t-eyebrow">0{i + 1}</p>
+          <h3 class="t-h3">{d.title}</h3>
+          <p class="text-[16px] leading-relaxed text-ink-2">{d.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

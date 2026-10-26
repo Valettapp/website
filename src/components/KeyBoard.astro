@@ -1,0 +1,133 @@
+---
+/**
+ * KeyBoard — key-controller board. Six demo tickets sorted by promised time.
+ * A compressed clock runs; one request passes its target, its row turns gold and a
+ * "Shift manager pinged" toast appears. Deterministic and resettable.
+ */
+import Icon from './Icon.astro';
+import SampleLabel from './SampleLabel.astro';
+
+// due: seconds (demo time) from board start; null = no promise (parked, no request).
+const tickets = [
+  { id: 'V776', car: 'Bentley Bentayga', zone: 'P2', bay: '17', status: 'Outside', due: 0 },
+  { id: 'V773', car: 'Range Rover Sport', zone: 'P3', bay: '21', status: 'Bringing', due: 240 },
+  { id: 'V772', car: 'Porsche Cayenne', zone: 'P2', bay: '08', status: 'Requested', due: 90, late: true },
+  { id: 'V775', car: 'BMW X7', zone: 'P1', bay: '04', status: 'Requested', due: 420 },
+  { id: 'V771', car: 'Mercedes G 63', zone: 'P1', bay: '12', status: 'Parked', due: null },
+  { id: 'V777', car: 'Land Rover Defender', zone: 'P3', bay: '55', status: 'Parked', due: null },
+];
+---
+<div class="keyboard relative" data-keyboard>
+  <div class="hairline overflow-hidden rounded-card bg-white">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+      <div class="flex items-center gap-3">
+        <p class="text-[15px] font-medium">Key board</p>
+        <span class="t-caption">The Marquee · Main entrance</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <p class="font-mono text-[14px] tabular-nums text-ink-2" aria-label="Board clock"><span data-clock>01:06:00</span> <span class="text-ink-3">AM</span></p>
+        <button type="button" class="inline-flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-ink" data-reset><Icon name="reset" size={14} /> Reset</button>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[640px] text-start text-[14px]">
+        <thead>
+          <tr class="t-eyebrow !text-[11px] text-ink-3">
+            <th scope="col" class="px-5 py-3 text-start font-medium">Ticket</th>
+            <th scope="col" class="px-5 py-3 text-start font-medium">Car</th>
+            <th scope="col" class="px-5 py-3 text-start font-medium">Zone / Bay</th>
+            <th scope="col" class="px-5 py-3 text-start font-medium">Status</th>
+            <th scope="col" class="px-5 py-3 text-end font-medium">Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tickets.map((t) => (
+            <tr class="border-t border-line transition-colors data-[late]:bg-gold/[.08]" data-row={t.id} data-due={t.due ?? ''} data-status={t.status} {...(t.late ? { 'data-watch': '' } : {})}>
+              <td class="px-5 py-3.5 font-medium tabular-nums">{t.id}</td>
+              <td class="px-5 py-3.5">{t.car}</td>
+              <td class="px-5 py-3.5 text-ink-2">{t.zone} · {t.bay}</td>
+              <td class="px-5 py-3.5">
+                <span class="inline-flex items-center gap-2" data-status-cell>
+                  <span class:list={['size-1.5 rounded-full', t.status === 'Parked' ? 'bg-ink/20' : t.status === 'Outside' ? 'bg-ink' : 'bg-gold']} data-status-dot></span>
+                  <span data-status-text>{t.status}</span>
+                </span>
+              </td>
+              <td class="px-5 py-3.5 text-end tabular-nums text-ink-2" data-due-cell>{t.due === null ? '—' : t.due === 0 ? 'Now' : ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="mt-4 flex items-center justify-between">
+    <SampleLabel />
+    <p class="t-caption hidden sm:block">Sorted by promised time</p>
+  </div>
+  <div class="toast glass pointer-events-none absolute inset-x-4 bottom-16 z-10 flex items-center gap-3 rounded-card px-4 py-3 text-[14px] opacity-0 transition-opacity duration-300 sm:inset-x-auto sm:end-4 sm:w-[300px] data-[on]:opacity-100" role="status" data-toast>
+    <span class="inline-flex size-7 items-center justify-center rounded-full border border-gold text-gold"><Icon name="bolt" size={14} /></span>
+    <span><strong class="font-medium">Shift manager pinged</strong><br /><span class="text-ink-2">V772 passed its promised time</span></span>
+  </div>
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SPEED = 15; // demo seconds per real second
+  const START = 1 * 3600 + 6 * 60; // 01:06:00
+  const END_AFTER = 90 + 45; // freeze the board 45 demo-seconds after the overdue event
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const fmtClock = (s: number) => `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  const fmtDue = (s: number) => (s <= 0 ? 'Now' : `${Math.floor(s / 60)}:${pad(s % 60)}`);
+
+  document.querySelectorAll<HTMLElement>('[data-keyboard]').forEach((root) => {
+    const clock = root.querySelector<HTMLElement>('[data-clock]')!;
+    const toast = root.querySelector<HTMLElement>('[data-toast]')!;
+    const rows = [...root.querySelectorAll<HTMLElement>('[data-row]')];
+    let raf = 0; let t0 = 0; let running = false; let visible = false;
+
+    const render = (elapsed: number) => {
+      const e = Math.min(elapsed, END_AFTER);
+      clock.textContent = fmtClock(START + e);
+      let pinged = false;
+      for (const r of rows) {
+        const due = r.dataset.due === '' ? null : Number(r.dataset.due);
+        const cell = r.querySelector<HTMLElement>('[data-due-cell]')!;
+        const text = r.querySelector<HTMLElement>('[data-status-text]')!;
+        const dot = r.querySelector<HTMLElement>('[data-status-dot]')!;
+        if (due === null) continue;
+        const left = due - e;
+        if (due > 0) cell.textContent = fmtDue(left);
+        if ('watch' in r.dataset) {
+          if (left <= 0) {
+            r.setAttribute('data-late', ''); text.textContent = 'Overdue'; cell.textContent = `+${fmtDue(-left)}`;
+            cell.classList.add('text-gold', 'font-medium'); dot.classList.add('bg-gold'); pinged = true;
+          } else {
+            r.removeAttribute('data-late'); text.textContent = r.dataset.status ?? ''; cell.classList.remove('text-gold', 'font-medium');
+          }
+        }
+      }
+      if (pinged) toast.setAttribute('data-on', ''); else toast.removeAttribute('data-on');
+      return e >= END_AFTER;
+    };
+
+    const tick = (now: number) => {
+      if (!running) return;
+      const done = render(Math.floor(((now - t0) / 1000) * SPEED));
+      if (!done) raf = requestAnimationFrame(tick);
+    };
+    const start = () => {
+      cancelAnimationFrame(raf);
+      if (reduce) { render(END_AFTER); running = false; return; }
+      t0 = performance.now(); running = true; raf = requestAnimationFrame(tick);
+    };
+    const stop = () => { running = false; cancelAnimationFrame(raf); };
+
+    root.querySelector('[data-reset]')?.addEventListener('click', start);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((en) => { visible = en.isIntersecting; if (visible && !running) start(); else if (!visible) stop(); });
+      }, { threshold: 0.25 }).observe(root);
+    } else start();
+    render(reduce ? END_AFTER : 0);
+  });
+</script>

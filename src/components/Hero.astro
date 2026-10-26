@@ -1,0 +1,29 @@
+---
+import Film from './Film.astro';
+import Wordmark from './Wordmark.astro';
+const lines = [
+  'Every car photographed before it moves',
+  'Every guest reachable without an app',
+  'Every incident traceable',
+];
+---
+<section class="pt-16 pb-24 md:pt-28 md:pb-40" aria-labelledby="hero-title">
+  <div class="container-page flex flex-col items-center text-center">
+    <Wordmark class="mb-8 text-[22px] md:text-[26px] text-ink" />
+    <p class="t-eyebrow">Valet management for Dubai’s best venues</p>
+    <h1 id="hero-title" class="t-display mt-5 max-w-[12em]">Valet, without the wait.</h1>
+    <p class="t-body measure mt-6 text-ink-2 md:text-[20px]">
+      One record of every car, from the first photo to the last text. Built for the venues guests remember.
+    </p>
+    <div class="mt-9 flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
+      <a href="#demo" class="btn-primary">Book a demo</a>
+      <a href="#why" class="btn-link">Watch the film <span aria-hidden="true">↓</span></a>
+    </div>
+    <Film variant="hero" priority class="mt-14 w-full max-w-[1200px] md:mt-20" />
+    <ul class="mt-10 grid w-full max-w-[1200px] grid-cols-1 gap-y-0 text-start md:grid-cols-3 md:gap-x-10">
+      {lines.map((l) => (
+        <li class="hairline-t py-5 text-[15px] text-ink-2 md:text-[16px]">{l}</li>
+      ))}
+    </ul>
+  </div>
+</section>

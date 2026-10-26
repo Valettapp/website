@@ -1,0 +1,99 @@
+---
+/**
+ * The Valett film in a 20 px rounded glass frame.
+ * - Poster first (AVIF/WebP via Astro <Picture>), 16:9 on desktop, 9:16 on mobile.
+ * - `preload="none"`; the mp4 <source> is attached after first paint by the script below,
+ *   and never when the user prefers reduced motion (autoplay variant).
+ * - Until the film exists (site.film.mp4 === null) the poster placeholder is shown alone.
+ */
+import { Picture } from 'astro:assets';
+import poster from '../assets/poster-placeholder.png';
+import posterPortrait from '../assets/poster-placeholder-portrait.png';
+import { site } from '../data/site';
+
+interface Props {
+  variant: 'hero' | 'full'; // hero: muted autoplay, no chrome. full: controls + captions + sound.
+  class?: string;
+  priority?: boolean;
+}
+const { variant, class: className = '', priority = false } = Astro.props;
+const hasFilm = Boolean(site.film.mp4);
+const posterSrcAttr = poster.src;
+---
+<figure
+  class:list={['film glass rounded-frame p-2 md:p-3', className]}
+  data-film
+  data-variant={variant}
+  data-mp4={site.film.mp4 ?? ''}
+  data-mp4-portrait={site.film.mp4Portrait ?? ''}
+>
+  <div class="relative overflow-hidden rounded-[14px] bg-field aspect-[9/16] md:aspect-video">
+    {/* Poster: portrait on mobile, landscape on md+ */}
+    <Picture
+      src={posterPortrait}
+      formats={['avif', 'webp']}
+      widths={[390, 780]}
+      sizes="(max-width: 767px) 100vw, 0px"
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover md:hidden"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
+    <Picture
+      src={poster}
+      formats={['avif', 'webp']}
+      widths={[800, 1200, 1600]}
+      sizes="(min-width: 1280px) 1200px, (min-width: 768px) 92vw, 0px"
+      alt=""
+      class="absolute inset-0 hidden h-full w-full object-cover md:block"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
+    {hasFilm ? (
+      <video
+        class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 data-[ready]:opacity-100"
+        poster={posterSrcAttr}
+        preload="none"
+        playsinline
+        {...(variant === 'hero' ? { muted: true, loop: true, 'aria-label': 'The Valett film, silent preview' } : { controls: true, 'aria-label': 'The Valett film' })}
+      >
+        {site.film.captions && <track kind="captions" src={site.film.captions} srclang="en" label="English" default />}
+      </video>
+    ) : (
+      <p class="sr-only">Film coming soon.</p>
+    )}
+  </div>
+</figure>
+
+<script>
+  // Lazy-attach the mp4 after first paint; respect reduced motion for the silent hero.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const portrait = window.matchMedia('(max-width: 767px)').matches;
+  const figures = document.querySelectorAll<HTMLElement>('[data-film]');
+  const attach = (fig: HTMLElement) => {
+    const video = fig.querySelector('video');
+    if (!video || video.dataset.ready) return;
+    const src = (portrait && fig.dataset.mp4Portrait) || fig.dataset.mp4;
+    if (!src) return;
+    const variant = fig.dataset.variant;
+    if (variant === 'hero' && reduce) return; // no autoplay under reduced motion
+    const source = document.createElement('source');
+    source.src = src;
+    source.type = 'video/mp4';
+    video.appendChild(source);
+    video.load();
+    video.dataset.ready = '1';
+    if (variant === 'hero') video.play().catch(() => {});
+  };
+  const run = () => {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { attach(e.target as HTMLElement); io.unobserve(e.target); }
+      }, { rootMargin: '200px' });
+      figures.forEach((f) => io.observe(f));
+    } else figures.forEach(attach);
+  };
+  if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run); else setTimeout(run, 300);
+</script>

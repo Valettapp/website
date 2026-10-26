@@ -1,0 +1,28 @@
+---
+import SectionHead from './SectionHead.astro';
+const items = [
+  { title: 'Staff time', body: 'No tickets to write, no radios to call, no bays to search. The board tells the driver where the car is.' },
+  { title: 'Damage disputes', body: 'Time-stamped photos at check-in and check-out settle the argument before it starts.' },
+  { title: 'Lost tickets', body: 'The ticket is on the guest’s phone and in the system. It cannot be lost.' },
+  { title: 'Validation leakage', body: 'Every validation is a scan, logged against a venue and a ticket.' },
+  { title: 'Tips', body: 'Guests tip on the receipt, digitally, and the operation sees who earned what.' },
+  { title: 'Reputation', body: 'The wait is the last thing a guest remembers. Now it is a text.' },
+];
+---
+<section id="money" class="section-pad scroll-mt-20" aria-labelledby="money-title">
+  <div class="container-page">
+    <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4">
+        <SectionHead id="money-title" title="Where the savings come from." />
+      </div>
+      <dl class="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
+        {items.map((it) => (
+          <div class="hairline-t py-6">
+            <dt class="t-h3">{it.title}</dt>
+            <dd class="mt-2 text-[16px] leading-relaxed text-ink-2 md:text-[17px]">{it.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>

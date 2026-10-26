@@ -1,0 +1,103 @@
+---
+/**
+ * Scan animation: camera frame → "Scanning vehicle…" → plate, make, model, colour fill in.
+ * Loops while visible; tap to replay. Reduced motion renders the final state.
+ */
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+interface Props { class?: string; framed?: boolean; dark?: boolean }
+const { class: className = '', framed = true, dark = false } = Astro.props;
+const fields = [
+  ['Plate', 'DUBAI M 95378'],
+  ['Make', 'Land Rover'],
+  ['Model', 'Defender'],
+  ['Colour', 'White'],
+];
+---
+<div class:list={[framed ? (dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
+  <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app: one photo reads the plate, make, model and colour">
+    <div class="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-5">
+      <Wordmark class="text-[12px] text-white/80" />
+      <span class="text-[11px] text-white/50">01:05</span>
+    </div>
+
+    {/* Viewfinder */}
+    <div class="absolute inset-x-6 top-[20%] aspect-[4/3]">
+      <div class="scan-corners absolute inset-0"></div>
+      <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_12px_1px_rgba(197,162,83,.6)]"></div>
+      <div class="scan-plate absolute inset-x-[18%] top-[38%] flex h-[24%] items-center justify-center rounded-[4px] border border-white/25 text-[13px] tracking-[0.12em] text-white/70">M 95378</div>
+    </div>
+
+    {/* Captions */}
+    <div class="absolute inset-x-5 top-[62%] text-center">
+      <p class="scan-t0 text-[15px] font-medium">Take vehicle photo</p>
+      <p class="scan-t0 mt-1 text-[12px] text-white/50">Frame the number plate</p>
+      <p class="scan-t1 text-[15px] font-medium"><span class="inline-flex items-center gap-2"><span class="scan-dot size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
+    </div>
+
+    {/* Results */}
+    <ul class="scan-results absolute inset-x-5 bottom-[12%] flex flex-col gap-1.5 text-[12px]">
+      {fields.map(([k, v], i) => (
+        <li class="scan-row flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2" style={`--i:${i}`}>
+          <span class="text-white/50">{k}</span><span class="font-medium tracking-[0.02em]">{v}</span>
+        </li>
+      ))}
+    </ul>
+
+    {/* Shutter */}
+    <div class="absolute inset-x-0 bottom-5 flex justify-center">
+      <span class="scan-shutter inline-flex size-12 items-center justify-center rounded-full border-2 border-white/80"><span class="size-9 rounded-full bg-white/90"></span></span>
+      <span class="scan-done inline-flex items-center gap-1.5 rounded-pill bg-white px-4 py-2 text-[12px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised</span>
+    </div>
+    <button type="button" class="absolute inset-0 cursor-pointer" aria-label="Replay scan animation" data-replay></button>
+  </div>
+</div>
+
+<style>
+  .scan-corners { background:
+    linear-gradient(#fff,#fff) top left/18px 1.5px no-repeat, linear-gradient(#fff,#fff) top left/1.5px 18px no-repeat,
+    linear-gradient(#fff,#fff) top right/18px 1.5px no-repeat, linear-gradient(#fff,#fff) top right/1.5px 18px no-repeat,
+    linear-gradient(#fff,#fff) bottom left/18px 1.5px no-repeat, linear-gradient(#fff,#fff) bottom left/1.5px 18px no-repeat,
+    linear-gradient(#fff,#fff) bottom right/18px 1.5px no-repeat, linear-gradient(#fff,#fff) bottom right/1.5px 18px no-repeat;
+    opacity: .9; }
+  .scan-line, .scan-t1, .scan-results, .scan-done { opacity: 0; }
+  .scan-row { opacity: 0; transform: translateY(6px); }
+  /* phase 1: scanning */
+  [data-phase="1"] .scan-t0, [data-phase="2"] .scan-t0 { opacity: 0; }
+  [data-phase="1"] .scan-t1 { opacity: 1; }
+  [data-phase="1"] .scan-line { opacity: 1; animation: v-scanline 1.4s ease-in-out infinite alternate; }
+  [data-phase="1"] .scan-plate { border-color: #c5a253; color: #fff; }
+  [data-phase="1"] .scan-dot { animation: v-pulse 1s ease-in-out infinite; }
+  /* phase 2: results */
+  [data-phase="2"] .scan-results { opacity: 1; }
+  [data-phase="2"] .scan-row { opacity: 1; transform: none; transition: opacity 300ms ease, transform 300ms ease; transition-delay: calc(var(--i) * 180ms); }
+  [data-phase="2"] .scan-plate { border-color: #c5a253; color: #fff; }
+  [data-phase="2"] .scan-shutter { display: none; }
+  [data-phase="2"] .scan-done { opacity: 1; transition: opacity 300ms ease 700ms; }
+  [data-phase="2"] .scan-t1 { opacity: 0; }
+  .scan-t0, .scan-t1, .scan-line, .scan-results { transition: opacity 300ms ease; }
+  .scan-t1 { position: absolute; inset-inline: 0; top: 0; }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-scan]').forEach((el) => {
+    let timers: number[] = [];
+    let visible = false;
+    const clear = () => { timers.forEach(clearTimeout); timers = []; };
+    const play = () => {
+      clear();
+      if (reduce) { el.dataset.phase = '2'; return; }
+      el.dataset.phase = '0';
+      timers.push(window.setTimeout(() => (el.dataset.phase = '1'), 1500));
+      timers.push(window.setTimeout(() => (el.dataset.phase = '2'), 3100));
+      timers.push(window.setTimeout(() => { if (visible) play(); }, 7200));
+    };
+    el.querySelector('[data-replay]')?.addEventListener('click', play);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        entries.forEach((e) => { visible = e.isIntersecting; if (visible) play(); else clear(); });
+      }, { threshold: 0.3 }).observe(el);
+    } else play();
+  });
+</script>

@@ -1,0 +1,25 @@
+---
+import SectionHead from './SectionHead.astro';
+import Pill from './Pill.astro';
+import GuestPhone from './GuestPhone.astro';
+---
+<section id="guest" class="section-pad scroll-mt-20" aria-labelledby="guest-title">
+  <div class="container-page">
+    <div class="grid items-start gap-14 lg:grid-cols-12 lg:gap-16">
+      <div class="flex flex-col gap-6 lg:col-span-5 lg:sticky lg:top-28">
+        <SectionHead id="guest-title" eyebrow="The guest page" title="Nothing to download. Nothing to remember." />
+        <p class="t-body measure">
+          The valet photographs the car. The guest gets a ticket on their phone from the QR, with their car’s photo on it. From then on they can see where it is, ask for it from the table, message the shift manager and tip the driver, in English or Arabic, without creating an account. <Pill status="live" class="ms-1 align-[2px]" />
+        </p>
+        <p class="t-caption measure">
+          Private message line to the shift manager, hidden from the driver. Rate, tip and receipt by text. <Pill status="live" class="ms-1 align-[1px]" />
+        </p>
+      </div>
+      <div class="lg:col-span-7">
+        <div class="rounded-frame bg-field px-5 py-12 md:px-10 md:py-16">
+          <GuestPhone />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
