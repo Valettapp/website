@@ -9,7 +9,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 | Demo inbox / contact email | `src/data/site.ts` → `email` | hello@valettuae.com |
 | LinkedIn URL | `src/data/site.ts` → `linkedin` | linkedin.com/company/valett |
 | The film (16:9 + 9:16 cuts, captions .vtt) | `public/film/`, then `src/data/site.ts` → `film` | Poster placeholder (#F2F2F0 frame with the wordmark) in hero and §2 |
-| Logo SVG | `public/favicon.svg`, `Wordmark.astro` | "Valett." set live in Inter 800 per the brand guidelines; gold V favicon. Drop the official SVG in when it exists |
+| Logo SVG | `public/favicon.svg`, `Wordmark.astro` | Serif VALETT wordmark set live in Cormorant Garamond; geometric V favicon. Drop the official SVG in when it exists |
 | Reports mockup PDF (`Valett_Reports___polish_mockup.pdf`) | §5 tiles, one page per tile | Hairline report skeletons labelled "Preview pending" |
 | Founder and investor photos | `Plan.astro` | Initials on #F2F2F0 circles |
 | Wording for "AI scanning camera on every driver's device" | `Technology.astro` | Shown as written, pill `live` |
@@ -25,9 +25,9 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 ## Decisions since the brief (26 Oct, from Leon)
 
-- Logo is the brand-guidelines wordmark "Valett." (heavy sans, black on light, gold on dark), not the serif VALETT. Product screens keep the serif VALETT because the real app shows it.
+- Logo stays the serif VALETT wordmark (Leon's call after seeing both). `Wordmark.astro` keeps a `variant="brand"` that renders the brand-file "Valett." if ever needed.
 - Slogan "A new era for a timeless service." sits under the logo in the hero and replaces "Valet, without the wait." in the title, OG image and footer line. The old line is one edit in `src/data/site.ts` if wanted back.
-- Poster placeholder is now the film's end card: black with the gold logo.
+- Poster placeholder is now the film's end card: black with the white serif wordmark and the slogan.
 
 ## Copy added outside the brief
 

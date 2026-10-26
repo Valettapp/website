@@ -48,12 +48,12 @@ async function shot(html, w, h, out) {
 }
 
 // Poster placeholder = the film's end card: black, gold logo, slogan.
-const endCard = (logo, slogan) => `<div class="wrap" style="background:#0A0A0A;gap:${Math.round(logo*0.2)}px"><div class="logo" style="font-size:${logo}px;color:#C5A253">Valett.</div><div class="slogan" style="font-size:${slogan}px;color:rgba(255,255,255,.72)">A new era for a timeless service.</div></div>`;
-await shot(page_(endCard(140, 34), 1600, 900), 1600, 900, resolve(assets, 'poster-placeholder.png'));
-await shot(page_(endCard(104, 28), 900, 1600), 900, 1600, resolve(assets, 'poster-placeholder-portrait.png'));
+const endCard = (wm, slogan) => `<div class="wrap" style="background:#0A0A0A;gap:${Math.round(wm*0.35)}px"><div class="wm" style="font-size:${wm}px;color:#fff">Valett</div><div class="slogan" style="font-size:${slogan}px;color:rgba(255,255,255,.72)">A new era for a timeless service.</div></div>`;
+await shot(page_(endCard(112, 34), 1600, 900), 1600, 900, resolve(assets, 'poster-placeholder.png'));
+await shot(page_(endCard(80, 28), 900, 1600), 900, 1600, resolve(assets, 'poster-placeholder-portrait.png'));
 await shot(
   page_(
-    `<div class="wrap" style="background:#fff;gap:22px"><div class="logo" style="font-size:168px;color:#0A0A0A">Valett.</div><div class="slogan" style="font-size:40px;color:#0A0A0A">A new era for a timeless service.</div><div class="eyebrow" style="margin-top:14px">Valet management for Dubai’s best venues</div></div>`,
+    `<div class="wrap" style="background:#fff;gap:30px"><div class="wm" style="font-size:112px">Valett</div><div class="slogan" style="font-size:44px;color:#0A0A0A;font-weight:500">A new era for a timeless service.</div><div class="eyebrow" style="margin-top:10px">Valet management for Dubai’s best venues</div></div>`,
     1200,
     630,
   ),

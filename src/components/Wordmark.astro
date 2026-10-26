@@ -1,7 +1,7 @@
 ---
 /**
- * Brand logo per the brand guidelines: "Valett." in a heavy sans, black on light, gold on dark.
- * `variant="serif"` is the letter-spaced VALETT the product screens use; keep it for those only.
+ * VALETT wordmark: letter-spaced Cormorant Garamond (site chrome, hero, product screens).
+ * `variant="brand"` renders the brand-file "Valett." in a heavy sans; unused by default.
  */
 interface Props {
   class?: string;
@@ -10,7 +10,7 @@ interface Props {
   label?: string;
   variant?: 'brand' | 'serif';
 }
-const { class: className = '', as = 'span', href, label = 'Valett', variant = 'brand' } = Astro.props;
+const { class: className = '', as = 'span', href, label = 'Valett', variant = 'serif' } = Astro.props;
 const Tag = as;
 ---
 <Tag
