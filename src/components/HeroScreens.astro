@@ -1,0 +1,23 @@
+---
+/** Hero imagery until the film exists: the real guest page in front of the staff request screen. */
+import GuestPhone from './GuestPhone.astro';
+import StaffScreen from './StaffScreen.astro';
+---
+<div class="hero-screens relative overflow-hidden rounded-frame bg-field aspect-[4/5] sm:aspect-[5/4] lg:aspect-[10/12]" aria-label="The guest page and the staff app, side by side" role="img">
+  <p class="t-eyebrow absolute start-6 top-6 z-10 max-w-[60%] md:start-8 md:top-8">Valet management for Dubai’s best venues</p>
+  <div class="hero-staff absolute end-[8%] top-[14%] w-[300px]">
+    <StaffScreen screen="request" />
+  </div>
+  <div class="hero-guest absolute start-[6%] top-[27%] w-[340px]">
+    <GuestPhone static priority />
+  </div>
+</div>
+
+<style>
+  .hero-staff { zoom: 0.46; }
+  .hero-guest { zoom: 0.52; }
+  @media (min-width: 40rem) { .hero-staff { zoom: 0.62; } .hero-guest { zoom: 0.72; } }
+  @media (min-width: 64rem) { .hero-staff { zoom: 0.62; } .hero-guest { zoom: 0.74; } }
+  @media (min-width: 80rem) { .hero-staff { zoom: 0.68; } .hero-guest { zoom: 0.8; } }
+  .hero-guest :global(.phone-frame) { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 40px 80px -40px rgba(0,0,0,.28); }
+</style>

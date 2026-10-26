@@ -1,28 +1,36 @@
 ---
 import Film from './Film.astro';
+import HeroScreens from './HeroScreens.astro';
+import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
+const hasFilm = Boolean(site.film.mp4);
 const lines = [
   'Every car photographed before it moves',
   'Every guest reachable without an app',
   'Every incident traceable',
 ];
 ---
-<section class="pt-20 pb-24 md:pt-36 md:pb-40" aria-labelledby="hero-title">
-  <div class="container-page flex flex-col items-center text-center">
-    <h1 id="hero-title" class="flex flex-col items-center">
-      <span class="t-wordmark text-[56px] md:text-[112px] lg:text-[136px] text-ink" translate="no">Valett</span>
-      <span class="mt-6 max-w-[16em] text-[28px] font-medium leading-[1.12] tracking-[-0.02em] text-ink md:mt-10 md:text-[48px]" style="text-wrap: balance">{site.slogan}</span>
-    </h1>
-    <p class="t-eyebrow mt-10 md:mt-14">Valet management for Dubai’s best venues</p>
-    <p class="t-body measure mt-4 text-ink-2 md:text-[20px]">
-      One record of every car, from the first photo to the last text. Built for the venues guests remember.
-    </p>
-    <div class="mt-9 flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
-      <a href="#demo" class="btn-primary">Book a demo</a>
-      <a href="#why" class="btn-link">Watch the film <span aria-hidden="true">↓</span></a>
+<section class="pt-10 pb-20 md:pt-16 md:pb-32" aria-labelledby="hero-title">
+  <div class="container-page">
+    <div class:list={['grid gap-12 lg:gap-10', hasFilm ? 'justify-items-center text-center' : 'items-center lg:grid-cols-12']}>
+      <div class:list={['flex flex-col', hasFilm ? 'items-center' : 'items-start text-start lg:col-span-7 lg:pe-10']}>
+        <Wordmark class="text-[22px] text-ink md:text-[26px]" />
+        <h1 id="hero-title" class="mt-8 max-w-[9.5em] text-[48px] font-medium leading-[1.04] tracking-[-0.03em] md:mt-10 md:text-[64px] xl:text-[80px]" style="text-wrap: balance">{site.slogan}</h1>
+        <p class="t-body measure mt-7 text-ink-2 md:text-[20px]">
+          One record of every car, from the first photo to the last text. Built for the venues guests remember.
+        </p>
+        <div class="mt-9 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+          <a href="#demo" class="btn-primary">Book a demo</a>
+          <a href="#why" class="btn-link">Watch the film <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      {hasFilm ? (
+        <Film variant="hero" priority class="w-full max-w-[1200px]" />
+      ) : (
+        <div class="lg:col-span-5"><HeroScreens /></div>
+      )}
     </div>
-    <Film variant="hero" priority class="mt-16 w-full max-w-[1200px] md:mt-24" />
-    <ul class="mt-10 grid w-full max-w-[1200px] grid-cols-1 gap-y-0 text-start md:grid-cols-3 md:gap-x-10">
+    <ul class="mt-14 grid grid-cols-1 gap-y-0 md:mt-20 md:grid-cols-3 md:gap-x-10">
       {lines.map((l) => (
         <li class="hairline-t py-5 text-[15px] text-ink-2 md:text-[16px]">{l}</li>
       ))}

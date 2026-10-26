@@ -27,7 +27,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Logo stays the serif VALETT wordmark (Leon's call after seeing both). `Wordmark.astro` keeps a `variant="brand"` that renders the brand-file "Valett." if ever needed.
 - Slogan "A new era for a timeless service." sits under the logo in the hero and replaces "Valet, without the wait." in the title, OG image and footer line. The old line is one edit in `src/data/site.ts` if wanted back.
-- Poster placeholder is now the film's end card: black with the white serif wordmark and the slogan.
+- Hero is left-aligned: small wordmark, slogan as the headline, sub-line, CTAs; the right column shows the real guest page over the staff request screen (`HeroScreens.astro`). When `site.film.mp4` is set, the film frame takes that place automatically and the hero re-centres.
+- Poster placeholder (used in §2 until the film exists) is the film's end card: black with the white serif wordmark and the slogan.
 
 ## Copy added outside the brief
 
