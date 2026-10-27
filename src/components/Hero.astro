@@ -2,7 +2,7 @@
 import Film from './Film.astro';
 import HeroStory from './HeroStory.astro';
 import { site } from '../data/site';
-const hasFilm = Boolean(site.film.mp4);
+const hasFilm = Boolean(site.film.mp4) && site.film.inHero;
 ---
 {hasFilm ? (
   <section class="relative pt-24 pb-32 md:pt-44 md:pb-56" aria-labelledby="hero-title" data-reveal-group>

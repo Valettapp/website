@@ -7,8 +7,10 @@
  * - Until the film exists (site.film.mp4 === null) the poster placeholder is shown alone.
  */
 import { Picture } from 'astro:assets';
-import poster from '../assets/poster-placeholder.png';
-import posterPortrait from '../assets/poster-placeholder-portrait.png';
+import placeholder from '../assets/poster-placeholder.png';
+import placeholderPortrait from '../assets/poster-placeholder-portrait.png';
+import filmPoster from '../assets/film-poster.jpg';
+import filmPosterPortrait from '../assets/film-poster-portrait.jpg';
 import { site } from '../data/site';
 
 interface Props {
@@ -18,6 +20,8 @@ interface Props {
 }
 const { variant, class: className = '', priority = false } = Astro.props;
 const hasFilm = Boolean(site.film.mp4);
+const poster = hasFilm ? filmPoster : placeholder;
+const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
 const posterSrcAttr = poster.src;
 ---
 <figure

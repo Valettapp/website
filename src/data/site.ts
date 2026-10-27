@@ -14,9 +14,11 @@ export const site = {
   dir: 'ltr',
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
   film: {
-    mp4: null as string | null, // 16:9 desktop
-    mp4Portrait: null as string | null, // 9:16 mobile
-    captions: null as string | null, // .vtt
+    mp4: '/film/valett-film-16x9.mp4' as string | null, // 16:9 desktop
+    mp4Portrait: '/film/valett-film-9x16.mp4' as string | null, // 9:16 mobile
+    captions: '/film/valett-film.en.vtt' as string | null, // .vtt
+    /** true: the film replaces the scroll story in the hero (the brief's original hero). false: story hero, film in §2 only. */
+    inHero: false,
   },
   formspreeId: import.meta.env.FORMSPREE_ID ?? '',
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
