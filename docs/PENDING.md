@@ -11,7 +11,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 | The film (16:9 + 9:16 cuts, captions .vtt) | `public/film/`, then `src/data/site.ts` → `film` | Poster placeholder (#F2F2F0 frame with the wordmark) in hero and §2 |
 | Logo SVG | `public/favicon.svg`, `Wordmark.astro` | Serif VALETT wordmark set live in Cormorant Garamond; geometric V favicon. Drop the official SVG in when it exists |
 | Reports mockup PDF | received 27 Oct; §5 uses crops of pages 1, 3, 6, 7, 10, 11, 14, 16, 17, 18 (`src/assets/reports/`). Pages carry tenant names Q East by Alphabeta, AXeed and The Palace Downtown; confirm those may appear | — |
-| Founder and investor photos | `Plan.astro` | Initials on #F2F2F0 circles |
+| Investor and advisor photos | `Plan.astro` | Initials on #F2F2F0 circles (founder photos received 27 Oct, in `src/assets/team/`) |
 | Wording for "AI scanning camera on every driver's device" | `Technology.astro` | Shown as written, pill `live` |
 | Partner names (PMS, barrier systems, car care) | `Integrations.astro` | Generic names, statuses from the brief |
 | Privacy policy text | `src/pages/privacy.astro` | Short honest notice marked as placeholder |
