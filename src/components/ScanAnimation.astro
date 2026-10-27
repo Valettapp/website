@@ -90,7 +90,7 @@ const fields = [
   [data-phase="2"] .scan-shutter { display: none; }
   [data-phase="2"] .scan-done { opacity: 1; transition: opacity 300ms ease 760ms; }
   [data-phase="2"] .scan-t1 { opacity: 0; }
-  [data-phase="2"] .scan-frame { transform: translateY(-6%) scale(.92); transition: transform 400ms ease; transform-origin: 50% 0; }
+  [data-phase="2"] .scan-frame { transition: transform 400ms ease; }
   .scan-t0, .scan-t1, .scan-line { transition: opacity 300ms ease; }
   .scan-t1 { position: absolute; inset-inline: 0; top: 0; }
   @media (prefers-reduced-motion: reduce) { .scan-line { animation: none !important; } }
