@@ -5,7 +5,7 @@
  * Loops while visible; tap to replay. Reduced motion renders the final state.
  */
 import { Picture } from 'astro:assets';
-import carScan from '../assets/car-scan.jpg';
+import carStaff from '../assets/car-staff.png';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
 import Plate from './Plate.astro';
@@ -20,8 +20,13 @@ const fields = [
 ---
 <div class:list={[framed ? (dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
   <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app camera: one photo of the car reads the plate, make, model and colour">
-    {/* Camera feed */}
-    <Picture src={carScan} formats={['avif', 'webp']} widths={[360, 720]} sizes="300px" alt="" class="scan-feed absolute inset-0 h-full w-full object-cover" style="object-position: 50% 30%" loading="lazy" decoding="async" />
+    {/* Camera feed: the app's Defender, with its Dubai plate on the bumper */}
+    <div class="scan-feed absolute inset-0 bg-[#141414]">
+      <div class="scan-car absolute inset-x-[-6%] top-[14%]">
+        <Picture src={carStaff} formats={['avif', 'webp']} widths={[520, 1040]} sizes="340px" alt="" class="block w-full" loading="lazy" decoding="async" />
+        <div class="scan-car-plate absolute" aria-hidden="true"><Plate emirate="Dubai" code="M" number="95378" scale={0.33} /></div>
+      </div>
+    </div>
     <div class="scan-shade absolute inset-0" aria-hidden="true"></div>
 
     <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
@@ -30,10 +35,10 @@ const fields = [
     </div>
 
     {/* Viewfinder + plate detection */}
-    <div class="scan-frame absolute inset-x-4 top-[16%] z-10 aspect-[4/3]">
+    <div class="scan-frame absolute inset-x-4 top-[12%] z-10 aspect-[4/3]">
       <div class="scan-corners absolute inset-0"></div>
       <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]"></div>
-      <div class="scan-plate absolute left-[51%] right-[2%] top-[58%] h-[17%] rounded-[4px] border-2 border-white/60" data-plate-box>
+      <div class="scan-plate absolute left-[56%] right-[7%] top-[78%] h-[13%] rounded-[4px] border-2 border-white/60" data-plate-box>
         <span class="scan-plate-tag absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
       </div>
     </div>
@@ -67,7 +72,8 @@ const fields = [
 </div>
 
 <style>
-  .scan-shade { background: linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.1) 40%, rgba(10,10,10,.92) 72%, #0a0a0a 100%); }
+  .scan-shade { background: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,0) 35%, rgba(10,10,10,.9) 70%, #0a0a0a 100%); }
+  .scan-car-plate { left: 59%; top: 68%; transform: perspective(300px) rotateY(-16deg) skewY(3deg); transform-origin: left center; }
   .scan-corners { background:
     linear-gradient(#fff,#fff) top left/20px 2px no-repeat, linear-gradient(#fff,#fff) top left/2px 20px no-repeat,
     linear-gradient(#fff,#fff) top right/20px 2px no-repeat, linear-gradient(#fff,#fff) top right/2px 20px no-repeat,
