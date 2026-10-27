@@ -19,9 +19,10 @@ const rewrite = (s) => s
   .replace(/"\/film\//g, '"film/') // film paths are absolute on the real site, relative on the artifact host
   // The artifact host cannot stream video (no HTTP range support, which Safari needs); its asset store can.
   // The two cuts are uploaded there (Artifact tool, asset: true) and the page streams them from these ids.
-  // Primary: the asset store (streams). Alternate: the bundled file, fetched whole (works without range support).
-  .replace(/data-mp4="film\/valett-film-16x9\.mp4"/g, 'data-mp4="/_blob/d93326a0ff85e43df95321d4f87bd7a1"')
-  .replace(/data-mp4-portrait="film\/valett-film-9x16\.mp4"/g, 'data-mp4-portrait="/_blob/0156df6fe7d42fb26c1e09eb89e8c20c"')
+  // Primary: a public CDN that streams with range support (Higgsfield media library, verified 206 + video/mp4).
+  // Alternate: the bundled file, fetched whole (works without range support).
+  .replace(/data-mp4="film\/valett-film-16x9\.mp4"/g, 'data-mp4="https://d2ol7oe51mr4n9.cloudfront.net/user_3K9DcTdzXRR9L0GzLKKKzs6yK4I/2cf0fcd9-7160-4e39-a27f-8900866e4d7b.mp4"')
+  .replace(/data-mp4-portrait="film\/valett-film-9x16\.mp4"/g, 'data-mp4-portrait="https://d2ol7oe51mr4n9.cloudfront.net/user_3K9DcTdzXRR9L0GzLKKKzs6yK4I/797b2b5e-563e-4b00-b865-f6e9de50dd0d.mp4"')
   .replace(/href="\/privacy"/g, 'href="privacy.html"')
   .replace(/href="\/(favicon\.svg|favicon\.ico|apple-touch-icon\.png|site\.webmanifest)"/g, 'href="$1"')
   .replace(/href="\/"/g, 'href="index.html"')
