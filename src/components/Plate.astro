@@ -1,20 +1,20 @@
 ---
 /**
- * UAE number plates as exact replicas: photographic crops of real plates.
- *  - Dubai:     the plate on the Defender (M 95378) from the car photo.
- *  - Sharjah, Abu Dhabi, Fujairah: the reference plates supplied 27 Oct.
+ * UAE number plates as 1:1 vector replicas (see scripts/plates/README.md):
+ *  - Dubai:     the plate on the Defender (M 95378), traced from the photo.
+ *  - Sharjah, Abu Dhabi, Fujairah: traced from the reference plates supplied 27 Oct.
  * Size with `scale` (1 = 220 px wide). The `code`/`number` props feed the accessible label only.
  */
-import { Picture } from 'astro:assets';
-import dubai from '../assets/plates/dubai.png';
-import sharjah from '../assets/plates/sharjah.png';
-import abudhabi from '../assets/plates/abudhabi.png';
-import fujairah from '../assets/plates/fujairah.png';
+import dubai from '../assets/plates/dubai.svg';
+import sharjah from '../assets/plates/sharjah.svg';
+import abudhabi from '../assets/plates/abudhabi.svg';
+import fujairah from '../assets/plates/fujairah.svg';
 interface Props { emirate: 'Dubai' | 'Abu Dhabi' | 'Sharjah' | 'Fujairah'; code: string; number: string; class?: string; scale?: number }
 const { emirate, code, number, class: className = '', scale = 1 } = Astro.props;
 const img = { Dubai: dubai, 'Abu Dhabi': abudhabi, Sharjah: sharjah, Fujairah: fujairah }[emirate];
 const width = Math.round(220 * scale);
+const height = Math.round((width * img.height) / img.width);
 ---
-<span class:list={['plate-uae inline-block overflow-hidden rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,.2)]', className]} style={`width:${width}px`} role="img" aria-label={`${emirate} plate ${code} ${number}`}>
-  <Picture src={img} formats={['avif', 'webp']} widths={[300, 600, 900]} sizes={`${width}px`} alt="" class="block w-full" loading="lazy" decoding="async" />
+<span class:list={['plate-uae inline-block rounded-[4px] shadow-[0_1px_2px_rgba(0,0,0,.18)]', className]} style={`width:${width}px`} role="img" aria-label={`${emirate} plate ${code} ${number}`}>
+  <img src={img.src} width={width} height={height} alt="" class="block h-auto w-full" loading="lazy" decoding="async" />
 </span>
