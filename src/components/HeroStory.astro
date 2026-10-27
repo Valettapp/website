@@ -189,6 +189,12 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-hub { transform: translate(-50%, -50%) scale(var(--ps)); will-change: transform; }
   /* Frosted glass on the moving phones is what makes phones stutter: the panel behind keeps the frost, the frames go solid */
   html.story-on .story-hub .phone-frame { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 255, 255, 0.84); }
+  /* Touch devices: the frosted panel and cards go translucent-flat (the ambient behind is already soft), so the compositor never re-blurs while scrolling */
+  @media (hover: none) {
+    html.story-on .story-panel { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 255, 255, 0.62); }
+    html.story-on .story-card { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 255, 255, 0.9); }
+    html.story-on .story-hub { perspective: none; }
+  }
   /* Phone screens stack; each crossfades on its own window */
   html.story-on .story-screen { position: absolute; inset: 0; will-change: transform, opacity; }
   html.story-on .story-screen[data-screen="1"] { position: relative; }
@@ -322,19 +328,19 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
       // Headline out
       const ti = seg(p, [0, 0.12]);
       intro.style.opacity = f3(1 - ti);
-      intro.style.transform = `translateY(${f3(-56 * ti)}px) scale(${f3(1 - 0.04 * ti)})`;
+      intro.style.transform = `translateY(${f3(-56 * ti)}px)`;
       intro.style.visibility = ti >= 1 ? 'hidden' : '';
       // Fan arrives: hub rises and grows, panel fades in, side phones fan out
       const th = seg(p, [0.02, 0.18]);
-      hub.style.transform = `translate(-50%, -50%) translate(${f3((1 - th) * shift)}px, ${f3((1 - th) * arrive)}px) scale(${f3(ps * (0.86 + 0.14 * th))})`;
+      hub.style.transform = `translate(-50%, -50%) translate(${f3((1 - th) * shift)}px, ${f3((1 - th) * arrive)}px) scale(${f3(ps)})`;
       panel.style.opacity = f3(th);
       panel.style.transform = `translateY(${f3((1 - th) * 40)}px)`;
-      const sy = f3(56 + (1 - th) * 40), ss = f3(0.78 + th * 0.08), so = f3(th);
+      const sy = f3(56 + (1 - th) * 60), ss = '0.86', so = f3(th);
       sideL.style.transform = `translate3d(${f3(-th * SIDE)}px, ${sy}px, 0) rotateY(${f3(th * 12)}deg) scale(${ss})`;
       sideR.style.transform = `translate3d(${f3(th * SIDE)}px, ${sy}px, 0) rotateY(${f3(-th * 12)}deg) scale(${ss})`;
       sideL.style.opacity = so; sideR.style.opacity = so;
       // Screens, cards, captions
-      for (const it of screens) fade(it, p, (i, o) => `translateY(${f3((1 - i) * 28)}px) scale(${f3(1 - o * 0.03)})`);
+      for (const it of screens) fade(it, p, (i, o) => `translateY(${f3((1 - i) * 28 - o * 10)}px)`);
       for (const it of cards) fade(it, p, (i, o) => `scale(${f3(1 / ps)}) translateY(${f3((1 - i) * 36 - o * 20)}px)`);
       for (const it of caps) fade(it, p, (i, o) => `translateY(${f3((1 - i) * 32 - o * 24)}px)`);
       // Small scan details keep their custom properties (tiny subtrees)

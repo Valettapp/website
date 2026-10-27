@@ -13,25 +13,25 @@ const { class: className = '', variant = 'wide' } = Astro.props;
 </div>
 
 <style>
-  .ambient span { position: absolute; border-radius: 9999px; filter: blur(70px); will-change: transform; }
-  @media (min-width: 48rem) { .ambient span { filter: blur(110px); } }
-  .ambient-a { background: #e6e6e2; }
-  .ambient-b { background: #e8dcc0; } /* gold at ~30 % over white */
-  .ambient-c { background: #ececea; }
+  /* Soft discs drawn as radial gradients: no filter: blur(), so nothing is re-blurred while the page moves. */
+  .ambient span { position: absolute; border-radius: 9999px; }
+  .ambient-a { background: radial-gradient(closest-side, rgba(230,230,226,1), rgba(230,230,226,.55) 50%, rgba(230,230,226,0)); }
+  .ambient-b { background: radial-gradient(closest-side, rgba(232,220,192,1), rgba(232,220,192,.55) 50%, rgba(232,220,192,0)); } /* gold at ~30 % over white */
+  .ambient-c { background: radial-gradient(closest-side, rgba(236,236,234,1), rgba(236,236,234,.55) 50%, rgba(236,236,234,0)); }
 
-  [data-variant="hero"] .ambient-a { width: 60%; height: 55%; left: -10%; top: 10%; }
-  [data-variant="hero"] .ambient-b { width: 42%; height: 48%; right: -8%; top: 22%; }
-  [data-variant="hero"] .ambient-c { width: 50%; height: 40%; left: 25%; bottom: -10%; }
+  [data-variant="hero"] .ambient-a { width: 80%; height: 75%; left: -20%; top: 0; }
+  [data-variant="hero"] .ambient-b { width: 62%; height: 68%; right: -18%; top: 12%; }
+  [data-variant="hero"] .ambient-c { width: 70%; height: 60%; left: 15%; bottom: -20%; }
 
-  [data-variant="wide"] .ambient-a { width: 48%; height: 70%; left: -8%; top: 10%; }
-  [data-variant="wide"] .ambient-b { width: 36%; height: 60%; right: -6%; top: 30%; }
-  [data-variant="wide"] .ambient-c { width: 40%; height: 50%; left: 32%; bottom: -15%; }
+  [data-variant="wide"] .ambient-a { width: 68%; height: 90%; left: -18%; top: 0; }
+  [data-variant="wide"] .ambient-b { width: 56%; height: 80%; right: -16%; top: 20%; }
+  [data-variant="wide"] .ambient-c { width: 60%; height: 70%; left: 22%; bottom: -25%; }
 
-  [data-variant="left"] .ambient-a { width: 70%; height: 80%; left: -15%; top: 5%; }
-  [data-variant="left"] .ambient-b { width: 40%; height: 50%; left: 30%; bottom: -10%; }
+  [data-variant="left"] .ambient-a { width: 90%; height: 100%; left: -25%; top: -5%; }
+  [data-variant="left"] .ambient-b { width: 60%; height: 70%; left: 20%; bottom: -20%; }
   [data-variant="left"] .ambient-c { display: none; }
 
-  [data-variant="right"] .ambient-a { width: 70%; height: 80%; right: -15%; top: 5%; }
-  [data-variant="right"] .ambient-b { width: 40%; height: 50%; right: 30%; bottom: -10%; }
+  [data-variant="right"] .ambient-a { width: 90%; height: 100%; right: -25%; top: -5%; }
+  [data-variant="right"] .ambient-b { width: 60%; height: 70%; right: 20%; bottom: -20%; }
   [data-variant="right"] .ambient-c { display: none; }
 </style>
