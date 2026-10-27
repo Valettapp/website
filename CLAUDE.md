@@ -3,7 +3,7 @@
 You own the repo, framework, components, interactive samples, form, image pipeline, responsive testing, Lighthouse, deployment. Report with screenshots at 1440 and 390 px after every milestone. Source of truth for copy and decisions: `docs/VALETT-WEBSITE-BRIEF.md` (original brief) and this file (approved decisions, 27 Oct 2026). Full annotated copy doc: https://claude.ai/artifact/U6mYTdyjSa2Qtrb1mD1iuh
 
 ## Stack
-- Astro 5 + Tailwind 4, static output. Deploy to Vercel. Domain valettuae.com (Leon points DNS).
+- Astro 5 + Tailwind 4, static output. Deploy to Vercel. Domain valett.si (Leon points DNS at Hostinger).
 - One long page `/`. Build HTML with `dir`/`lang` attributes and logical CSS properties (margin-inline etc.) so an Arabic RTL version can be added later.
 - Form: Formspree (endpoint id supplied by Leon; use `FORMSPREE_ID` env), honeypot + Turnstile. Fields: Name, Venue, Role, Phone, Preferred time. Success text: "Thank you. We will text you to confirm."
 - Images AVIF/WebP with srcset. Hero video: poster first, `preload="none"`, lazy-load the mp4 after first paint; 16:9 desktop, 9:16 mobile. Everything below the fold lazy.

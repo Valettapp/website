@@ -1,7 +1,7 @@
 ---
 /** Matte-glass browser chrome for desktop mockups. */
 interface Props { url?: string; class?: string; dense?: boolean }
-const { url = 'app.valettuae.com', class: className = '', dense = false } = Astro.props;
+const { url = 'app.valett.si', class: className = '', dense = false } = Astro.props;
 ---
 <div class:list={['glass overflow-hidden rounded-[18px]', className]}>
   <div class:list={['flex items-center gap-2 border-b border-line', dense ? 'px-3 py-2' : 'px-4 py-3']} aria-hidden="true">

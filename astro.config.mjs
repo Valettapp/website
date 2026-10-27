@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://valettuae.com',
+  site: 'https://valett.si',
   output: 'static',
   trailingSlash: 'never',
   integrations: [sitemap()],
