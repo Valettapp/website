@@ -31,9 +31,10 @@ import Ambient from './Ambient.astro';
 </div>
 
 <style>
-  /* Phone scale per breakpoint: zoom the wrappers so layout width scales with the screens. */
-  .fan-centre { zoom: 0.6; }
-  .fan-side { zoom: 0.44; margin-inline: -95px; }
+  /* Phone scale per breakpoint: zoom the wrappers so layout width scales with the screens.
+     All three phones stay inside the panel at every width (the same composition as desktop). */
+  .fan-centre { zoom: 0.5; }
+  .fan-side { zoom: 0.4; margin-inline: -92px; }
   @media (min-width: 40rem) { .fan-centre { zoom: 0.9; } .fan-side { zoom: 0.72; margin-inline: -100px; } }
   @media (min-width: 64rem) { .fan-centre { zoom: 1; } .fan-side { zoom: 0.86; margin-inline: -66px; } }
 
@@ -42,8 +43,9 @@ import Ambient from './Ambient.astro';
   /* Scroll-driven: side phones fan out from behind the centre as the panel enters; the fan tips back on exit. */
   .fan { transform: rotateX(calc(var(--leave) * 10deg)); transform-origin: 50% 0; transform-style: preserve-3d; will-change: transform; }
   .fan-centre { transform: translateY(calc((1 - var(--enter)) * 90px)) scale(calc(0.94 + var(--enter) * 0.06)); transform-origin: 50% 0; will-change: transform; }
-  .fan-left  { transform: translate3d(calc((1 - var(--enter)) * 120px), calc(56px + (1 - var(--enter)) * 90px), -80px) rotateY(12deg); transform-origin: 100% 0; will-change: transform; }
-  .fan-right { transform: translate3d(calc((1 - var(--enter)) * -120px), calc(56px + (1 - var(--enter)) * 90px), -80px) rotateY(-12deg); transform-origin: 0 0; will-change: transform; }
+  .fan-left  { transform: translate3d(calc((1 - var(--enter)) * 150px), calc(56px + (1 - var(--enter)) * 60px), -80px) rotateY(calc(12deg * var(--enter))) scale(calc(0.86 + var(--enter) * 0.14)); transform-origin: 100% 0; will-change: transform; }
+  .fan-right { transform: translate3d(calc((1 - var(--enter)) * -150px), calc(56px + (1 - var(--enter)) * 60px), -80px) rotateY(calc(-12deg * var(--enter))) scale(calc(0.86 + var(--enter) * 0.14)); transform-origin: 0 0; will-change: transform; }
+  .hero-stage[data-replaying] .fan-left, .hero-stage[data-replaying] .fan-right, .hero-stage[data-replaying] .fan-centre, .hero-stage[data-replaying] .hero-card { transition: transform 900ms cubic-bezier(.2,.8,.2,1); }
   .hero-phone-tilt { transform: rotateX(var(--tx)) rotateY(var(--ty)); transform-style: preserve-3d; transition: transform 240ms cubic-bezier(.2,.8,.2,1); will-change: transform; }
   .hero-card {
     transform: translateY(calc((1 - var(--enter)) * var(--speed) * 120px)) translate(calc(var(--mx) * var(--speed) * -14px), calc(var(--my) * var(--speed) * -10px));
@@ -69,10 +71,26 @@ import Ambient from './Ambient.astro';
       stage.style.setProperty('--enter', clamp((vh - r.top) / (vh * 0.6)).toFixed(3));
       stage.style.setProperty('--leave', clamp(-r.top / (r.height * 0.9)).toFixed(3));
     };
-    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+    const schedule = () => { if (!raf && !replaying) raf = requestAnimationFrame(update); };
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule, { passive: true });
     update();
+
+    // Touch devices: a tap on the stage tucks the side phones behind the centre and fans them out again.
+    let replaying = false;
+    if (window.matchMedia('(hover: none)').matches) {
+      stage.style.cursor = 'pointer';
+      stage.addEventListener('click', () => {
+        if (replaying) return;
+        replaying = true;
+        stage.style.setProperty('--enter', '0');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          stage.setAttribute('data-replaying', '');
+          stage.style.setProperty('--enter', '1');
+          window.setTimeout(() => { stage.removeAttribute('data-replaying'); replaying = false; update(); }, 950);
+        }));
+      });
+    }
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       const reset = () => ['--tx', '--ty'].forEach((k) => stage.style.setProperty(k, '0deg')) && ['--mx', '--my'].forEach((k) => stage.style.setProperty(k, '0'));
       stage.addEventListener('pointermove', (e) => {
