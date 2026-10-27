@@ -19,12 +19,18 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   // Hero stage: scroll-driven variables move, pointer tilt responds.
   const stage = page.locator('[data-hero-stage]');
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(200);
-  const enter0 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
-  await page.evaluate(() => window.scrollTo(0, 500));
   await page.waitForTimeout(300);
+  const enter0 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
+  await page.evaluate(() => window.scrollTo(0, 700));
+  await page.waitForTimeout(400);
   const enter1 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
-  check(Number(enter1) >= Number(enter0) && enter1 !== '', `hero stage enter progress responds to scroll (${enter0} → ${enter1})`);
+  check(Number(enter1) > Number(enter0), `hero stage enter progress responds to scroll (${enter0} → ${enter1})`);
+  // Reveal: a section far down is hidden until scrolled to.
+  const team = page.locator('#company > .container-page > *').first();
+  const before = await team.evaluate((el) => getComputedStyle(el).opacity);
+  await team.scrollIntoViewIfNeeded(); await page.waitForTimeout(1000);
+  const after = await team.evaluate((el) => getComputedStyle(el).opacity);
+  check(Number(before) < 0.5 && Number(after) > 0.9, `scroll reveal animates sections in (${before} → ${after})`);
   await stage.hover({ position: { x: 40, y: 40 } });
   await page.waitForTimeout(100);
   const ty = await stage.evaluate((el) => el.style.getPropertyValue('--ty'));

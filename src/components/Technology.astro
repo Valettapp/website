@@ -40,7 +40,7 @@ const reads = [
           <li class="hairline-t"></li>
         </ul>
       </div>
-      <div class="lg:col-span-5">
+      <div class="lg:col-span-5" data-reveal="right">
         <div class="rounded-frame bg-ink p-6 md:p-10 flex flex-col items-center gap-6">
           <ScanAnimation dark />
           <p class="t-caption text-center text-white/60">The camera in the staff app, on the driver’s own phone. One photo: plate, make, model and colour.</p>
@@ -57,7 +57,7 @@ const reads = [
         </div>
         <SampleLabel text="Demo plates" class="md:pb-1" />
       </div>
-      <ul class="snap-row mt-10 sm:grid sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+      <ul class="snap-row mt-10 sm:grid sm:grid-cols-2 sm:gap-5 lg:grid-cols-4" data-reveal-stagger="scale">
         {reads.map((r) => (
           <li class="snap-item glass-card flex flex-col gap-4 p-5">
             <div class="flex justify-center rounded-card bg-field py-6"><Plate emirate={r.emirate} code={r.code} number={r.number} /></div>

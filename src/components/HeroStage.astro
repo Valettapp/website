@@ -63,21 +63,22 @@ import Ambient from './Ambient.astro';
   document.querySelectorAll<HTMLElement>('[data-hero-stage]').forEach((stage) => {
     if (reduce) return;
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const r = stage.getBoundingClientRect();
-      const vh = window.innerHeight;
-      stage.style.setProperty('--enter', clamp((vh - r.top) / (vh * 0.6)).toFixed(3));
-      stage.style.setProperty('--leave', clamp(-r.top / (r.height * 0.9)).toFixed(3));
+    let replaying = false;
+    // Enter: how much of the stage is visible (fan opens over the first 55 %). Leave: how far the
+    // top has scrolled out of view. Both come from the observer, so they work inside a frame too.
+    const apply = (e: IntersectionObserverEntry) => {
+      if (replaying) return;
+      const r = e.boundingClientRect, i = e.intersectionRect;
+      const enter = clamp(e.intersectionRatio / 0.55);
+      const leave = r.height > 0 && i.height > 0 && i.top > r.top + 1 ? clamp((i.top - r.top) / (r.height * 0.9)) : 0;
+      stage.style.setProperty('--enter', (leave > 0 ? 1 : enter).toFixed(3));
+      stage.style.setProperty('--leave', leave.toFixed(3));
     };
-    const schedule = () => { if (!raf && !replaying) raf = requestAnimationFrame(update); };
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
-    update();
+    const steps = Array.from({ length: 41 }, (_, k) => k / 40);
+    new IntersectionObserver((entries) => entries.forEach(apply), { threshold: steps }).observe(stage);
+    const update = () => {};
 
     // Touch devices: a tap on the stage tucks the side phones behind the centre and fans them out again.
-    let replaying = false;
     if (window.matchMedia('(hover: none)').matches) {
       stage.style.cursor = 'pointer';
       stage.addEventListener('click', () => {
@@ -87,7 +88,7 @@ import Ambient from './Ambient.astro';
         requestAnimationFrame(() => requestAnimationFrame(() => {
           stage.setAttribute('data-replaying', '');
           stage.style.setProperty('--enter', '1');
-          window.setTimeout(() => { stage.removeAttribute('data-replaying'); replaying = false; update(); }, 950);
+          window.setTimeout(() => { stage.removeAttribute('data-replaying'); replaying = false; }, 950);
         }));
       });
     }

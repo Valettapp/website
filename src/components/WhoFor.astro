@@ -14,7 +14,7 @@ const doors = [
   <div class="container-page">
     <SectionHead id="who-title" eyebrow="Who it’s for" title="One system, four kinds of door." />
     <div class="relative mt-14 md:mt-20"><Ambient variant="wide" class="-inset-y-[20%]" />
-    <ul class="snap-row sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4" data-reveal>
+    <ul class="snap-row sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4" data-reveal-stagger="scale">
       {doors.map((d) => (
         <li class="snap-item flex flex-col">
           <div class="glass-card !rounded-frame px-6 pt-6 pb-0 md:px-8 md:pt-8">

@@ -1,8 +1,11 @@
 ---
 /**
- * Scan animation: camera frame → "Scanning vehicle…" → plate, make, model, colour fill in.
+ * Scan screen: a live camera feed on a real Defender (the plate photo from the guest page),
+ * plate detection box → "Scanning vehicle…" → plate, make, model, colour fill in.
  * Loops while visible; tap to replay. Reduced motion renders the final state.
  */
+import { Picture } from 'astro:assets';
+import carScan from '../assets/car-scan.jpg';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
 interface Props { class?: string; framed?: boolean; dark?: boolean }
@@ -15,68 +18,82 @@ const fields = [
 ];
 ---
 <div class:list={[framed ? (dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
-  <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app: one photo reads the plate, make, model and colour">
-    <div class="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-5">
-      <Wordmark variant="serif" class="text-[12px] text-white/80" />
-      <span class="text-[11px] text-white/50">01:05</span>
+  <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app camera: one photo of the car reads the plate, make, model and colour">
+    {/* Camera feed */}
+    <Picture src={carScan} formats={['avif', 'webp']} widths={[360, 720]} sizes="300px" alt="" class="scan-feed absolute inset-0 h-full w-full object-cover" style="object-position: 50% 30%" loading="lazy" decoding="async" />
+    <div class="scan-shade absolute inset-0" aria-hidden="true"></div>
+
+    <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
+      <Wordmark variant="serif" class="text-[12px] text-white/90" />
+      <span class="text-[11px] text-white/70">01:05</span>
     </div>
 
-    {/* Viewfinder */}
-    <div class="absolute inset-x-6 top-[20%] aspect-[4/3]">
+    {/* Viewfinder + plate detection */}
+    <div class="scan-frame absolute inset-x-4 top-[16%] z-10 aspect-[4/3]">
       <div class="scan-corners absolute inset-0"></div>
-      <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_12px_1px_rgba(197,162,83,.6)]"></div>
-      <div class="scan-plate absolute inset-x-[18%] top-[38%] flex h-[24%] items-center justify-center rounded-[4px] border border-white/25 text-[13px] tracking-[0.12em] text-white/70">M 95378</div>
+      <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]"></div>
+      <div class="scan-plate absolute left-[51%] right-[2%] top-[58%] h-[17%] rounded-[4px] border-2 border-white/60" data-plate-box>
+        <span class="scan-plate-tag absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
+      </div>
     </div>
 
     {/* Captions */}
-    <div class="absolute inset-x-5 top-[62%] text-center">
-      <p class="scan-t0 text-[15px] font-medium">Take vehicle photo</p>
-      <p class="scan-t0 mt-1 text-[12px] text-white/50">Frame the number plate</p>
+    <div class="absolute inset-x-5 top-[62%] z-10 text-center">
+      <p class="scan-t0 text-[15px] font-medium drop-shadow">Take vehicle photo</p>
+      <p class="scan-t0 mt-1 text-[12px] text-white/70">Frame the number plate</p>
       <p class="scan-t1 text-[15px] font-medium"><span class="inline-flex items-center gap-2"><span class="scan-dot size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
     </div>
 
-    {/* Results */}
-    <ul class="scan-results absolute inset-x-5 bottom-[12%] flex flex-col gap-1.5 text-[12px]">
-      {fields.map(([k, v], i) => (
-        <li class="scan-row flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2" style={`--i:${i}`}>
-          <span class="text-white/50">{k}</span><span class="font-medium tracking-[0.02em]">{v}</span>
-        </li>
-      ))}
-    </ul>
+    {/* Results sheet */}
+    <div class="scan-results absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-ink/95 px-5 pb-5 pt-4">
+      <div class="mx-auto mb-3 h-1 w-9 rounded-pill bg-white/20"></div>
+      <ul class="flex flex-col gap-1.5 text-[12px]">
+        {fields.map(([k, v], i) => (
+          <li class="scan-row flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2" style={`--i:${i}`}>
+            <span class="text-white/55">{k}</span><span class="font-medium tracking-[0.02em]">{v}</span>
+          </li>
+        ))}
+      </ul>
+      <span class="scan-done mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-pill bg-white px-4 py-2.5 text-[13px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised · Continue</span>
+    </div>
 
     {/* Shutter */}
-    <div class="absolute inset-x-0 bottom-5 flex justify-center">
-      <span class="scan-shutter inline-flex size-12 items-center justify-center rounded-full border-2 border-white/80"><span class="size-9 rounded-full bg-white/90"></span></span>
-      <span class="scan-done inline-flex items-center gap-1.5 rounded-pill bg-white px-4 py-2 text-[12px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised</span>
+    <div class="scan-shutter absolute inset-x-0 bottom-6 z-10 flex justify-center">
+      <span class="inline-flex size-14 items-center justify-center rounded-full border-2 border-white/90"><span class="size-11 rounded-full bg-white/95"></span></span>
     </div>
-    <button type="button" class="absolute inset-0 cursor-pointer" aria-label="Replay scan animation" data-replay></button>
+    <button type="button" class="absolute inset-0 z-20 cursor-pointer" aria-label="Replay scan animation" data-replay></button>
   </div>
 </div>
 
 <style>
+  .scan-shade { background: linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.1) 40%, rgba(10,10,10,.92) 72%, #0a0a0a 100%); }
   .scan-corners { background:
-    linear-gradient(#fff,#fff) top left/18px 1.5px no-repeat, linear-gradient(#fff,#fff) top left/1.5px 18px no-repeat,
-    linear-gradient(#fff,#fff) top right/18px 1.5px no-repeat, linear-gradient(#fff,#fff) top right/1.5px 18px no-repeat,
-    linear-gradient(#fff,#fff) bottom left/18px 1.5px no-repeat, linear-gradient(#fff,#fff) bottom left/1.5px 18px no-repeat,
-    linear-gradient(#fff,#fff) bottom right/18px 1.5px no-repeat, linear-gradient(#fff,#fff) bottom right/1.5px 18px no-repeat;
-    opacity: .9; }
-  .scan-line, .scan-t1, .scan-results, .scan-done { opacity: 0; }
+    linear-gradient(#fff,#fff) top left/20px 2px no-repeat, linear-gradient(#fff,#fff) top left/2px 20px no-repeat,
+    linear-gradient(#fff,#fff) top right/20px 2px no-repeat, linear-gradient(#fff,#fff) top right/2px 20px no-repeat,
+    linear-gradient(#fff,#fff) bottom left/20px 2px no-repeat, linear-gradient(#fff,#fff) bottom left/2px 20px no-repeat,
+    linear-gradient(#fff,#fff) bottom right/20px 2px no-repeat, linear-gradient(#fff,#fff) bottom right/2px 20px no-repeat;
+    opacity: .95; }
+  .scan-line, .scan-t1, .scan-results, .scan-done, .scan-plate-tag { opacity: 0; }
+  .scan-plate { transition: border-color 300ms ease, box-shadow 300ms ease; }
   .scan-row { opacity: 0; transform: translateY(6px); }
+  .scan-results { transform: translateY(16px); transition: opacity 320ms ease, transform 320ms ease; }
   /* phase 1: scanning */
   [data-phase="1"] .scan-t0, [data-phase="2"] .scan-t0 { opacity: 0; }
   [data-phase="1"] .scan-t1 { opacity: 1; }
   [data-phase="1"] .scan-line { opacity: 1; animation: v-scanline 1.4s ease-in-out infinite alternate; }
-  [data-phase="1"] .scan-plate { border-color: #c5a253; color: #fff; }
+  [data-phase="1"] .scan-plate, [data-phase="2"] .scan-plate { border-color: #c5a253; box-shadow: 0 0 0 2px rgba(197,162,83,.25), 0 0 24px rgba(197,162,83,.35); }
+  [data-phase="1"] .scan-plate-tag, [data-phase="2"] .scan-plate-tag { opacity: 1; transition: opacity 200ms ease 200ms; }
   [data-phase="1"] .scan-dot { animation: v-pulse 1s ease-in-out infinite; }
   /* phase 2: results */
-  [data-phase="2"] .scan-results { opacity: 1; }
-  [data-phase="2"] .scan-row { opacity: 1; transform: none; transition: opacity 300ms ease, transform 300ms ease; transition-delay: calc(var(--i) * 180ms); }
-  [data-phase="2"] .scan-plate { border-color: #c5a253; color: #fff; }
+  [data-phase="2"] .scan-results { opacity: 1; transform: none; }
+  [data-phase="2"] .scan-row { opacity: 1; transform: none; transition: opacity 300ms ease, transform 300ms ease; transition-delay: calc(var(--i) * 160ms); }
   [data-phase="2"] .scan-shutter { display: none; }
-  [data-phase="2"] .scan-done { opacity: 1; transition: opacity 300ms ease 700ms; }
+  [data-phase="2"] .scan-done { opacity: 1; transition: opacity 300ms ease 760ms; }
   [data-phase="2"] .scan-t1 { opacity: 0; }
-  .scan-t0, .scan-t1, .scan-line, .scan-results { transition: opacity 300ms ease; }
+  [data-phase="2"] .scan-frame { transform: translateY(-6%) scale(.92); transition: transform 400ms ease; transform-origin: 50% 0; }
+  .scan-t0, .scan-t1, .scan-line { transition: opacity 300ms ease; }
   .scan-t1 { position: absolute; inset-inline: 0; top: 0; }
+  @media (prefers-reduced-motion: reduce) { .scan-line { animation: none !important; } }
 </style>
 
 <script>
@@ -90,8 +107,8 @@ const fields = [
       if (reduce) { el.dataset.phase = '2'; return; }
       el.dataset.phase = '0';
       timers.push(window.setTimeout(() => (el.dataset.phase = '1'), 1500));
-      timers.push(window.setTimeout(() => (el.dataset.phase = '2'), 3100));
-      timers.push(window.setTimeout(() => { if (visible) play(); }, 7200));
+      timers.push(window.setTimeout(() => (el.dataset.phase = '2'), 3300));
+      timers.push(window.setTimeout(() => { if (visible) play(); }, 8000));
     };
     el.querySelector('[data-replay]')?.addEventListener('click', play);
     if ('IntersectionObserver' in window) {

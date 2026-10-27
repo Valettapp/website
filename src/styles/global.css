@@ -352,16 +352,24 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Scroll reveal: JS adds .reveal-ready to <html>; elements fade up    */
-/* once in view. Nothing changes without JS or under reduced motion.   */
+/* Scroll reveal: JS adds .reveal-ready to <html>; elements animate in   */
+/* once in view (IntersectionObserver, so it also works inside a frame). */
+/* Variants: data-reveal="up" (default) | "scale" | "left" | "right".     */
+/* data-reveal-stagger on a parent animates its children in sequence.    */
+/* Nothing changes without JS or under reduced motion.                   */
 /* ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: no-preference) {
-  html.reveal-ready [data-reveal], html.reveal-ready [data-reveal-group] > .container-page > *:not(.revealed) {
+  html.reveal-ready :is([data-reveal], [data-reveal-stagger] > *, [data-reveal-group] > .container-page > *):not(.revealed) {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 700ms cubic-bezier(.2,.7,.2,1), transform 700ms cubic-bezier(.2,.7,.2,1);
+    transform: translateY(28px);
   }
-  html.reveal-ready [data-reveal].revealed, html.reveal-ready [data-reveal-group] > .container-page > .revealed {
+  html.reveal-ready :is([data-reveal], [data-reveal-stagger] > *, [data-reveal-group] > .container-page > *) {
+    transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1);
+  }
+  html.reveal-ready [data-reveal="scale"]:not(.revealed), html.reveal-ready [data-reveal-stagger="scale"] > *:not(.revealed) { transform: translateY(20px) scale(0.94); }
+  html.reveal-ready [data-reveal="left"]:not(.revealed) { transform: translateX(-48px); }
+  html.reveal-ready [data-reveal="right"]:not(.revealed) { transform: translateX(48px); }
+  html.reveal-ready :is([data-reveal], [data-reveal-stagger] > *, [data-reveal-group] > .container-page > *).revealed {
     opacity: 1;
     transform: none;
   }

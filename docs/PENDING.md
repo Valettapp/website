@@ -46,6 +46,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Key board (27 Oct): the HTML `KeyBoard` sample is no longer rendered; §4 shows the real Key Controller page from the admin mockup, §5's second showcase is the Shift Manager page. `KeyBoard.astro` stays in the repo unused.
 - Horizontal overflow on mobile fixed by clipping the page (`overflow-x: clip` on html and body).
 
+- Scan screen (27 Oct): live camera feed on the real Defender (crop of the guest screenshot), plate detection box, then the results sheet. Scroll effects now run on IntersectionObserver so they work inside the preview frame; variants up / scale / left / right with staggered children.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

@@ -40,7 +40,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
     </div>
 
     {/* Divisions */}
-    <ul class="mt-20 grid gap-6 md:mt-28 md:grid-cols-3" data-reveal>
+    <ul class="mt-20 grid gap-6 md:mt-28 md:grid-cols-3" data-reveal-stagger>
       {divisions.map((d, i) => (
         <li class="hairline-t flex flex-col gap-2 pt-6">
           <p class="t-eyebrow">0{i + 1}</p>
@@ -53,7 +53,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
     {/* Profiles */}
     <div class="relative mt-20 md:mt-28" data-reveal><Ambient variant="wide" class="-inset-y-[10%]" />
       <p class="t-eyebrow">Founders</p>
-      <ul class="mt-6 grid gap-6 md:grid-cols-2">
+      <ul class="mt-6 grid gap-6 md:grid-cols-2" data-reveal-stagger="scale">
         {founders.map((p) => (
           <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
             <div class="flex items-center gap-4">
@@ -67,7 +67,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
     </div>
     <div class="relative mt-14 md:mt-20" data-reveal><Ambient variant="right" class="-inset-y-[10%]" />
       <p class="t-eyebrow">Investors and advisors</p>
-      <ul class="mt-6 grid gap-6 md:grid-cols-2">
+      <ul class="mt-6 grid gap-6 md:grid-cols-2" data-reveal-stagger="scale">
         {investors.map((p) => (
           <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
             <div class="flex items-center gap-4">

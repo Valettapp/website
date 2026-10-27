@@ -57,7 +57,8 @@ const jsonLd = {
     <a href="#main" class="sr-only-focusable z-[100] btn-primary">Skip to content</a>
     <slot />
     <script>
-      // Scroll reveal: stagger direct children of section containers and any [data-reveal].
+      // Scroll reveal, driven by IntersectionObserver so it works in a normal page and inside an
+      // expanded iframe (where the window itself never scrolls).
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!reduce && 'IntersectionObserver' in window) {
         const targets: { el: HTMLElement; delay: number }[] = [];
@@ -65,14 +66,14 @@ const jsonLd = {
           Array.from(c.children).forEach((el, i) => targets.push({ el: el as HTMLElement, delay: Math.min(i, 4) * 90 }));
         });
         document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => targets.push({ el, delay: 0 }));
-        // Read layout first, then write, to avoid forced reflows.
-        const limit = window.innerHeight * 0.9;
-        const inView = targets.map(({ el }) => el.getBoundingClientRect().top < limit);
+        document.querySelectorAll<HTMLElement>('[data-reveal-stagger]').forEach((c) => {
+          Array.from(c.children).forEach((el, i) => targets.push({ el: el as HTMLElement, delay: Math.min(i, 7) * 90 }));
+        });
         const io = new IntersectionObserver((entries) => {
           entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
-        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
         document.documentElement.classList.add('reveal-ready');
-        targets.forEach(({ el, delay }, i) => { el.style.transitionDelay = `${delay}ms`; if (inView[i]) el.classList.add('revealed'); else io.observe(el); });
+        targets.forEach(({ el, delay }) => { el.style.transitionDelay = `${delay}ms`; io.observe(el); });
       }
     </script>
   </body>

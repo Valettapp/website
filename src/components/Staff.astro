@@ -17,7 +17,7 @@ const steps = [
   <div class="container-page">
     <SectionHead id="staff-title" eyebrow="The staff app" title="Forty seconds from arrival to parked. All of it on the record." />
 
-    <ol class="snap-row mt-16 md:mt-24 md:grid md:grid-cols-3 md:gap-8" data-reveal>
+    <ol class="snap-row mt-16 md:mt-24 md:grid md:grid-cols-3 md:gap-8" data-reveal-stagger="scale">
       {steps.map((s, i) => (
         <li class="snap-item flex flex-col gap-6">
           <div class="rounded-frame bg-field px-6 py-8 flex justify-center">
@@ -33,12 +33,12 @@ const steps = [
     </ol>
 
     <div class="mt-20 grid items-center gap-12 md:mt-28 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-5 flex justify-center lg:justify-start">
+      <div class="lg:col-span-5 flex justify-center lg:justify-start" data-reveal="left">
         <div class="rounded-frame bg-field px-6 py-8 w-full flex justify-center">
           <StaffScreen screen="request" />
         </div>
       </div>
-      <div class="lg:col-span-7 flex flex-col gap-4">
+      <div class="lg:col-span-7 flex flex-col gap-4" data-reveal="right">
         <p class="t-eyebrow">04</p>
         <h3 class="t-h3 max-w-[22em]">“New request, just now. Land Rover Defender, Zone P3, Bay 55. On my way.”</h3>
         <p class="t-body measure text-ink-2">The driver taps once and the guest’s page moves. <Pill status="live" class="ms-1 align-[2px]" /></p>
