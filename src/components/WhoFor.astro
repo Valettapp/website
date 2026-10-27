@@ -1,6 +1,7 @@
 ---
 import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
+import Ambient from './Ambient.astro';
 // Fictional venues: the guest page carries each venue's own wordmark (white-label).
 const doors = [
   { venue: 'The Marquee', title: 'Hotels and resorts', body: 'The guest page carries the hotel’s name, not ours. Concierge sees every car.', status: 'Parked · 01:06 AM', line: 'Validation · Ask your concierge' },
@@ -12,10 +13,11 @@ const doors = [
 <section data-reveal-group id="who" class="section-pad scroll-mt-20" aria-labelledby="who-title">
   <div class="container-page">
     <SectionHead id="who-title" eyebrow="Who it’s for" title="One system, four kinds of door." />
-    <ul class="snap-row mt-14 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 md:mt-20" data-reveal>
+    <div class="relative mt-14 md:mt-20"><Ambient variant="wide" class="-inset-y-[20%]" />
+    <ul class="snap-row sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4" data-reveal>
       {doors.map((d) => (
         <li class="snap-item flex flex-col">
-          <div class="rounded-frame bg-field px-6 pt-6 pb-0 md:px-8 md:pt-8">
+          <div class="glass-card !rounded-frame px-6 pt-6 pb-0 md:px-8 md:pt-8">
             <div class="phone-frame mx-auto w-full max-w-[220px] !rounded-b-none !border-b-0 !pb-0" aria-hidden="true">
               <div class="rounded-t-[26px] bg-field px-4 pt-4 pb-5 text-center">
                 <p class="t-wordmark text-[11px]">{d.venue}</p>
@@ -32,5 +34,6 @@ const doors = [
         </li>
       ))}
     </ul>
+    </div>
   </div>
 </section>

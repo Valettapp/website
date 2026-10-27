@@ -148,22 +148,30 @@
 /* Surfaces                                                            */
 /* ------------------------------------------------------------------ */
 @utility glass {
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--color-line);
-  box-shadow: var(--shadow-glass);
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: var(--shadow-glass), inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+/* Matte glass panel for large stages */
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(32px) saturate(1.3);
+  backdrop-filter: blur(32px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 40px 80px -60px rgba(0, 0, 0, 0.25);
 }
 @utility hairline {
   border: 1px solid var(--color-line);
 }
 /* Matte glass card: glass recipe + softer radius, used for floating UI and tiles */
 @utility glass-card {
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  backdrop-filter: blur(20px) saturate(1.2);
-  border: 1px solid var(--color-line);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 24px 48px -32px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 24px 48px -32px rgba(0, 0, 0, 0.18);
   border-radius: 16px;
 }
 @utility hairline-t {
@@ -173,8 +181,8 @@
   border-bottom: 1px solid var(--color-line);
 }
 @utility section-pad {
-  padding-block: 112px;
-  @media (min-width: 48rem) { padding-block: 200px; }
+  padding-block: 128px;
+  @media (min-width: 48rem) { padding-block: 240px; }
 }
 @utility container-page {
   width: 100%;
@@ -269,11 +277,11 @@
 /* Device frames */
 @utility phone-frame {
   border-radius: 40px;
-  border: 1px solid var(--color-line);
-  box-shadow: var(--shadow-glass), 0 24px 60px -30px rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-glass), inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 24px 60px -30px rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
   padding: 10px;
 }
 @utility phone-frame-dark {

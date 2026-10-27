@@ -1,5 +1,6 @@
 ---
 import SectionHead from './SectionHead.astro';
+import Ambient from './Ambient.astro';
 import { Picture } from 'astro:assets';
 import leon from '../assets/team/leon.jpg';
 import tom from '../assets/team/tom.jpg';
@@ -50,7 +51,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
     </ul>
 
     {/* Profiles */}
-    <div class="mt-20 md:mt-28" data-reveal>
+    <div class="relative mt-20 md:mt-28" data-reveal><Ambient variant="wide" class="-inset-y-[10%]" />
       <p class="t-eyebrow">Founders</p>
       <ul class="mt-6 grid gap-6 md:grid-cols-2">
         {founders.map((p) => (
@@ -64,7 +65,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
         ))}
       </ul>
     </div>
-    <div class="mt-14 md:mt-20" data-reveal>
+    <div class="relative mt-14 md:mt-20" data-reveal><Ambient variant="right" class="-inset-y-[10%]" />
       <p class="t-eyebrow">Investors and advisors</p>
       <ul class="mt-6 grid gap-6 md:grid-cols-2">
         {investors.map((p) => (

@@ -4,6 +4,7 @@
  * Fields: Name, Venue, Role, Phone, Preferred time. Success: "Thank you. We will text you to confirm."
  */
 import { site } from '../data/site';
+import Ambient from './Ambient.astro';
 const action = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : '';
 const fields = [
   { id: 'name', label: 'Name', type: 'text' as const, auto: 'name', required: true },
@@ -15,7 +16,8 @@ const fields = [
 ---
 <section data-reveal-group id="demo" class="section-pad scroll-mt-20" aria-labelledby="demo-title">
   <div class="container-page">
-    <div class="glass mx-auto max-w-[920px] rounded-frame p-7 md:p-14">
+    <div class="relative mx-auto max-w-[920px]"><Ambient variant="wide" class="-inset-[12%]" />
+    <div class="glass-panel rounded-frame p-7 md:p-14">
       <div class="flex flex-col items-center text-center">
         <h2 id="demo-title" class="t-h2">See it at your door.</h2>
         <p class="t-body measure mt-5 text-ink-2">Thirty minutes, on a call or at your venue, with the real app in your hands.</p>
@@ -54,6 +56,7 @@ const fields = [
           <p class="text-[14px] text-ink-2" role="status" aria-live="polite" data-form-status></p>
         </div>
       </form>
+    </div>
     </div>
   </div>
 </section>

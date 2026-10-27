@@ -1,0 +1,37 @@
+---
+/**
+ * Ambient tone behind glass surfaces: large, heavily blurred discs in the field grey and a warm
+ * gold tint, so backdrop-blur has something to frost. Purely decorative, sits behind content.
+ */
+interface Props { class?: string; variant?: 'hero' | 'left' | 'right' | 'wide' }
+const { class: className = '', variant = 'wide' } = Astro.props;
+---
+<div class:list={['ambient pointer-events-none absolute inset-0 -z-10 overflow-visible', className]} aria-hidden="true" data-variant={variant}>
+  <span class="ambient-a"></span>
+  <span class="ambient-b"></span>
+  <span class="ambient-c"></span>
+</div>
+
+<style>
+  .ambient span { position: absolute; border-radius: 9999px; filter: blur(70px); will-change: transform; }
+  @media (min-width: 48rem) { .ambient span { filter: blur(110px); } }
+  .ambient-a { background: #e6e6e2; }
+  .ambient-b { background: #e8dcc0; } /* gold at ~30 % over white */
+  .ambient-c { background: #ececea; }
+
+  [data-variant="hero"] .ambient-a { width: 60%; height: 55%; left: -10%; top: 10%; }
+  [data-variant="hero"] .ambient-b { width: 42%; height: 48%; right: -8%; top: 22%; }
+  [data-variant="hero"] .ambient-c { width: 50%; height: 40%; left: 25%; bottom: -10%; }
+
+  [data-variant="wide"] .ambient-a { width: 48%; height: 70%; left: -8%; top: 10%; }
+  [data-variant="wide"] .ambient-b { width: 36%; height: 60%; right: -6%; top: 30%; }
+  [data-variant="wide"] .ambient-c { width: 40%; height: 50%; left: 32%; bottom: -15%; }
+
+  [data-variant="left"] .ambient-a { width: 70%; height: 80%; left: -15%; top: 5%; }
+  [data-variant="left"] .ambient-b { width: 40%; height: 50%; left: 30%; bottom: -10%; }
+  [data-variant="left"] .ambient-c { display: none; }
+
+  [data-variant="right"] .ambient-a { width: 70%; height: 80%; right: -15%; top: 5%; }
+  [data-variant="right"] .ambient-b { width: 40%; height: 50%; right: 30%; bottom: -10%; }
+  [data-variant="right"] .ambient-c { display: none; }
+</style>

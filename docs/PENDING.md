@@ -41,6 +41,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Hosted preview (27 Oct): https://claude.ai/artifact/WX3Sz7QCSdS99GVor4QvfV, built with `npm run preview:bundle`. Private until shared from the page.
 
+- Glass pass (27 Oct): ambient blurred tone (`Ambient.astro`, field grey + warm gold tint) sits behind every glass surface so backdrop-blur reads; glass recipe strengthened (white highlight border, inset hairline, saturate); hero stage, guest panel, receipt panel, back-office showcases, venue cards and the demo form are glass panels. Launch pill removed; section padding 128/240 px.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

@@ -7,9 +7,11 @@
 import GuestPhone from './GuestPhone.astro';
 import StaffScreen from './StaffScreen.astro';
 import Icon from './Icon.astro';
+import Ambient from './Ambient.astro';
 ---
-<div class="hero-stage relative mx-auto mt-16 w-full max-w-[1100px] md:mt-20" data-hero-stage style="--enter:1;--leave:0;--tx:0deg;--ty:0deg;--mx:0;--my:0">
-  <div class="relative overflow-hidden rounded-[32px] bg-field aspect-[4/5] sm:aspect-[16/11] lg:aspect-[16/10] md:rounded-[40px]" style="perspective: 1600px">
+<div class="hero-stage relative mx-auto mt-20 w-full max-w-[1100px] md:mt-28" data-hero-stage style="--enter:1;--leave:0;--tx:0deg;--ty:0deg;--mx:0;--my:0">
+  <Ambient variant="hero" class="-inset-x-[10%] -inset-y-[12%]" />
+  <div class="glass-panel relative overflow-hidden rounded-[32px] aspect-[4/5] sm:aspect-[16/11] lg:aspect-[16/10] md:rounded-[40px]" style="perspective: 1600px">
     <div class="fan absolute inset-x-0 top-[5%] flex items-start justify-center">
       <div class="fan-side fan-left w-[300px] shrink-0" aria-hidden="true"><StaffScreen screen="request" /></div>
       <div class="fan-centre relative z-10 w-[360px] shrink-0"><div class="hero-phone-tilt"><GuestPhone static priority /></div></div>

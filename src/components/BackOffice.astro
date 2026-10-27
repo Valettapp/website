@@ -4,6 +4,7 @@ import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import BrowserFrame from './BrowserFrame.astro';
 import SampleLabel from './SampleLabel.astro';
+import Ambient from './Ambient.astro';
 import superAdmin from '../assets/reports/super-admin.jpg';
 import keyController from '../assets/reports/key-controller.jpg';
 import reports from '../assets/reports/reports.jpg';
@@ -34,14 +35,14 @@ const tiles = [
     </div>
 
     {/* Showcase: super admin dashboard + key controller */}
-    <div class="mt-16 grid gap-6 md:mt-24 lg:grid-cols-12" data-reveal>
-      <div class="rounded-frame bg-field p-3 md:p-6 lg:col-span-7">
+    <div class="relative mt-16 grid gap-6 md:mt-24 lg:grid-cols-12" data-reveal><Ambient variant="wide" class="-inset-y-[10%]" />
+      <div class="glass-panel !rounded-frame p-3 md:p-6 lg:col-span-7">
         <BrowserFrame url="admin.valettuae.com">
           <Picture src={superAdmin} formats={['avif', 'webp']} widths={[700, 1100, 1600]} sizes="(min-width: 1024px) 700px, 92vw" alt="Super admin dashboard: a map of six venues with live counts, stuck hooks, locations, staff on shift, today's tickets, revenue and average retrieve time." class="block w-full" loading="lazy" decoding="async" />
         </BrowserFrame>
       </div>
       <div class="flex flex-col gap-6 lg:col-span-5">
-        <div class="rounded-frame bg-field p-3 md:p-6">
+        <div class="glass-panel !rounded-frame p-3 md:p-6">
           <BrowserFrame url="admin.valettuae.com/key-controller">
             <Picture src={keyController} formats={['avif', 'webp']} widths={[600, 900, 1200]} sizes="(min-width: 1024px) 480px, 92vw" alt="Key controller: columns for checked in, parked, requested, with driver, on route and at podium, each ticket with its hook and car." class="block w-full" loading="lazy" decoding="async" />
           </BrowserFrame>

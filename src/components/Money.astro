@@ -2,6 +2,7 @@
 import SectionHead from './SectionHead.astro';
 import Receipt from './Receipt.astro';
 import SampleLabel from './SampleLabel.astro';
+import Ambient from './Ambient.astro';
 const items = [
   { title: 'Staff time', body: 'No tickets to write, no radios to call, no bays to search. The board tells the driver where the car is.' },
   { title: 'Damage disputes', body: 'Time-stamped photos at check-in and check-out settle the argument before it starts.' },
@@ -16,7 +17,7 @@ const items = [
     <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
       <div class="flex flex-col gap-10 lg:col-span-5">
         <SectionHead id="money-title" eyebrow="The savings" title="Where the savings come from." />
-        <div class="rounded-frame bg-field p-6 md:p-10">
+        <div class="glass-panel relative !rounded-frame p-6 md:p-10"><Ambient variant="left" class="-inset-[15%]" />
           <Receipt />
           <SampleLabel class="mt-5" text="Demo data" />
         </div>
