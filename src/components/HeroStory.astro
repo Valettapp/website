@@ -20,10 +20,10 @@ import Ambient from './Ambient.astro';
 import { site } from '../data/site';
 
 const beats = [
-  { n: '01', where: 'At the door', title: 'One photo. Plate, make, model and colour.', body: 'The valet photographs the car. Nothing typed, nothing written down.', in: '0.14,0.20', out: '0.43,0.51' },
-  { n: '02', where: 'On the guest’s phone', title: 'A ticket from the QR. Nothing to download.', body: 'The car’s photo, the ticket and the validation, in English or Arabic. No account.', in: '0.43,0.51', out: '0.62,0.70' },
-  { n: '03', where: 'From the table', title: 'Request from the table. Watch the car come.', body: 'The driver taps once and the guest’s page moves. Every minute on the record.', in: '0.62,0.70', out: '0.82,0.90' },
-  { n: '04', where: 'At the kerb', title: 'Rate, tip and receipt. By text.', body: 'The wait is the last thing a guest remembers. Now it is a text.', in: '0.82,0.90', out: '' },
+  { n: '01', where: 'At the door', title: 'One photo. Plate, make, model and colour.', body: 'The valet photographs the car. Nothing typed, nothing written down.', in: '0.14,0.20', out: '0.40,0.45' },
+  { n: '02', where: 'On the guest’s phone', title: 'A ticket from the QR. Nothing to download.', body: 'The car’s photo, the ticket and the validation, in English or Arabic. No account.', in: '0.46,0.52', out: '0.59,0.64' },
+  { n: '03', where: 'From the table', title: 'Request from the table. Watch the car come.', body: 'The driver taps once and the guest’s page moves. Every minute on the record.', in: '0.65,0.71', out: '0.79,0.84' },
+  { n: '04', where: 'At the kerb', title: 'Rate, tip and receipt. By text.', body: 'The wait is the last thing a guest remembers. Now it is a text.', in: '0.85,0.91', out: '' },
 ];
 const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White']];
 ---
@@ -286,10 +286,10 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 69% contain 75%, contain 82% contain 90%; }
   html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 74% contain 80%, contain 82% contain 90%; }
   html.story-sda .story-card-e { animation: sy-card-in ease-in-out both; animation-timeline: --story; animation-range: contain 90% contain 96%; }
-  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 43% contain 51%; }
-  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 43% contain 51%, contain 62% contain 70%; }
-  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 70%, contain 82% contain 90%; }
-  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 82% contain 90%; }
+  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 40% contain 45%; }
+  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 46% contain 52%, contain 59% contain 64%; }
+  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 65% contain 71%, contain 79% contain 84%; }
+  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 85% contain 91%; }
   html.story-sda .story-dots { animation: sy-fade-in linear both; animation-timeline: --story; animation-range: contain 14% contain 20%; }
   html.story-sda .story-dots li { animation: sy-dot-on linear; animation-timeline: --story; }
   html.story-sda .story-dots li:nth-child(1) { animation-range: contain 14% contain 43%; }
