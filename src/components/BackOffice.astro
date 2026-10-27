@@ -6,7 +6,7 @@ import BrowserFrame from './BrowserFrame.astro';
 import SampleLabel from './SampleLabel.astro';
 import Ambient from './Ambient.astro';
 import superAdmin from '../assets/reports/super-admin.jpg';
-import keyController from '../assets/reports/key-controller.jpg';
+import shiftManager from '../assets/reports/shift-manager.jpg';
 import reports from '../assets/reports/reports.jpg';
 import tickets from '../assets/reports/tickets.jpg';
 import residents from '../assets/reports/residents.jpg';
@@ -43,8 +43,8 @@ const tiles = [
       </div>
       <div class="flex flex-col gap-6 lg:col-span-5">
         <div class="glass-panel !rounded-frame p-3 md:p-6">
-          <BrowserFrame url="admin.valettuae.com/key-controller">
-            <Picture src={keyController} formats={['avif', 'webp']} widths={[600, 900, 1200]} sizes="(min-width: 1024px) 480px, 92vw" alt="Key controller: columns for checked in, parked, requested, with driver, on route and at podium, each ticket with its hook and car." class="block w-full" loading="lazy" decoding="async" />
+          <BrowserFrame url="admin.valettuae.com/shift-manager">
+            <Picture src={shiftManager} formats={['avif', 'webp']} widths={[600, 900, 1200]} sizes="(min-width: 1024px) 480px, 92vw" alt="Shift manager screen: pending requests, active tickets, who is on shift, driver map and tip payouts." class="block w-full" loading="lazy" decoding="async" />
           </BrowserFrame>
         </div>
         <div class="flex flex-col gap-3 px-1">

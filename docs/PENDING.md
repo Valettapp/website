@@ -43,6 +43,9 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Glass pass (27 Oct): ambient blurred tone (`Ambient.astro`, field grey + warm gold tint) sits behind every glass surface so backdrop-blur reads; glass recipe strengthened (white highlight border, inset hairline, saturate); hero stage, guest panel, receipt panel, back-office showcases, venue cards and the demo form are glass panels. Launch pill removed; section padding 128/240 px.
 
+- Key board (27 Oct): the HTML `KeyBoard` sample is no longer rendered; §4 shows the real Key Controller page from the admin mockup, §5's second showcase is the Shift Manager page. `KeyBoard.astro` stays in the repo unused.
+- Horizontal overflow on mobile fixed by clipping the page (`overflow-x: clip` on html and body).
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

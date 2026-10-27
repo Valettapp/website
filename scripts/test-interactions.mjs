@@ -56,17 +56,6 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   await guest.locator('[data-prev]').click();
   check((await visible()) === '3', 'prev arrow → state 3');
 
-  // --- Key board: overdue + toast ----------------------------------------
-  const kb = page.locator('[data-keyboard]');
-  await kb.scrollIntoViewIfNeeded();
-  await kb.locator('[data-reset]').click();
-  await page.waitForTimeout(500);
-  check(!(await kb.locator('[data-row="V772"]').getAttribute('data-late')), 'V772 not late at start');
-  await page.waitForTimeout(6500);
-  check((await kb.locator('[data-row="V772"]').getAttribute('data-late')) !== null, 'V772 turns gold after passing its target (~6 s)');
-  check((await kb.locator('[data-toast]').getAttribute('data-on')) !== null, 'Shift manager pinged toast shown');
-  await kb.screenshot({ path: 'screenshots/states/keyboard-late.png' });
-
   // --- Scan animation phases ---------------------------------------------
   const scan = page.locator('[data-scan]').first();
   await scan.scrollIntoViewIfNeeded();
@@ -96,10 +85,6 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const guest = page.locator('#guest [data-guest]');
   await guest.scrollIntoViewIfNeeded();
   check((await guest.locator('[data-state]:not([hidden])').getAttribute('data-state')) === '5', 'reduced motion: guest renders final state (5)');
-  const kb = page.locator('[data-keyboard]');
-  await kb.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(300);
-  check((await kb.locator('[data-row="V772"]').getAttribute('data-late')) !== null, 'reduced motion: key board renders end state');
   const scan = page.locator('[data-scan]').first();
   await scan.scrollIntoViewIfNeeded();
   await page.waitForTimeout(300);

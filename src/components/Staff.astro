@@ -3,8 +3,10 @@ import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import ScanAnimation from './ScanAnimation.astro';
 import StaffScreen from './StaffScreen.astro';
-import KeyBoard from './KeyBoard.astro';
 import BrowserFrame from './BrowserFrame.astro';
+import Ambient from './Ambient.astro';
+import { Picture } from 'astro:assets';
+import keyController from '../assets/reports/key-controller-full.jpg';
 const steps = [
   { title: 'Photograph.', body: 'One photo reads the plate, make, model and colour. No typing at the door.' },
   { title: 'Ticket.', body: 'Code and QR appear instantly: show it, send it by SMS, or print.' },
@@ -43,16 +45,18 @@ const steps = [
       </div>
     </div>
 
-    <div class="mt-20 md:mt-28">
+    <div class="relative mt-20 md:mt-28" data-reveal>
+      <Ambient variant="wide" class="-inset-y-[10%]" />
       <div class="mb-8 flex flex-col gap-3">
-        <p class="t-eyebrow">The key board</p>
-        <h3 class="t-h3 max-w-[24em]">Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does. <Pill status="live" class="ms-1 align-[3px]" /></h3>
+        <p class="t-eyebrow">The key controller</p>
+        <h3 class="t-h3 max-w-[26em]">Every ticket on one board, from checked in to at the podium. The shift manager sees who is on, what is requested and what is running late. <Pill status="live" class="ms-1 align-[3px]" /></h3>
       </div>
-      <div class="rounded-frame bg-field p-3 md:p-8">
-        <BrowserFrame url="board.valettuae.com/the-marquee">
-          <KeyBoard />
+      <div class="glass-panel !rounded-frame p-3 md:p-8">
+        <BrowserFrame url="admin.valettuae.com/key-controller">
+          <Picture src={keyController} formats={['avif', 'webp']} widths={[800, 1200, 1800]} sizes="(min-width: 1280px) 1150px, 94vw" alt="Key controller board: columns for checked in, parked, requested, with driver, en route and at podium, each ticket with its hook, car and timing." class="block w-full" loading="lazy" decoding="async" />
         </BrowserFrame>
       </div>
+      <p class="t-caption mt-4">Admin software, demo data.</p>
     </div>
   </div>
 </section>
