@@ -31,9 +31,14 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
 <script is:inline>
   (function () {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    document.documentElement.classList.add('story-on');
+    var html = document.documentElement;
+    html.classList.add('story-on');
+    // Browsers with native scroll-driven animations (Safari 26+, Chrome 115+) run the story on the compositor, no script per frame.
+    if (window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) html.classList.add('story-sda');
     var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
-    document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740)))).toFixed(3));
+    var ps = Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740))));
+    html.style.setProperty('--story-ps', ps.toFixed(3));
+    html.style.setProperty('--story-inv', (1 / ps).toFixed(4));
   })();
 </script>
 <section class="hero-story relative" data-story style="--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
@@ -264,6 +269,62 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     html.story-on .story-dots { left: 0; top: auto; bottom: 0; transform: none; }
     html.story-on .story-hub { left: 62%; }
   }
+
+  /* ---------- Native scroll-driven animations (html.story-sda): the whole story runs on the compositor ---------- */
+  html.story-sda .hero-story { view-timeline: --story block; }
+  html.story-sda .story-intro { animation: sy-intro linear both; animation-timeline: --story; animation-range: contain 0% contain 12%; }
+  html.story-sda .story-panel { animation: sy-panel ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
+  html.story-sda .story-hub { --arrive: 58vh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
+  html.story-sda .story-side-l { animation: sy-side-l ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
+  html.story-sda .story-side-r { animation: sy-side-r ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
+  html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: --story; animation-range: contain 40% contain 46%; }
+  html.story-sda .story-screen[data-screen="2"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 42% contain 48%, contain 62% contain 67%; }
+  html.story-sda .story-screen[data-screen="3"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 67%, contain 84% contain 89%; }
+  html.story-sda .story-screen[data-screen="4"] { animation: sy-screen-in ease-in-out both; animation-timeline: --story; animation-range: contain 84% contain 89%; }
+  html.story-sda .story-card-a { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 33% contain 39%, contain 40% contain 46%; }
+  html.story-sda .story-card-b { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 47% contain 53%, contain 62% contain 67%; }
+  html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 67% contain 73%, contain 84% contain 89%; }
+  html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 72% contain 78%, contain 84% contain 89%; }
+  html.story-sda .story-card-e { animation: sy-card-in ease-in-out both; animation-timeline: --story; animation-range: contain 90% contain 96%; }
+  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 40% contain 46%; }
+  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 42% contain 48%, contain 62% contain 67%; }
+  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 67%, contain 84% contain 89%; }
+  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 84% contain 90%; }
+  html.story-sda .story-dots { animation: sy-fade-in linear both; animation-timeline: --story; animation-range: contain 14% contain 20%; }
+  html.story-sda .story-dots li { animation: sy-dot-on linear; animation-timeline: --story; }
+  html.story-sda .story-dots li:nth-child(1) { animation-range: contain 14% contain 42%; }
+  html.story-sda .story-dots li:nth-child(2) { animation-range: contain 42% contain 62%; }
+  html.story-sda .story-dots li:nth-child(3) { animation-range: contain 62% contain 84%; }
+  html.story-sda .story-dots li:nth-child(4) { animation-range: contain 84% contain 100%; }
+  /* Scan details */
+  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: --story; animation-range: contain 30% contain 38%; }
+  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: --story; animation-range: contain 15% contain 29%; }
+  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: --story; animation-range: contain 26% contain 31%; }
+  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: --story; animation-range: contain 13% contain 17%; }
+  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 18%, contain 28% contain 32%; }
+  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: --story; animation-range: contain 30% contain 38%; }
+  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: --story; animation-range: contain 13% contain 17%; }
+  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: 60vh; --shift: -10vw; } }
+
+  @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
+  @keyframes sy-panel { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+  @keyframes sy-hub { from { transform: translate(-50%, -50%) translate(var(--shift), var(--arrive)) scale(var(--story-ps, 1)); } to { transform: translate(-50%, -50%) scale(var(--story-ps, 1)); } }
+  @keyframes sy-side-l { from { opacity: 0; transform: translate3d(0, 116px, 0) rotateY(0deg) scale(0.86); } to { opacity: 1; transform: translate3d(-243px, 56px, 0) rotateY(12deg) scale(0.86); } }
+  @keyframes sy-side-r { from { opacity: 0; transform: translate3d(0, 116px, 0) rotateY(0deg) scale(0.86); } to { opacity: 1; transform: translate3d(243px, 56px, 0) rotateY(-12deg) scale(0.86); } }
+  @keyframes sy-screen-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes sy-screen-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-10px); } }
+  @keyframes sy-card-in { from { opacity: 0; transform: scale(var(--story-inv, 1)) translateY(36px); } to { opacity: 1; transform: scale(var(--story-inv, 1)) translateY(0); } }
+  @keyframes sy-card-out { from { opacity: 1; transform: scale(var(--story-inv, 1)) translateY(0); } to { opacity: 0; transform: scale(var(--story-inv, 1)) translateY(-20px); } }
+  @keyframes sy-cap-in { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+  @keyframes sy-cap-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-24px); } }
+  @keyframes sy-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes sy-fade-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes sy-dot-on { from, to { background: var(--color-gold); } }
+  @keyframes sy-feed { from { transform: none; } to { transform: translateY(-22%); } }
+  @keyframes sy-line { 0% { opacity: 0; transform: none; } 25% { opacity: 1; } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(204px); } }
+  @keyframes sy-plate { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+  @keyframes sy-results { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes sy-shutter { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(24px); } }
   @keyframes story-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
   @media (prefers-reduced-motion: reduce) { html.story-on .story-intro .story-hint svg { animation: none; } }
 </style>
@@ -274,7 +335,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   // ancestor and the phone subtrees never restyle. Small scan details still use --t / --in / --out.
   const sec = document.querySelector<HTMLElement>('[data-story]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (sec && !reduce) {
+  if (sec && !reduce && !document.documentElement.classList.contains('story-sda')) {
     type Win = [number, number];
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
     const ease = (x: number) => { x = clamp(x); return x * x * (3 - 2 * x); };
