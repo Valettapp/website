@@ -2,8 +2,8 @@
 /**
  * The Valett film in a 20 px rounded glass frame.
  * - Poster first (AVIF/WebP via Astro <Picture>), 16:9 on desktop, 9:16 on mobile.
- * - `preload="none"`; the mp4 <source> is attached after first paint by the script below,
- *   and never when the user prefers reduced motion (autoplay variant).
+ * - `preload="none"` in the HTML; the mp4 <source> elements are attached after first paint by the script
+ *   below (never for the autoplay variant when the user prefers reduced motion).
  * - Until the film exists (site.film.mp4 === null) the poster placeholder is shown alone.
  */
 import { Picture } from 'astro:assets';
@@ -80,40 +80,15 @@ const posterSrcAttr = poster.src;
 </figure>
 
 <script>
-  // Lazy-attach the film after first paint; respect reduced motion for the silent hero.
-  // Routes, tried in order until one yields metadata: stream the primary url; fetch the alternate url whole
-  // and play it from a blob; fetch the primary whole. Safari needs HTTP range support to stream, and some
-  // hosts (the design preview) lack it, hence the blob routes. If every route fails, the reasons are shown in
-  // the frame so the failure can be diagnosed from a screenshot.
+  // Attach the film after first paint, as plain <source> elements the browser streams itself (the host serves
+  // byte ranges, which is all Safari needs). The player is never made inert: if the browser ignores preload
+  // (iOS Low Power Mode does), the user taps play and the fetch starts then. Browsers fall through to the
+  // next <source> on their own; only when the last one fails is the reason shown in the frame.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const portrait = window.matchMedia('(max-width: 767px)').matches;
   const figures = document.querySelectorAll<HTMLElement>('[data-film]');
-  const errName = (v: HTMLVideoElement) => (v.error ? ['', 'aborted', 'network', 'decode', 'src-not-supported'][v.error.code] || String(v.error.code) : 'no-error');
-  const settle = (video: HTMLVideoElement, ms: number) => new Promise<string>((res) => {
-    const done = (r: string) => { clearTimeout(t); res(r); };
-    const t = setTimeout(() => done(video.readyState >= 1 ? 'ok' : 'timeout'), ms);
-    video.addEventListener('loadedmetadata', () => done('ok'), { once: true });
-    video.addEventListener('error', () => done(errName(video)), { once: true });
-  });
-  const reset = (video: HTMLVideoElement) => { video.pause(); video.querySelectorAll('source').forEach((s) => s.remove()); video.removeAttribute('src'); video.load(); };
-  const tryStream = async (video: HTMLVideoElement, src: string) => {
-    reset(video); video.preload = 'metadata';
-    const source = document.createElement('source'); source.src = src; source.type = 'video/mp4';
-    const p = settle(video, 8000);
-    source.addEventListener('error', () => video.dispatchEvent(new Event('error')), { once: true });
-    video.appendChild(source); video.load();
-    return p;
-  };
-  const tryBlob = async (video: HTMLVideoElement, src: string) => {
-    let res: Response;
-    try { res = await fetch(src); } catch (e) { return `fetch failed (${(e as Error).message})`; }
-    if (!res.ok) return `http ${res.status}`;
-    const blob = await res.blob();
-    if (!blob.size) return 'empty';
-    reset(video); video.preload = 'auto'; video.src = URL.createObjectURL(blob); video.load();
-    return settle(video, 8000);
-  };
-  const attach = async (fig: HTMLElement) => {
+  const errName = (v: HTMLVideoElement) => (v.error ? ['', 'aborted', 'network', 'decode', 'src-not-supported'][v.error.code] || String(v.error.code) : 'no source could be played');
+  const attach = (fig: HTMLElement) => {
     const video = fig.querySelector('video');
     if (!video || video.dataset.ready) return;
     const primary = (portrait && fig.dataset.mp4Portrait) || fig.dataset.mp4;
@@ -122,27 +97,18 @@ const posterSrcAttr = poster.src;
     const variant = fig.dataset.variant;
     if (variant === 'hero' && reduce) return; // no autoplay under reduced motion
     video.dataset.ready = '1';
-    // The player is inert while routes are tried: a play() on a sourceless element makes Safari reject what arrives next.
-    const hadControls = video.controls; video.controls = false;
-    fig.setAttribute('data-film-loading', '');
-    const log: string[] = [];
-    const routes: [string, () => Promise<string>][] = [[`stream ${primary}`, () => tryStream(video, primary)]];
-    if (alt) routes.push([`fetch ${alt}`, () => tryBlob(video, alt)]);
-    routes.push([`fetch ${primary}`, () => tryBlob(video, primary)]);
-    let ok = false;
-    for (const [name, run] of routes) {
-      const r = await run();
-      log.push(`${name}: ${r}`);
-      if (r === 'ok') { ok = true; break; }
-    }
-    fig.removeAttribute('data-film-loading');
-    video.controls = hadControls;
-    if (ok) { if (variant === 'hero') video.play().catch(() => {}); return; }
-    reset(video);
-    const note = document.createElement('pre');
-    note.className = 'film-diag';
-    note.textContent = `The film could not load here.\n${log.join('\n')}\nua: ${navigator.userAgent.slice(0, 90)}`;
-    fig.querySelector('.film-box')?.appendChild(note);
+    video.preload = variant === 'hero' ? 'auto' : 'metadata';
+    const urls = alt && alt !== primary ? [primary, alt] : [primary];
+    const sources = urls.map((u) => { const s = document.createElement('source'); s.src = u; s.type = 'video/mp4'; return s; });
+    sources[sources.length - 1].addEventListener('error', () => {
+      const note = document.createElement('pre');
+      note.className = 'film-diag';
+      note.textContent = `The film could not load here.\n${urls.join('\n')}\n${errName(video)}\nua: ${navigator.userAgent.slice(0, 90)}`;
+      fig.querySelector('.film-box')?.appendChild(note);
+    }, { once: true });
+    video.prepend(...sources); // sources go before the <track>
+    video.load();
+    if (variant === 'hero') video.play().catch(() => {});
   };
   const run = () => {
     if ('IntersectionObserver' in window) {
@@ -156,7 +122,5 @@ const posterSrcAttr = poster.src;
 </script>
 
 <style>
-  [data-film-loading] video { opacity: 0; pointer-events: none; }
   .film-diag { position: absolute; inset: auto 12px 12px 12px; z-index: 5; margin: 0; padding: 10px 12px; border-radius: 10px; background: rgba(0,0,0,.75); color: #fff; font: 11px/1.45 ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-all; }
-  [data-film-loading]::after { content: 'Loading the film…'; position: absolute; inset-inline: 0; bottom: 18%; text-align: center; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); pointer-events: none; }
 </style>

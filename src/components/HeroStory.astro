@@ -36,10 +36,27 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     // Browsers with scroll-driven animations (Chromium 115+, Safari 26+) run the story on the compositor from a root
     // scroll timeline; the ranges need the section's top offset, measured by the main script.
     if (window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll(root)') && CSS.supports('animation-range: calc(1px + 1svh) 2px')) html.classList.add('story-sda');
-    var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
-    var ps = Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740))));
-    html.style.setProperty('--story-ps', ps.toFixed(3));
-    html.style.setProperty('--story-inv', (1 / ps).toFixed(4));
+    // Every length the story depends on (stage height, scroll length, phone scale) is fixed in px here, once.
+    // iOS resizes the viewport while the address bar collapses mid-scroll; anything tied to the live viewport
+    // height would jump at that moment. Re-measured only when the width changes (rotation).
+    var lastW = 0;
+    function measure() {
+      var w = window.innerWidth;
+      if (w === lastW) return;
+      lastW = w;
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+      document.body.appendChild(probe);
+      var vh = Math.max(560, probe.offsetHeight || window.innerHeight);
+      probe.remove();
+      var desktop = window.matchMedia('(min-width: 64rem)').matches;
+      var ps = Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((w - 32) / 744, vh * 0.5 / 740))));
+      html.style.setProperty('--story-vh', vh + 'px');
+      html.style.setProperty('--story-ps', ps.toFixed(3));
+      html.style.setProperty('--story-inv', (1 / ps).toFixed(4));
+    }
+    measure();
+    window.addEventListener('resize', measure);
   })();
 </script>
 <section class="hero-story relative" data-story style="--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
@@ -169,8 +186,8 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   @media (prefers-reduced-motion: reduce) { .story-cap .btn-primary { display: none; } }
 
   /* ---------- Scroll-driven story (html.story-on, set by the script) ---------- */
-  html.story-on .hero-story { height: 480svh; padding: 0; }
-  html.story-on .story-stage { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; }
+  html.story-on .hero-story { height: 560svh; height: calc(var(--story-vh, 100svh) * 5.6); padding: 0; }
+  html.story-on .story-stage { position: sticky; top: 0; height: 100vh; height: 100svh; height: var(--story-vh, 100svh); min-height: 560px; overflow: hidden; }
   html.story-on .story-body { display: block; height: 100%; }
   html.story-on .story-intro { position: absolute; inset-inline: 0; top: 13%; display: flex; }
   html.story-on .story-intro .story-hint { display: inline-flex; }
@@ -274,10 +291,10 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   /* ---------- Native scroll-driven animations (html.story-sda): the whole story runs on the compositor ---------- */
   /* Root scroll timeline: ranges are absolute scroll offsets, --story-top (section top, measured once) plus a share of the
      sticky travel (section height minus one screen). WebKit does not drive view-timeline `contain` ranges on a tall subject. */
-  html.story-sda .hero-story { --story-top: 72px; --story-len: 380svh; }
+  html.story-sda .hero-story { --story-top: 72px; --story-len: calc(var(--story-vh, 100svh) * 4.6); }
   html.story-sda .story-intro { animation: sy-intro linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0) calc(var(--story-top) + var(--story-len) * 0.12); }
   html.story-sda .story-panel { animation: sy-panel ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
-  html.story-sda .story-hub { --arrive: 58svh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
+  html.story-sda .story-hub { --arrive: calc(var(--story-vh, 100svh) * 0.58); --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
   html.story-sda .story-side-l { animation: sy-side-l ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
   html.story-sda .story-side-r { animation: sy-side-r ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
   html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.43) calc(var(--story-top) + var(--story-len) * 0.51); }
@@ -307,7 +324,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.13) calc(var(--story-top) + var(--story-len) * 0.17), calc(var(--story-top) + var(--story-len) * 0.3) calc(var(--story-top) + var(--story-len) * 0.34); }
   html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
   html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
-  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: 60svh; --shift: -10vw; } }
+  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: calc(var(--story-vh, 100svh) * 0.6); --shift: -10vw; } }
 
   @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
   @keyframes sy-panel { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
@@ -340,7 +357,12 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (sec && !reduce && document.documentElement.classList.contains('story-sda')) {
     // Native path: give the timeline the section's document offset (stable; re-measured on resize).
-    const top = () => { const r = sec.getBoundingClientRect(); const y = r.top + (window.scrollY || document.documentElement.scrollTop); sec.style.setProperty('--story-top', `${Math.round(y)}px`); };
+    let lastTop = '';
+    const top = () => {
+      const r = sec.getBoundingClientRect();
+      const v = `${Math.round(r.top + (window.scrollY || document.documentElement.scrollTop))}px`;
+      if (v !== lastTop) { lastTop = v; sec.style.setProperty('--story-top', v); }
+    };
     top(); window.addEventListener('resize', top); window.addEventListener('load', top);
   }
   if (sec && !reduce && !document.documentElement.classList.contains('story-sda')) {
@@ -358,15 +380,17 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     const screens = faders('.story-screen'), cards = faders('.story-card'), caps = faders('.story-cap');
     const small = qa('[data-win],[data-in]').filter((el) => !el.matches(BIG)).map((el) => ({ el, win: parse(el.dataset.win), i: parse(el.dataset.in), o: parse(el.dataset.out), last: '' }));
     const desktopMq = window.matchMedia('(min-width: 64rem)');
+    const stage = q('.story-stage');
     const SIDE = 243;
-    let ps = 1, arrive = 0, shift = 0, last = -1;
+    let ps = 1, arrive = 0, shift = 0, last = -1, stageH = 0, lastW = 0;
 
     // Phone scale and arrival distances from the viewport (natural phone: 360 × ~740 px; fan: 744 wide).
     const size = () => {
-      const vh = window.innerHeight, vw = window.innerWidth, desktop = desktopMq.matches;
+      // The stage is sized in px by the bootstrap script, so nothing here moves when iOS collapses its address bar.
+      stageH = stage.getBoundingClientRect().height;
+      const vh = stageH, vw = window.innerWidth, desktop = desktopMq.matches;
       const fit = desktop ? (vh - 200) / 740 : Math.min((vw - 32) / 744, (vh * 0.5) / 740);
-      ps = Math.max(0.4, Math.min(1, fit));
-      document.documentElement.style.setProperty('--story-ps', ps.toFixed(3));
+      ps = Math.max(0.42, Math.min(1, fit));
       arrive = desktop ? vh * 0.6 : vh * 0.58;
       shift = desktop ? -vw * 0.1 : 0;
       last = -1;
@@ -381,12 +405,11 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
       const v = i * (1 - o);
       it.el.style.opacity = f3(v);
       it.el.style.transform = move(i, o);
-      it.el.style.visibility = v === 0 ? 'hidden' : '';
     };
 
     const frame = () => {
       const r = sec.getBoundingClientRect();
-      const total = r.height - window.innerHeight;
+      const total = r.height - stageH;
       const p = total > 0 ? clamp(-r.top / total) : 0;
       if (p === last) return;
       last = p; sec.dataset.p = p.toFixed(3);
@@ -430,8 +453,22 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     let queued = false;
     const schedule = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; frame(); }); };
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', () => { size(); schedule(); });
+    window.addEventListener('resize', () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; size(); schedule(); });
     if ('IntersectionObserver' in window) new IntersectionObserver(schedule, { threshold: [0, 0.01, 0.5, 0.99, 1] }).observe(sec);
-    size(); frame();
+    lastW = window.innerWidth; size(); frame();
+  }
+  // On-device readout for diagnosing the story: open the page with #debug.
+  if (sec && location.hash === '#debug') {
+    const box = document.createElement('pre');
+    box.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;margin:0;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.75);color:#fff;font:11px/1.4 ui-monospace,Menlo,monospace;pointer-events:none';
+    document.body.appendChild(box);
+    const html = document.documentElement;
+    const upd = () => {
+      const r = sec.getBoundingClientRect();
+      const stageH = sec.firstElementChild ? sec.firstElementChild.getBoundingClientRect().height : 0;
+      const p = r.height - stageH > 0 ? Math.min(1, Math.max(0, -r.top / (r.height - stageH))) : 0;
+      box.textContent = `path ${html.classList.contains('story-sda') ? 'native' : reduce ? 'reduced' : 'js'}  p ${p.toFixed(3)}\nvh ${html.style.getPropertyValue('--story-vh')} inner ${window.innerHeight} ps ${html.style.getPropertyValue('--story-ps')}\ntop ${sec.style.getPropertyValue('--story-top') || '-'} sec ${Math.round(r.height)}\n${navigator.userAgent.slice(0, 80)}`;
+    };
+    upd(); window.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd);
   }
 </script>
