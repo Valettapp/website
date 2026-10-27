@@ -31,8 +31,10 @@ const posterSrcAttr = poster.src;
   data-variant={variant}
   data-mp4={site.film.mp4 ?? ''}
   data-mp4-portrait={site.film.mp4Portrait ?? ''}
+  data-mp4-alt={site.film.mp4 ?? ''}
+  data-mp4-portrait-alt={site.film.mp4Portrait ?? ''}
 >
-  <div class:list={['relative overflow-hidden rounded-[14px] bg-ink', hasFilm ? 'aspect-[9/16] md:aspect-video' : 'aspect-[4/3] md:aspect-[21/9]']}>
+  <div class:list={['film-box relative overflow-hidden rounded-[14px] bg-ink', hasFilm ? 'aspect-[9/16] md:aspect-video' : 'aspect-[4/3] md:aspect-[21/9]']}>
     {/* Poster: portrait on mobile, landscape on md+ (only when the film exists) */}
     {hasFilm && <Picture
       src={posterPortrait}
@@ -78,59 +80,69 @@ const posterSrcAttr = poster.src;
 </figure>
 
 <script>
-  // Lazy-attach the mp4 after first paint; respect reduced motion for the silent hero.
-  // Two ways to feed the <video>: stream it (normal), or fetch the whole file and play it from a blob URL.
-  // Safari needs HTTP range support to stream; hosts without it (the design preview) get the blob route,
-  // and any browser falls back to it when streaming errors or never yields metadata.
+  // Lazy-attach the film after first paint; respect reduced motion for the silent hero.
+  // Routes, tried in order until one yields metadata: stream the primary url; fetch the alternate url whole
+  // and play it from a blob; fetch the primary whole. Safari needs HTTP range support to stream, and some
+  // hosts (the design preview) lack it, hence the blob routes. If every route fails, the reasons are shown in
+  // the frame so the failure can be diagnosed from a screenshot.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const portrait = window.matchMedia('(max-width: 767px)').matches;
   const figures = document.querySelectorAll<HTMLElement>('[data-film]');
-  const start = (video: HTMLVideoElement, variant?: string) => { video.dataset.ready = '1'; if (variant === 'hero') video.play().catch(() => {}); };
-  const viaBlob = async (fig: HTMLElement, video: HTMLVideoElement, src: string) => {
-    if (video.dataset.blob) return;
-    video.dataset.blob = '1';
-    // While the file downloads the player is inert: a play() on an element without a source makes
-    // Safari reject the blob that arrives afterwards (MEDIA_ERR_SRC_NOT_SUPPORTED).
-    fig.setAttribute('data-film-loading', '');
-    const hadControls = video.controls;
-    video.controls = false;
-    try {
-      const res = await fetch(src);
-      if (!res.ok) throw new Error(String(res.status));
-      const url = URL.createObjectURL(await res.blob());
-      video.pause();
-      video.querySelectorAll('source').forEach((s) => s.remove());
-      video.removeAttribute('src');
-      video.preload = 'auto';
-      video.src = url;
-      video.load();
-      await new Promise<void>((done) => { video.addEventListener('loadedmetadata', () => done(), { once: true }); video.addEventListener('error', () => done(), { once: true }); });
-      start(video, fig.dataset.variant);
-    } catch { /* leave the poster */ }
-    video.controls = hadControls;
-    fig.removeAttribute('data-film-loading');
+  const errName = (v: HTMLVideoElement) => (v.error ? ['', 'aborted', 'network', 'decode', 'src-not-supported'][v.error.code] || String(v.error.code) : 'no-error');
+  const settle = (video: HTMLVideoElement, ms: number) => new Promise<string>((res) => {
+    const done = (r: string) => { clearTimeout(t); res(r); };
+    const t = setTimeout(() => done(video.readyState >= 1 ? 'ok' : 'timeout'), ms);
+    video.addEventListener('loadedmetadata', () => done('ok'), { once: true });
+    video.addEventListener('error', () => done(errName(video)), { once: true });
+  });
+  const reset = (video: HTMLVideoElement) => { video.pause(); video.querySelectorAll('source').forEach((s) => s.remove()); video.removeAttribute('src'); video.load(); };
+  const tryStream = async (video: HTMLVideoElement, src: string) => {
+    reset(video); video.preload = 'metadata';
+    const source = document.createElement('source'); source.src = src; source.type = 'video/mp4';
+    const p = settle(video, 8000);
+    source.addEventListener('error', () => video.dispatchEvent(new Event('error')), { once: true });
+    video.appendChild(source); video.load();
+    return p;
   };
-  const attach = (fig: HTMLElement) => {
+  const tryBlob = async (video: HTMLVideoElement, src: string) => {
+    let res: Response;
+    try { res = await fetch(src); } catch (e) { return `fetch failed (${(e as Error).message})`; }
+    if (!res.ok) return `http ${res.status}`;
+    const blob = await res.blob();
+    if (!blob.size) return 'empty';
+    reset(video); video.preload = 'auto'; video.src = URL.createObjectURL(blob); video.load();
+    return settle(video, 8000);
+  };
+  const attach = async (fig: HTMLElement) => {
     const video = fig.querySelector('video');
     if (!video || video.dataset.ready) return;
-    const src = (portrait && fig.dataset.mp4Portrait) || fig.dataset.mp4;
-    if (!src) return;
+    const primary = (portrait && fig.dataset.mp4Portrait) || fig.dataset.mp4;
+    const alt = (portrait && fig.dataset.mp4PortraitAlt) || fig.dataset.mp4Alt;
+    if (!primary) return;
     const variant = fig.dataset.variant;
     if (variant === 'hero' && reduce) return; // no autoplay under reduced motion
-    if (fig.hasAttribute('data-film-blob')) { viaBlob(fig, video, src); return; }
-    const source = document.createElement('source');
-    source.src = src;
-    source.type = 'video/mp4';
-    source.addEventListener('error', () => viaBlob(fig, video, src));
-    video.addEventListener('error', () => viaBlob(fig, video, src));
-    video.appendChild(source);
-    video.load();
-    start(video, variant);
-    // No metadata a few seconds after the video starts loading: the host cannot stream it, fetch it whole instead.
-    // (The autoplaying hero loads at once; the full variant has preload="none" and only loads on play.)
-    const check = () => window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 4000);
-    if (variant === 'hero') check();
-    video.addEventListener('play', check, { once: true });
+    video.dataset.ready = '1';
+    // The player is inert while routes are tried: a play() on a sourceless element makes Safari reject what arrives next.
+    const hadControls = video.controls; video.controls = false;
+    fig.setAttribute('data-film-loading', '');
+    const log: string[] = [];
+    const routes: [string, () => Promise<string>][] = [[`stream ${primary}`, () => tryStream(video, primary)]];
+    if (alt) routes.push([`fetch ${alt}`, () => tryBlob(video, alt)]);
+    routes.push([`fetch ${primary}`, () => tryBlob(video, primary)]);
+    let ok = false;
+    for (const [name, run] of routes) {
+      const r = await run();
+      log.push(`${name}: ${r}`);
+      if (r === 'ok') { ok = true; break; }
+    }
+    fig.removeAttribute('data-film-loading');
+    video.controls = hadControls;
+    if (ok) { if (variant === 'hero') video.play().catch(() => {}); return; }
+    reset(video);
+    const note = document.createElement('pre');
+    note.className = 'film-diag';
+    note.textContent = `The film could not load here.\n${log.join('\n')}\nua: ${navigator.userAgent.slice(0, 90)}`;
+    fig.querySelector('.film-box')?.appendChild(note);
   };
   const run = () => {
     if ('IntersectionObserver' in window) {
@@ -145,5 +157,6 @@ const posterSrcAttr = poster.src;
 
 <style>
   [data-film-loading] video { opacity: 0; pointer-events: none; }
+  .film-diag { position: absolute; inset: auto 12px 12px 12px; z-index: 5; margin: 0; padding: 10px 12px; border-radius: 10px; background: rgba(0,0,0,.75); color: #fff; font: 11px/1.45 ui-monospace, Menlo, monospace; white-space: pre-wrap; word-break: break-all; }
   [data-film-loading]::after { content: 'Loading the film…'; position: absolute; inset-inline: 0; bottom: 18%; text-align: center; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); pointer-events: none; }
 </style>
