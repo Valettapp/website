@@ -20,10 +20,10 @@ import Ambient from './Ambient.astro';
 import { site } from '../data/site';
 
 const beats = [
-  { n: '01', where: 'At the door', title: 'One photo. Plate, make, model and colour.', body: 'The valet photographs the car. Nothing typed, nothing written down.', in: '0.14,0.20', out: '0.40,0.46' },
-  { n: '02', where: 'On the guest’s phone', title: 'A ticket from the QR. Nothing to download.', body: 'The car’s photo, the ticket and the validation, in English or Arabic. No account.', in: '0.42,0.48', out: '0.62,0.67' },
-  { n: '03', where: 'From the table', title: 'Request from the table. Watch the car come.', body: 'The driver taps once and the guest’s page moves. Every minute on the record.', in: '0.62,0.67', out: '0.84,0.89' },
-  { n: '04', where: 'At the kerb', title: 'Rate, tip and receipt. By text.', body: 'The wait is the last thing a guest remembers. Now it is a text.', in: '0.84,0.90', out: '' },
+  { n: '01', where: 'At the door', title: 'One photo. Plate, make, model and colour.', body: 'The valet photographs the car. Nothing typed, nothing written down.', in: '0.14,0.20', out: '0.43,0.51' },
+  { n: '02', where: 'On the guest’s phone', title: 'A ticket from the QR. Nothing to download.', body: 'The car’s photo, the ticket and the validation, in English or Arabic. No account.', in: '0.43,0.51', out: '0.62,0.70' },
+  { n: '03', where: 'From the table', title: 'Request from the table. Watch the car come.', body: 'The driver taps once and the guest’s page moves. Every minute on the record.', in: '0.62,0.70', out: '0.82,0.90' },
+  { n: '04', where: 'At the kerb', title: 'Rate, tip and receipt. By text.', body: 'The wait is the last thing a guest remembers. Now it is a text.', in: '0.82,0.90', out: '' },
 ];
 const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White']];
 ---
@@ -67,16 +67,16 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
         <div class="story-side story-side-r" aria-hidden="true"><StaffScreen screen="ticket" /></div>
         <div class="story-phone relative w-[360px]" role="img" aria-label="One phone walking through Valett: the staff camera reads the plate from a photo; the guest's ticket appears on their phone; they request the car from the table and watch the driver come; they rate, tip and get a receipt by text.">
           {/* Screen 1: staff camera, scan driven by scroll */}
-          <div class="story-screen phone-frame" data-screen="1" data-in="-0.2,-0.1" data-out="0.40,0.46" aria-hidden="true">
+          <div class="story-screen phone-frame" data-screen="1" data-in="-0.2,-0.1" data-out="0.43,0.51" aria-hidden="true">
             <div class="scan phone-screen bg-ink text-white">
-              <div class="scan-feed-wrap absolute inset-0" data-win="0.30,0.38">
+              <div class="scan-feed-wrap absolute inset-0" data-win="0.33,0.41">
                 <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="360px" alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" decoding="async" />
                 {/* Viewfinder and plate box ride with the feed; the box sits on the measured plate (20–80 % × 54.7–62 %) */}
                 <div class="scan-frame absolute left-[8%] right-[8%] top-[43%] z-10 aspect-[4/3]">
                   <div class="scan-corners absolute inset-0"></div>
-                  <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]" data-win="0.15,0.29"></div>
+                  <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]" data-win="0.15,0.31"></div>
                 </div>
-                <div class="scan-plate absolute left-[18.5%] top-[53%] z-10 h-[10.5%] w-[63%] rounded-[4px] border-2 border-white/70" data-win="0.26,0.31">
+                <div class="scan-plate absolute left-[18.5%] top-[53%] z-10 h-[10.5%] w-[63%] rounded-[4px] border-2 border-white/70" data-win="0.29,0.34">
                   <span class="absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
                 </div>
               </div>
@@ -86,13 +86,13 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
                 <span class="text-[11px] text-white/70">01:05</span>
               </div>
               <div class="absolute inset-x-5 top-[77%] z-10 text-center">
-                <div class="scan-t0" data-win="0.13,0.17">
+                <div class="scan-t0" data-win="0.12,0.16">
                   <p class="text-[15px] font-medium drop-shadow">Take vehicle photo</p>
                   <p class="mt-1 text-[12px] text-white/70">Frame the number plate</p>
                 </div>
-                <p class="scan-t1 text-[15px] font-medium" data-in="0.14,0.18" data-out="0.28,0.32"><span class="inline-flex items-center gap-2"><span class="size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
+                <p class="scan-t1 text-[15px] font-medium" data-in="0.13,0.17" data-out="0.30,0.34"><span class="inline-flex items-center gap-2"><span class="size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
               </div>
-              <div class="scan-results absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-ink/95 px-5 pb-5 pt-4" data-win="0.30,0.38">
+              <div class="scan-results absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-ink/95 px-5 pb-5 pt-4" data-win="0.33,0.41">
                 <div class="mx-auto mb-3 h-1 w-9 rounded-pill bg-white/20"></div>
                 <ul class="flex flex-col gap-1.5 text-[12px]">
                   <li class="flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2"><span class="text-white/55">Plate</span><Plate emirate="Dubai" code="M" number="95378" scale={0.55} /></li>
@@ -100,31 +100,31 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
                 </ul>
                 <span class="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-pill bg-white px-4 py-2.5 text-[13px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised · Continue</span>
               </div>
-              <div class="scan-shutter absolute inset-x-0 bottom-5 z-10 flex justify-center" data-win="0.13,0.17">
+              <div class="scan-shutter absolute inset-x-0 bottom-5 z-10 flex justify-center" data-win="0.12,0.16">
                 <span class="inline-flex size-14 items-center justify-center rounded-full border-2 border-white/90"><span class="size-11 rounded-full bg-white/95"></span></span>
               </div>
             </div>
           </div>
           {/* Screens 2–4: the guest page */}
-          <div class="story-screen" data-screen="2" data-in="0.42,0.48" data-out="0.62,0.67" aria-hidden="true"><GuestPhone static state={1} /></div>
-          <div class="story-screen" data-screen="3" data-in="0.62,0.67" data-out="0.84,0.89" aria-hidden="true"><GuestPhone static state={4} /></div>
-          <div class="story-screen" data-screen="4" data-in="0.84,0.89" aria-hidden="true"><GuestPhone static state={5} /></div>
+          <div class="story-screen" data-screen="2" data-in="0.43,0.51" data-out="0.62,0.70" aria-hidden="true"><GuestPhone static state={1} /></div>
+          <div class="story-screen" data-screen="3" data-in="0.62,0.70" data-out="0.82,0.90" aria-hidden="true"><GuestPhone static state={4} /></div>
+          <div class="story-screen" data-screen="4" data-in="0.82,0.90" aria-hidden="true"><GuestPhone static state={5} /></div>
         </div>
 
         {/* Floating glass cards, one or two per beat */}
-        <div class="story-card glass-card story-card-a" data-in="0.33,0.39" data-out="0.40,0.46" aria-hidden="true">
+        <div class="story-card glass-card story-card-a" data-in="0.36,0.42" data-out="0.43,0.51" aria-hidden="true">
           <span class="story-card-icon border border-gold text-gold"><Icon name="check" size={14} /></span>
           <span class="min-w-0"><strong class="block font-semibold">Vehicle recognised</strong><span class="block text-ink-2">Land Rover Defender · White · M 95378</span></span>
         </div>
-        <div class="story-card glass-card story-card-b" data-in="0.47,0.53" data-out="0.62,0.67" aria-hidden="true">
+        <div class="story-card glass-card story-card-b" data-in="0.50,0.56" data-out="0.62,0.70" aria-hidden="true">
           <span class="story-card-icon border border-gold text-gold"><Icon name="sms" size={14} /></span>
           <span class="min-w-0"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your car is parked. Ticket V777.</span></span>
         </div>
-        <div class="story-card glass-card story-card-c" data-in="0.67,0.73" data-out="0.84,0.89" aria-hidden="true">
+        <div class="story-card glass-card story-card-c" data-in="0.69,0.75" data-out="0.82,0.90" aria-hidden="true">
           <span class="story-card-icon bg-ink text-white"><Icon name="bolt" size={14} /></span>
           <span class="min-w-0"><strong class="block font-semibold">Driver on it</strong><span class="block text-ink-2">Zone P3 · Bay 55 · keys from hook 55</span></span>
         </div>
-        <div class="story-card glass-card story-card-d" data-in="0.72,0.78" data-out="0.84,0.89" aria-hidden="true">
+        <div class="story-card glass-card story-card-d" data-in="0.74,0.80" data-out="0.82,0.90" aria-hidden="true">
           <span class="story-card-icon border border-gold text-gold"><Icon name="sms" size={14} /></span>
           <span class="min-w-0"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your driver is bringing your car. 4 min.</span></span>
         </div>
@@ -168,7 +168,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   @media (prefers-reduced-motion: reduce) { .story-cap .btn-primary { display: none; } }
 
   /* ---------- Scroll-driven story (html.story-on, set by the script) ---------- */
-  html.story-on .hero-story { height: 360vh; padding: 0; }
+  html.story-on .hero-story { height: 480svh; padding: 0; }
   html.story-on .story-stage { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; }
   html.story-on .story-body { display: block; height: 100%; }
   html.story-on .story-intro { position: absolute; inset-inline: 0; top: 13%; display: flex; }
@@ -274,37 +274,37 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-sda .hero-story { view-timeline: --story block; }
   html.story-sda .story-intro { animation: sy-intro linear both; animation-timeline: --story; animation-range: contain 0% contain 12%; }
   html.story-sda .story-panel { animation: sy-panel ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-hub { --arrive: 58vh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
+  html.story-sda .story-hub { --arrive: 58svh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
   html.story-sda .story-side-l { animation: sy-side-l ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
   html.story-sda .story-side-r { animation: sy-side-r ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: --story; animation-range: contain 40% contain 46%; }
-  html.story-sda .story-screen[data-screen="2"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 42% contain 48%, contain 62% contain 67%; }
-  html.story-sda .story-screen[data-screen="3"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 67%, contain 84% contain 89%; }
-  html.story-sda .story-screen[data-screen="4"] { animation: sy-screen-in ease-in-out both; animation-timeline: --story; animation-range: contain 84% contain 89%; }
-  html.story-sda .story-card-a { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 33% contain 39%, contain 40% contain 46%; }
-  html.story-sda .story-card-b { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 47% contain 53%, contain 62% contain 67%; }
-  html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 67% contain 73%, contain 84% contain 89%; }
-  html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 72% contain 78%, contain 84% contain 89%; }
+  html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: --story; animation-range: contain 43% contain 51%; }
+  html.story-sda .story-screen[data-screen="2"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 43% contain 51%, contain 62% contain 70%; }
+  html.story-sda .story-screen[data-screen="3"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 70%, contain 82% contain 90%; }
+  html.story-sda .story-screen[data-screen="4"] { animation: sy-screen-in ease-in-out both; animation-timeline: --story; animation-range: contain 82% contain 90%; }
+  html.story-sda .story-card-a { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 36% contain 42%, contain 43% contain 51%; }
+  html.story-sda .story-card-b { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 50% contain 56%, contain 62% contain 70%; }
+  html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 69% contain 75%, contain 82% contain 90%; }
+  html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 74% contain 80%, contain 82% contain 90%; }
   html.story-sda .story-card-e { animation: sy-card-in ease-in-out both; animation-timeline: --story; animation-range: contain 90% contain 96%; }
-  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 40% contain 46%; }
-  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 42% contain 48%, contain 62% contain 67%; }
-  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 67%, contain 84% contain 89%; }
-  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 84% contain 90%; }
+  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 43% contain 51%; }
+  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 43% contain 51%, contain 62% contain 70%; }
+  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 70%, contain 82% contain 90%; }
+  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 82% contain 90%; }
   html.story-sda .story-dots { animation: sy-fade-in linear both; animation-timeline: --story; animation-range: contain 14% contain 20%; }
   html.story-sda .story-dots li { animation: sy-dot-on linear; animation-timeline: --story; }
-  html.story-sda .story-dots li:nth-child(1) { animation-range: contain 14% contain 42%; }
-  html.story-sda .story-dots li:nth-child(2) { animation-range: contain 42% contain 62%; }
-  html.story-sda .story-dots li:nth-child(3) { animation-range: contain 62% contain 84%; }
-  html.story-sda .story-dots li:nth-child(4) { animation-range: contain 84% contain 100%; }
+  html.story-sda .story-dots li:nth-child(1) { animation-range: contain 14% contain 43%; }
+  html.story-sda .story-dots li:nth-child(2) { animation-range: contain 43% contain 62%; }
+  html.story-sda .story-dots li:nth-child(3) { animation-range: contain 62% contain 82%; }
+  html.story-sda .story-dots li:nth-child(4) { animation-range: contain 82% contain 100%; }
   /* Scan details */
-  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: --story; animation-range: contain 30% contain 38%; }
-  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: --story; animation-range: contain 15% contain 29%; }
-  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: --story; animation-range: contain 26% contain 31%; }
-  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: --story; animation-range: contain 13% contain 17%; }
-  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 18%, contain 28% contain 32%; }
-  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: --story; animation-range: contain 30% contain 38%; }
-  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: --story; animation-range: contain 13% contain 17%; }
-  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: 60vh; --shift: -10vw; } }
+  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: --story; animation-range: contain 33% contain 41%; }
+  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: --story; animation-range: contain 15% contain 31%; }
+  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: --story; animation-range: contain 29% contain 34%; }
+  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: --story; animation-range: contain 12% contain 16%; }
+  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: --story, --story; animation-range: contain 13% contain 17%, contain 30% contain 34%; }
+  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: --story; animation-range: contain 33% contain 41%; }
+  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: --story; animation-range: contain 12% contain 16%; }
+  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: 60svh; --shift: -10vw; } }
 
   @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
   @keyframes sy-panel { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
@@ -383,7 +383,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
       if (p === last) return;
       last = p;
       // Beat marker
-      const beat = String(p < 0.14 ? 0 : p < 0.42 ? 1 : p < 0.62 ? 2 : p < 0.84 ? 3 : 4);
+      const beat = String(p < 0.14 ? 0 : p < 0.43 ? 1 : p < 0.62 ? 2 : p < 0.82 ? 3 : 4);
       if (dots.dataset.beat !== beat) dots.dataset.beat = beat;
       dots.style.opacity = f3(ease((p - 0.14) / 0.06));
       // Headline out

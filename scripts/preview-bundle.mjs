@@ -17,8 +17,10 @@ const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirect
 const rewrite = (s) => s
   .replace(/\/_astro\//g, 'assets/')
   .replace(/"\/film\//g, '"film/') // film paths are absolute on the real site, relative on the artifact host
-  // The artifact host cannot stream video (no HTTP range support, which Safari needs): the film loader fetches the whole file instead.
-  .replace(/ data-film /g, ' data-film data-film-blob ')
+  // The artifact host cannot stream video (no HTTP range support, which Safari needs); its asset store can.
+  // The two cuts are uploaded there (Artifact tool, asset: true) and the page streams them from these ids.
+  .replace(/data-mp4="film\/valett-film-16x9\.mp4"/g, 'data-mp4="/_blob/d93326a0ff85e43df95321d4f87bd7a1"')
+  .replace(/data-mp4-portrait="film\/valett-film-9x16\.mp4"/g, 'data-mp4-portrait="/_blob/0156df6fe7d42fb26c1e09eb89e8c20c"')
   .replace(/href="\/privacy"/g, 'href="privacy.html"')
   .replace(/href="\/(favicon\.svg|favicon\.ico|apple-touch-icon\.png|site\.webmanifest)"/g, 'href="$1"')
   .replace(/href="\/"/g, 'href="index.html"')

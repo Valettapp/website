@@ -23,7 +23,7 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const op = (sel) => story.locator(sel).evaluate((el) => Number(getComputedStyle(el).opacity));
   const native = await page.evaluate(() => document.documentElement.classList.contains('story-sda'));
   const s1 = await op('[data-screen="1"]'), g0 = await op('[data-screen="2"]');
-  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.5)); await page.waitForTimeout(300);
+  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.56)); await page.waitForTimeout(300);
   const s2 = await op('[data-screen="2"]'), s1b = await op('[data-screen="1"]');
   check(s1 === 1 && g0 === 0 && s2 > 0.9 && s1b === 0, `hero story follows scroll (${native ? 'native timeline' : 'script'}: scan ${s1}→${s1b}, guest ${g0}→${s2})`);
   await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.98)); await page.waitForTimeout(300);
