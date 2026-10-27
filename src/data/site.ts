@@ -36,5 +36,5 @@ export const nav = [
   { href: '#staff', label: 'Staff' },
   { href: '#back-office', label: 'Back office' },
   { href: '#technology', label: 'Technology' },
-  { href: '#company', label: 'Company' },
+  { href: '#company', label: 'Team' },
 ];

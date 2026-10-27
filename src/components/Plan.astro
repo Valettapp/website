@@ -2,12 +2,17 @@
 import SectionHead from './SectionHead.astro';
 // Portraits: initials on #F2F2F0 circles until photos arrive.
 const founders = [
-  { name: 'Leon Lumley-Savile', role: 'Co-founder', bio: 'Real estate and commodity trading, with a network of ultra-high-net-worth clients who trust him to deliver vetted products and deals worldwide.' },
-  { name: 'Tom Beenham', role: 'Co-founder', bio: 'Marketing. Built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.' },
+  { name: 'Leon Lumley-Savile', role: 'Co-founder', focus: 'Partnerships, capital and venues', bio: 'Real estate and commodity trading, with a network of ultra-high-net-worth clients who trust him to deliver vetted products and deals worldwide.' },
+  { name: 'Tom Beenham', role: 'Co-founder', focus: 'Marketing and growth', bio: 'Marketing. Built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.' },
 ];
 const investors = [
-  { name: 'Abdulla Al Shaibani', role: 'Investor and advisor', bio: 'Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East’s Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto.' },
-  { name: 'Mo Aziz', role: 'Investor and advisor', bio: 'Third-generation serial technology entrepreneur with deep operational expertise. Fintech specialist, and the first UAE-based founder to go through Y Combinator, in 2019.' },
+  { name: 'Abdulla Al Shaibani', role: 'Investor and advisor', focus: 'Real estate and development', bio: 'Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East’s Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto.' },
+  { name: 'Mo Aziz', role: 'Investor and advisor', focus: 'Fintech and operations', bio: 'Third-generation serial technology entrepreneur with deep operational expertise. Fintech specialist, and the first UAE-based founder to go through Y Combinator, in 2019.' },
+];
+const divisions = [
+  { title: 'Founders', body: 'Partnerships, venues, capital and growth. The two people who waited thirty minutes for a car and decided to fix it.' },
+  { title: 'Investors and advisors', body: 'Real estate, development, fintech and operations. The people who opened the doors in Dubai.' },
+  { title: 'Product and AI engineering', body: 'The team building the recognition, the guest page and the board. Profiles to follow.' },
 ];
 const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(0, 2).join('');
 ---
@@ -28,37 +33,45 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
       </div>
     </div>
 
-    <div class="mt-20 grid gap-14 md:mt-28 lg:grid-cols-2 lg:gap-16">
-      <div>
-        <p class="t-eyebrow">Founders</p>
-        <ul class="mt-6 flex flex-col gap-8">
-          {founders.map((p) => (
-            <li class="flex gap-5">
-              <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-field text-[18px] font-medium tracking-[0.04em] text-ink-2" aria-hidden="true">{initials(p.name)}</span>
-              <div>
-                <h3 class="t-h3 !text-[20px]">{p.name}</h3>
-                <p class="t-caption mt-0.5">{p.role}</p>
-                <p class="mt-3 text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p class="t-eyebrow">Investors and advisors</p>
-        <ul class="mt-6 flex flex-col gap-8">
-          {investors.map((p) => (
-            <li class="flex gap-5">
-              <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-field text-[18px] font-medium tracking-[0.04em] text-ink-2" aria-hidden="true">{initials(p.name)}</span>
-              <div>
-                <h3 class="t-h3 !text-[20px]">{p.name}</h3>
-                <p class="t-caption mt-0.5">{p.role}</p>
-                <p class="mt-3 text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+    {/* Divisions */}
+    <ul class="mt-20 grid gap-6 md:mt-28 md:grid-cols-3" data-reveal>
+      {divisions.map((d, i) => (
+        <li class="hairline-t flex flex-col gap-2 pt-6">
+          <p class="t-eyebrow">0{i + 1}</p>
+          <h3 class="t-h3">{d.title}</h3>
+          <p class="text-[16px] leading-relaxed text-ink-2">{d.body}</p>
+        </li>
+      ))}
+    </ul>
+
+    {/* Profiles */}
+    <div class="mt-20 md:mt-28" data-reveal>
+      <p class="t-eyebrow">Founders</p>
+      <ul class="mt-6 grid gap-6 md:grid-cols-2">
+        {founders.map((p) => (
+          <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
+            <div class="flex items-center gap-4">
+              <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-field text-[18px] font-semibold tracking-[0.04em] text-ink-2" aria-hidden="true">{initials(p.name)}</span>
+              <div><h3 class="t-h3 !text-[20px]">{p.name}</h3><p class="t-caption mt-0.5">{p.role} · {p.focus}</p></div>
+            </div>
+            <p class="text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="mt-14 md:mt-20" data-reveal>
+      <p class="t-eyebrow">Investors and advisors</p>
+      <ul class="mt-6 grid gap-6 md:grid-cols-2">
+        {investors.map((p) => (
+          <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
+            <div class="flex items-center gap-4">
+              <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-field text-[18px] font-semibold tracking-[0.04em] text-ink-2" aria-hidden="true">{initials(p.name)}</span>
+              <div><h3 class="t-h3 !text-[20px]">{p.name}</h3><p class="t-caption mt-0.5">{p.role} · {p.focus}</p></div>
+            </div>
+            <p class="text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>

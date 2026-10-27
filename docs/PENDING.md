@@ -10,7 +10,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 | LinkedIn URL | `src/data/site.ts` → `linkedin` | linkedin.com/company/valett |
 | The film (16:9 + 9:16 cuts, captions .vtt) | `public/film/`, then `src/data/site.ts` → `film` | Poster placeholder (#F2F2F0 frame with the wordmark) in hero and §2 |
 | Logo SVG | `public/favicon.svg`, `Wordmark.astro` | Serif VALETT wordmark set live in Cormorant Garamond; geometric V favicon. Drop the official SVG in when it exists |
-| Reports mockup PDF (`Valett_Reports___polish_mockup.pdf`) | §5 tiles, one page per tile | Eight HTML mini-UIs with demo data in browser chrome (`MiniUI.astro`) |
+| Reports mockup PDF | received 27 Oct; §5 uses crops of pages 1, 3, 6, 7, 10, 11, 14, 16, 17, 18 (`src/assets/reports/`). Pages carry tenant names Q East by Alphabeta, AXeed and The Palace Downtown; confirm those may appear | — |
 | Founder and investor photos | `Plan.astro` | Initials on #F2F2F0 circles |
 | Wording for "AI scanning camera on every driver's device" | `Technology.astro` | Shown as written, pill `live` |
 | Partner names (PMS, barrier systems, car care) | `Integrations.astro` | Generic names, statuses from the brief |
@@ -35,6 +35,9 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Mockups across the page: key board in browser chrome (§4), eight back-office mini-UIs (§5), a guest receipt (§6), integrations as a settings panel with toggles (§7), white-label venue headers for fictional venues The Marquee, Arcadia Mall, Maison Lune, One Marina (§9). All demo data.
 
 - Polish pass (27 Oct): single wordmark in the nav only; §2 film placeholder is a slim 21:9 "The film · coming soon" strip (poster image only renders once the film exists); eyebrows on Money and Who it's for; static mockups labelled "Demo data"; staff steps, back-office tiles and venue cards are swipeable snap rows on mobile; sections fade up on scroll (JS-only, off under reduced motion); glass mobile menu in the nav.
+
+- Plate recognition block in §8 with four HTML demo plates (Dubai, Abu Dhabi, Sharjah, Fujairah formats) and the recognition output; claim "reads plates across emirates, day and night" needs Leon's tick.
+- §10 is now a team section: three divisions (founders, investors and advisors, product and AI engineering with "profiles to follow"), founder and investor profile cards. Division names and the engineering team's profiles are inferred; confirm or replace.
 
 ## Copy added outside the brief
 
