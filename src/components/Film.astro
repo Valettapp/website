@@ -89,16 +89,25 @@ const posterSrcAttr = poster.src;
   const viaBlob = async (fig: HTMLElement, video: HTMLVideoElement, src: string) => {
     if (video.dataset.blob) return;
     video.dataset.blob = '1';
+    // While the file downloads the player is inert: a play() on an element without a source makes
+    // Safari reject the blob that arrives afterwards (MEDIA_ERR_SRC_NOT_SUPPORTED).
     fig.setAttribute('data-film-loading', '');
+    const hadControls = video.controls;
+    video.controls = false;
     try {
       const res = await fetch(src);
       if (!res.ok) throw new Error(String(res.status));
       const url = URL.createObjectURL(await res.blob());
+      video.pause();
       video.querySelectorAll('source').forEach((s) => s.remove());
+      video.removeAttribute('src');
+      video.preload = 'auto';
       video.src = url;
       video.load();
+      await new Promise<void>((done) => { video.addEventListener('loadedmetadata', () => done(), { once: true }); video.addEventListener('error', () => done(), { once: true }); });
       start(video, fig.dataset.variant);
     } catch { /* leave the poster */ }
+    video.controls = hadControls;
     fig.removeAttribute('data-film-loading');
   };
   const attach = (fig: HTMLElement) => {
@@ -117,11 +126,11 @@ const posterSrcAttr = poster.src;
     video.appendChild(source);
     video.load();
     start(video, variant);
-    // No metadata after a few seconds of trying: the host cannot stream it, fetch it whole instead.
-    const timer = window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 4000);
-    video.addEventListener('loadedmetadata', () => window.clearTimeout(timer), { once: true });
-    // The full variant only starts loading on play; arm the check then too.
-    video.addEventListener('play', () => { window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 3000); }, { once: true });
+    // No metadata a few seconds after the video starts loading: the host cannot stream it, fetch it whole instead.
+    // (The autoplaying hero loads at once; the full variant has preload="none" and only loads on play.)
+    const check = () => window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 4000);
+    if (variant === 'hero') check();
+    video.addEventListener('play', check, { once: true });
   };
   const run = () => {
     if ('IntersectionObserver' in window) {
@@ -135,6 +144,6 @@ const posterSrcAttr = poster.src;
 </script>
 
 <style>
-  [data-film-loading] video { opacity: 0; }
+  [data-film-loading] video { opacity: 0; pointer-events: none; }
   [data-film-loading]::after { content: 'Loading the film…'; position: absolute; inset-inline: 0; bottom: 18%; text-align: center; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); pointer-events: none; }
 </style>
