@@ -103,7 +103,7 @@ Portraits: placeholders (initials on #F2F2F0 circles) until photos arrive.
 H2: See it at your door. Body: Thirty minutes, on a call or at your venue, with the real app in your hands. Button: Book a demo.
 
 ### 12 Footer (black)
-VALETT serif wordmark · Dubai, UAE · hello@valettuae.com (confirm) · LinkedIn · Privacy · © 2026 Valett · Valet, without the wait.
+VALETT serif wordmark · Dubai, UAE · info@valett.si · LinkedIn · Privacy · © 2026 Valett · Valet, without the wait.
 
 ## Assets in this folder
 - `assets/screens/` five real screenshots (guest 1–3 light, staff 4–5 dark). Rebuild these as HTML components; do not ship the PNGs (they carry iOS chrome and the TEST3 tenant).

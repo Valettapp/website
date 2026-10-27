@@ -7,7 +7,7 @@ export const site = {
     'Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text. Built for the venues guests remember.',
   tagline: 'A new era for a timeless service.',
   slogan: 'A new era for a timeless service.',
-  email: 'hello@valett.si', // pending confirmation from Leon
+  email: 'info@valett.si',
   linkedin: 'https://www.linkedin.com/company/valett', // pending confirmation
   location: 'Dubai, UAE',
   lang: 'en',
