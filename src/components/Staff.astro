@@ -11,13 +11,13 @@ const steps = [
   { title: 'Park.', body: 'Zone and bay recorded, keys tracked, damage walkaround with time-stamped photos.' },
 ];
 ---
-<section id="staff" class="section-pad scroll-mt-20" aria-labelledby="staff-title">
+<section data-reveal-group id="staff" class="section-pad scroll-mt-20" aria-labelledby="staff-title">
   <div class="container-page">
     <SectionHead id="staff-title" eyebrow="The staff app" title="Forty seconds from arrival to parked. All of it on the record." />
 
-    <ol class="mt-16 grid gap-12 md:mt-24 md:grid-cols-3 md:gap-8">
+    <ol class="snap-row mt-16 md:mt-24 md:grid md:grid-cols-3 md:gap-8" data-reveal>
       {steps.map((s, i) => (
-        <li class="flex flex-col gap-6">
+        <li class="snap-item flex flex-col gap-6">
           <div class="rounded-frame bg-field px-6 py-8 flex justify-center">
             {i === 0 ? <ScanAnimation /> : i === 1 ? <StaffScreen screen="ticket" /> : <StaffScreen screen="park" />}
           </div>

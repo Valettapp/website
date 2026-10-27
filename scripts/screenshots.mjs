@@ -11,7 +11,8 @@ const browser = await chromium.launch();
 const sections = process.argv.includes('--sections');
 
 for (const [name, width, height, dsf] of [['1440', 1440, 900, 1], ['390', 390, 844, 2]]) {
-  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: dsf, isMobile: width < 500, hasTouch: width < 500 });
+  // Static captures: emulate reduced motion so reveal/scroll animations render their final state.
+  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: dsf, isMobile: width < 500, hasTouch: width < 500, reducedMotion: 'reduce' });
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   // Let lazy images below the fold load by scrolling through.

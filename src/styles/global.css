@@ -318,3 +318,41 @@
   transform: translateY(-200%);
   &:focus { transform: none; }
 }
+
+/* ------------------------------------------------------------------ */
+/* Mobile snap rows (become grids from sm/md up)                       */
+/* ------------------------------------------------------------------ */
+@utility snap-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-inline: -20px;
+  padding-inline: 20px;
+  scroll-padding-inline: 20px;
+  &::-webkit-scrollbar { display: none; }
+  @media (min-width: 40rem) { overflow: visible; margin-inline: 0; padding-inline: 0; }
+}
+@utility snap-item {
+  flex: 0 0 84%;
+  scroll-snap-align: start;
+  @media (min-width: 40rem) { flex: initial; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal: JS adds .reveal-ready to <html>; elements fade up    */
+/* once in view. Nothing changes without JS or under reduced motion.   */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  html.reveal-ready [data-reveal], html.reveal-ready [data-reveal-group] > .container-page > *:not(.revealed) {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms cubic-bezier(.2,.7,.2,1), transform 700ms cubic-bezier(.2,.7,.2,1);
+  }
+  html.reveal-ready [data-reveal].revealed, html.reveal-ready [data-reveal-group] > .container-page > .revealed {
+    opacity: 1;
+    transform: none;
+  }
+}

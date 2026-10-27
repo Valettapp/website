@@ -10,18 +10,18 @@ import Icon from './Icon.astro';
 ---
 <div class="hero-stage relative mx-auto mt-16 w-full max-w-[1100px] md:mt-20" data-hero-stage style="--enter:1;--leave:0;--tx:0deg;--ty:0deg;--mx:0;--my:0">
   <div class="relative overflow-hidden rounded-[32px] bg-field aspect-[4/5] sm:aspect-[16/11] lg:aspect-[16/10] md:rounded-[40px]" style="perspective: 1600px">
-    <div class="fan absolute inset-x-0 top-[8%] flex items-start justify-center">
+    <div class="fan absolute inset-x-0 top-[5%] flex items-start justify-center">
       <div class="fan-side fan-left w-[300px] shrink-0" aria-hidden="true"><StaffScreen screen="request" /></div>
       <div class="fan-centre relative z-10 w-[360px] shrink-0"><div class="hero-phone-tilt"><GuestPhone static priority /></div></div>
       <div class="fan-side fan-right w-[300px] shrink-0" aria-hidden="true"><StaffScreen screen="ticket" /></div>
     </div>
 
     {/* Glass cards echoing the centre screen */}
-    <div class="glass-card hero-card absolute end-[2%] top-[3%] z-20 flex w-[196px] items-center gap-2.5 px-3.5 py-2.5 text-start text-[12px] sm:w-[256px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px] md:end-[7%] md:top-[14%]" style="--speed:1" aria-hidden="true">
+    <div class="glass-card hero-card absolute end-[2%] top-[3%] z-20 flex w-[196px] md:end-[3%] md:top-[18%] lg:end-[5%] items-center gap-2.5 px-3.5 py-2.5 text-start text-[12px] sm:w-[256px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px]" style="--speed:1" aria-hidden="true">
       <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-gold text-gold"><Icon name="sms" size={15} /></span>
       <span class="min-w-0"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your driver is bringing your car. 4 min.</span></span>
     </div>
-    <div class="glass-card hero-card absolute start-[2%] top-[66%] z-20 flex w-[196px] items-center gap-2.5 px-3.5 py-2.5 text-start text-[12px] sm:w-[256px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px] md:start-[7%] md:top-[62%]" style="--speed:1.4" aria-hidden="true">
+    <div class="glass-card hero-card absolute start-[2%] top-[66%] z-20 flex w-[196px] md:start-[3%] md:top-[60%] lg:start-[5%] items-center gap-2.5 px-3.5 py-2.5 text-start text-[12px] sm:w-[256px] sm:gap-3 sm:px-4 sm:py-3 sm:text-[13px]" style="--speed:1.4" aria-hidden="true">
       <span class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-ink text-white"><Icon name="bolt" size={15} /></span>
       <span class="min-w-0"><strong class="block font-semibold">Driver on it</strong><span class="block text-ink-2">Zone P3 · Bay 55 · keys from hook 55</span></span>
     </div>

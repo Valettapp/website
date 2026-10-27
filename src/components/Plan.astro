@@ -11,7 +11,7 @@ const investors = [
 ];
 const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(0, 2).join('');
 ---
-<section id="company" class="section-pad scroll-mt-20" aria-labelledby="company-title">
+<section data-reveal-group id="company" class="section-pad scroll-mt-20" aria-labelledby="company-title">
   <div class="container-page">
     <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5">

@@ -13,13 +13,13 @@ const rows: { label: string; status: Status; note: string }[] = [
   { label: 'Car care while parked (cleaning, fuel)', status: 'exploring', note: '' },
 ];
 ---
-<section id="integrations" class="section-pad scroll-mt-20" aria-labelledby="integrations-title">
+<section data-reveal-group id="integrations" class="section-pad scroll-mt-20" aria-labelledby="integrations-title">
   <div class="container-page">
     <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-4">
         <SectionHead id="integrations-title" eyebrow="Integrations and partners" title="Built to plug into the venue." />
       </div>
-      <div class="lg:col-span-8">
+      <div class="min-w-0 lg:col-span-8">
         <div class="rounded-frame bg-field p-4 md:p-8">
           <BrowserFrame url="admin.valettuae.com/settings/integrations">
             <div class="px-5 py-4 md:px-7 md:py-5">

@@ -34,6 +34,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Mockups across the page: key board in browser chrome (§4), eight back-office mini-UIs (§5), a guest receipt (§6), integrations as a settings panel with toggles (§7), white-label venue headers for fictional venues The Marquee, Arcadia Mall, Maison Lune, One Marina (§9). All demo data.
 
+- Polish pass (27 Oct): single wordmark in the nav only; §2 film placeholder is a slim 21:9 "The film · coming soon" strip (poster image only renders once the film exists); eyebrows on Money and Who it's for; static mockups labelled "Demo data"; staff steps, back-office tiles and venue cards are swipeable snap rows on mobile; sections fade up on scroll (JS-only, off under reduced motion); glass mobile menu in the nav.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

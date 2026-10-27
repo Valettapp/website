@@ -56,5 +56,24 @@ const jsonLd = {
   <body class="min-h-dvh bg-bg text-ink antialiased" id="top">
     <a href="#main" class="sr-only-focusable z-[100] btn-primary">Skip to content</a>
     <slot />
+    <script>
+      // Scroll reveal: stagger direct children of section containers and any [data-reveal].
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && 'IntersectionObserver' in window) {
+        const targets: { el: HTMLElement; delay: number }[] = [];
+        document.querySelectorAll<HTMLElement>('[data-reveal-group] > .container-page').forEach((c) => {
+          Array.from(c.children).forEach((el, i) => targets.push({ el: el as HTMLElement, delay: Math.min(i, 4) * 90 }));
+        });
+        document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => targets.push({ el, delay: 0 }));
+        // Read layout first, then write, to avoid forced reflows.
+        const limit = window.innerHeight * 0.9;
+        const inView = targets.map(({ el }) => el.getBoundingClientRect().top < limit);
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        document.documentElement.classList.add('reveal-ready');
+        targets.forEach(({ el, delay }, i) => { el.style.transitionDelay = `${delay}ms`; if (inView[i]) el.classList.add('revealed'); else io.observe(el); });
+      }
+    </script>
   </body>
 </html>

@@ -22,14 +22,15 @@ const posterSrcAttr = poster.src;
 ---
 <figure
   class:list={['film glass rounded-frame p-2 md:p-3', className]}
+  data-reveal
   data-film
   data-variant={variant}
   data-mp4={site.film.mp4 ?? ''}
   data-mp4-portrait={site.film.mp4Portrait ?? ''}
 >
-  <div class="relative overflow-hidden rounded-[14px] bg-ink aspect-[9/16] md:aspect-video">
-    {/* Poster: portrait on mobile, landscape on md+ */}
-    <Picture
+  <div class:list={['relative overflow-hidden rounded-[14px] bg-ink', hasFilm ? 'aspect-[9/16] md:aspect-video' : 'aspect-[4/3] md:aspect-[21/9]']}>
+    {/* Poster: portrait on mobile, landscape on md+ (only when the film exists) */}
+    {hasFilm && <Picture
       src={posterPortrait}
       formats={['avif', 'webp']}
       widths={[390, 780]}
@@ -39,8 +40,8 @@ const posterSrcAttr = poster.src;
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
-    />
-    <Picture
+    />}
+    {hasFilm && <Picture
       src={poster}
       formats={['avif', 'webp']}
       widths={[800, 1200, 1600]}
@@ -50,7 +51,7 @@ const posterSrcAttr = poster.src;
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
-    />
+    />}
     {hasFilm ? (
       <video
         class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 data-[ready]:opacity-100"
@@ -62,7 +63,12 @@ const posterSrcAttr = poster.src;
         {site.film.captions && <track kind="captions" src={site.film.captions} srclang="en" label="English" default />}
       </video>
     ) : (
-      <p class="sr-only">Film coming soon.</p>
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 text-center text-white">
+        <span class="inline-flex size-14 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+        </span>
+        <p class="text-[12px] font-medium uppercase tracking-[0.14em] text-white/60">The film · coming soon</p>
+      </div>
     )}
   </div>
 </figure>

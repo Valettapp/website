@@ -16,15 +16,15 @@ const tiles = [
   { kind: 'network', title: 'Network overview', body: 'Every venue on one map for operators and groups.' },
 ] as const;
 ---
-<section id="back-office" class="section-pad scroll-mt-20" aria-labelledby="backoffice-title">
+<section data-reveal-group id="back-office" class="section-pad scroll-mt-20" aria-labelledby="backoffice-title">
   <div class="container-page">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <SectionHead id="backoffice-title" eyebrow="Back office" title="Run one door or forty from the same screen." />
-      <SampleLabel class="md:pb-2" />
+      <SampleLabel class="md:pb-2" text="Demo data" />
     </div>
-    <ul class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 md:mt-24">
+    <ul class="snap-row mt-16 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 md:mt-24" data-reveal>
       {tiles.map((t) => (
-        <li class="flex flex-col">
+        <li class="snap-item flex flex-col">
           <div class="rounded-frame bg-field p-4 md:p-5">
             <BrowserFrame dense url={`admin.valettuae.com/${t.kind}`}>
               <div class="tile-ui relative aspect-[16/10] overflow-hidden"><MiniUI kind={t.kind} /></div>

@@ -1,14 +1,12 @@
 ---
 import Film from './Film.astro';
 import HeroStage from './HeroStage.astro';
-import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
 const hasFilm = Boolean(site.film.mp4);
 ---
-<section class="pt-16 pb-24 md:pt-28 md:pb-40" aria-labelledby="hero-title">
+<section class="pt-20 pb-24 md:pt-32 md:pb-40" aria-labelledby="hero-title" data-reveal-group>
   <div class="container-page flex flex-col items-center text-center">
-    <Wordmark class="text-[20px] text-ink md:text-[24px]" />
-    <span class="glass mt-10 inline-flex items-center gap-2 rounded-pill px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.14em] text-ink-2 md:mt-12">
+    <span class="glass inline-flex items-center gap-2 rounded-pill px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.14em] text-ink-2">
       <span class="size-1.5 rounded-full bg-gold" aria-hidden="true"></span>Launching in Dubai · 2026
     </span>
     <h1 id="hero-title" class="t-display mt-7 max-w-[10em] md:mt-8 lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>

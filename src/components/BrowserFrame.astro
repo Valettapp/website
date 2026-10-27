@@ -10,7 +10,7 @@ const { url = 'app.valettuae.com', class: className = '', dense = false } = Astr
       <span class:list={['rounded-full border border-ink/15', dense ? 'size-2' : 'size-2.5']}></span>
       <span class:list={['rounded-full border border-ink/15', dense ? 'size-2' : 'size-2.5']}></span>
     </span>
-    <span class:list={['mx-auto truncate rounded-[6px] bg-field text-ink-3', dense ? 'px-2 py-0.5 text-[9px]' : 'px-3 py-1 text-[11px]']}>{url}</span>
+    <span class:list={['mx-auto min-w-0 truncate rounded-[6px] bg-field text-ink-3', dense ? 'px-2 py-0.5 text-[9px]' : 'px-3 py-1 text-[11px]']}>{url}</span>
     <span class:list={[dense ? 'w-7' : 'w-10']}></span>
   </div>
   <div class="bg-white"><slot /></div>
