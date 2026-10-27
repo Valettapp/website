@@ -6,7 +6,7 @@ import Pill from './Pill.astro';
 import Plate from './Plate.astro';
 import Ambient from './Ambient.astro';
 import SampleLabel from './SampleLabel.astro';
-import carStaff from '../assets/car-staff.png';
+import carPhoto from '../assets/car-photo.jpg';
 ---
 <section data-reveal-group id="renders" class="section-pad scroll-mt-20" aria-labelledby="renders-title">
   <div class="container-page">
@@ -30,8 +30,8 @@ import carStaff from '../assets/car-staff.png';
           {/* Guest ticket */}
           <div class="glass-card flex flex-col gap-4 p-5 md:p-6">
             <div class="flex items-center justify-between"><span class="t-wordmark text-[12px]">The Marquee</span><span class="t-caption">Ticket V777</span></div>
-            <div class="rounded-card bg-field p-4">
-              <Picture src={carStaff} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="3D render of a white Land Rover Defender" class="mx-auto block w-[88%]" loading="lazy" decoding="async" />
+            <div class="overflow-hidden rounded-card">
+              <Picture src={carPhoto} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="A white Land Rover Defender, as rendered on the ticket" class="block w-full" loading="lazy" decoding="async" />
             </div>
             <div>
               <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
@@ -43,8 +43,8 @@ import carStaff from '../assets/car-staff.png';
           {/* Staff view */}
           <div class="flex flex-col gap-4 rounded-[16px] bg-ink p-5 text-white md:p-6">
             <div class="flex items-center justify-between"><span class="t-wordmark text-[12px] text-white/80">Valett</span><span class="text-[11px] font-medium uppercase tracking-[0.14em] text-gold">New request</span></div>
-            <div class="rounded-card bg-white/[.06] p-4">
-              <Picture src={carStaff} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="" class="mx-auto block w-[88%]" loading="lazy" decoding="async" />
+            <div class="overflow-hidden rounded-card">
+              <Picture src={carPhoto} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="" class="block w-full" loading="lazy" decoding="async" />
             </div>
             <div>
               <p class="text-[20px] font-semibold tracking-[-0.02em]">Land Rover Defender</p>
