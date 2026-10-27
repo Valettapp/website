@@ -1,5 +1,6 @@
 // Assembles the Valett film from the generated clips and the HTML-rendered overlays.
 // Usage: node scripts/film/assemble.mjs <workdir>   (workdir holds clips/, overlays/; writes out/)
+// Shot ids: shot01, shotA/B/C (27 Oct re-shoot of the arrival), shot06..shot10.
 // Each shot: clip, trim, phone panel (real UI, slides in), caption. Output: 16:9 1080p and 9:16 720p.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -13,10 +14,11 @@ const FPS = 24;
 // Shot list: file, length (s), panel [{img, from, to}], caption {img, from, to}
 const shots = [
   { f: 'shot01.mp4', len: 6, cap: { img: 'c1.png', from: 1.2, to: 5.6 } },
-  { f: 'shot02.mp4', len: 5 },
-  { f: 'shot03.mp4', len: 5, panels: [{ img: 'staff-scanning.png', from: 0.8, to: 2.8 }, { img: 'staff-ticket.png', from: 2.8, to: 5 }], cap: { img: 'c3.png', from: 1.4, to: 5 } },
-  { f: 'shot04.mp4', len: 5, panels: [{ img: 'guest-1.png', from: 1.2, to: 5 }], cap: { img: 'c4.png', from: 1.6, to: 5 } },
-  { f: 'shot05.mp4', len: 5 },
+  // Arrival, re-shot 27 Oct: the valet opens the door, the guest steps out (A); key handed over, the
+  // guest scans the valet's phone (B); the guest walks in while the valet takes the car (C).
+  { f: 'shotA.mp4', len: 7.5 },
+  { f: 'shotB.mp4', len: 6, panels: [{ img: 'staff-scanning.png', from: 0.3, to: 2.0 }, { img: 'staff-ticket.png', from: 2.0, to: 4.0 }, { img: 'guest-1.png', from: 4.0, to: 6 }], cap: [{ img: 'c3.png', from: 0.6, to: 3.0 }, { img: 'c4.png', from: 3.4, to: 6 }] },
+  { f: 'shotC.mp4', len: 5 },
   { f: 'shot06.mp4', len: 6 },
   { f: 'shot07.mp4', len: 4, panels: [{ img: 'guest-1.png', from: 0.4, to: 1.8 }, { img: 'guest-3.png', from: 1.8, to: 4 }], cap: { img: 'c7.png', from: 0.8, to: 4 } },
   { f: 'shot08.mp4', len: 4, panels: [{ img: 'guest-4.png', from: 0.3, to: 4 }], cap: { img: 'c8.png', from: 0.6, to: 4 } },
@@ -48,14 +50,14 @@ function buildShot(i, s, fmt) {
     chains.push(`[${last}][p${n}]overlay=x=${x}:y=${y}:enable='between(t,${p.from},${p.to})':eof_action=pass[v${n}]`);
     last = `v${n}`; n++;
   }
-  if (s.cap) {
-    inputs.push('-loop', '1', '-i', join(ov, s.cap.img));
-    const d = s.cap.to - s.cap.from;
+  for (const cap of [].concat(s.cap ?? [])) {
+    inputs.push('-loop', '1', '-i', join(ov, cap.img));
+    const d = cap.to - cap.from;
     // caption strip rendered at 1920x200; portrait: scale to width 1080 (text re-wraps are avoided by short lines)
     const cs = land ? 'scale=1920:200' : 'scale=1080:-2';
-    chains.push(`[${n}:v]${cs},format=rgba,fade=t=in:st=0:d=0.4:alpha=1,fade=t=out:st=${(d - 0.4).toFixed(2)}:d=0.4:alpha=1,trim=duration=${d},setpts=PTS-STARTPTS+${s.cap.from}/TB[c${n}]`);
+    chains.push(`[${n}:v]${cs},format=rgba,fade=t=in:st=0:d=0.4:alpha=1,fade=t=out:st=${(d - 0.4).toFixed(2)}:d=0.4:alpha=1,trim=duration=${d},setpts=PTS-STARTPTS+${cap.from}/TB[c${n}]`);
     const y = land ? 'H-h' : 'H-h-120';
-    chains.push(`[${last}][c${n}]overlay=x=0:y=${y}:enable='between(t,${s.cap.from},${s.cap.to})':eof_action=pass[v${n}]`);
+    chains.push(`[${last}][c${n}]overlay=x=0:y=${y}:enable='between(t,${cap.from},${cap.to})':eof_action=pass[v${n}]`);
     last = `v${n}`; n++;
   }
   // Audio: keep the clip's ambience if it has any, else silence
