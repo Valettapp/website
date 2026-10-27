@@ -184,8 +184,8 @@
   border-bottom: 1px solid var(--color-line);
 }
 @utility section-pad {
-  padding-block: 128px;
-  @media (min-width: 48rem) { padding-block: 240px; }
+  padding-block: 96px;
+  @media (min-width: 48rem) { padding-block: 160px; }
 }
 @utility container-page {
   width: 100%;

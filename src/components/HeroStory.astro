@@ -224,22 +224,22 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-screen .guest-phone { gap: 0; }
 
   /* Scan internals */
-  .scan-shade { pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(10,10,10,.92) 84%, #0a0a0a 100%); }
-  .scan-corners { background:
+  .hero-story .scan-shade { pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(10,10,10,.92) 84%, #0a0a0a 100%); }
+  .hero-story .scan-corners { background:
     linear-gradient(#fff,#fff) top left/22px 2px no-repeat, linear-gradient(#fff,#fff) top left/2px 22px no-repeat,
     linear-gradient(#fff,#fff) top right/22px 2px no-repeat, linear-gradient(#fff,#fff) top right/2px 22px no-repeat,
     linear-gradient(#fff,#fff) bottom left/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom left/2px 22px no-repeat,
     linear-gradient(#fff,#fff) bottom right/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom right/2px 22px no-repeat; }
-  html.story-on .scan-feed-wrap { transform: translateY(calc(var(--t, 0) * -22%)); will-change: transform; }
-  html.story-on .scan-line { opacity: calc(min(var(--t, 0), 1 - var(--t, 0)) * 4); top: calc(var(--t, 0) * 96%); }
-  html.story-on .scan-plate { opacity: var(--t, 0); transform: scale(calc(1.08 - var(--t, 0) * 0.08)); border-color: #c5a253; box-shadow: 0 0 0 2px rgba(197,162,83,.25), 0 0 24px rgba(197,162,83,.35); }
-  html.story-on .scan-t0 { opacity: calc(1 - var(--t, 0)); }
-  html.story-on .scan-t1 { opacity: calc(var(--in, 0) * (1 - var(--out, 0))); position: absolute; inset-inline: 0; top: 0; }
-  html.story-on .scan-results { transform: translateY(calc((1 - var(--t, 0)) * 100%)); will-change: transform; }
-  html.story-on .scan-shutter { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * 24px)); }
+  html.story-on .hero-story .scan-feed-wrap { transform: translateY(calc(var(--t, 0) * -22%)); will-change: transform; }
+  html.story-on .hero-story .scan-line { opacity: calc(min(var(--t, 0), 1 - var(--t, 0)) * 4); top: calc(var(--t, 0) * 96%); }
+  html.story-on .hero-story .scan-plate { opacity: var(--t, 0); transform: scale(calc(1.08 - var(--t, 0) * 0.08)); border-color: #c5a253; box-shadow: 0 0 0 2px rgba(197,162,83,.25), 0 0 24px rgba(197,162,83,.35); }
+  html.story-on .hero-story .scan-t0 { opacity: calc(1 - var(--t, 0)); }
+  html.story-on .hero-story .scan-t1 { opacity: calc(var(--in, 0) * (1 - var(--out, 0))); position: absolute; inset-inline: 0; top: 0; }
+  html.story-on .hero-story .scan-results { transform: translateY(calc((1 - var(--t, 0)) * 100%)); will-change: transform; }
+  html.story-on .hero-story .scan-shutter { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * 24px)); }
   /* Static: show the scan screen finished */
-  html:not(.story-on) .scan-feed-wrap { transform: translateY(-22%); }
-  html:not(.story-on) .scan-line, html:not(.story-on) .scan-t0, html:not(.story-on) .scan-t1, html:not(.story-on) .scan-shutter { display: none; }
+  html:not(.story-on) .hero-story .scan-feed-wrap { transform: translateY(-22%); }
+  html:not(.story-on) .hero-story .scan-line, html:not(.story-on) .hero-story .scan-t0, html:not(.story-on) .hero-story .scan-t1, html:not(.story-on) .hero-story .scan-shutter { display: none; }
 
   /* Cards: counter-scaled so they keep their natural size whatever the phone scale */
   .story-card { position: absolute; width: 256px; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.35; text-align: start; }
@@ -317,13 +317,13 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-sda .story-dots li:nth-child(3) { animation-range: calc(var(--story-top) + var(--story-len) * 0.62) calc(var(--story-top) + var(--story-len) * 0.82); }
   html.story-sda .story-dots li:nth-child(4) { animation-range: calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 1); }
   /* Scan details */
-  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
-  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.15) calc(var(--story-top) + var(--story-len) * 0.31); }
-  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.29) calc(var(--story-top) + var(--story-len) * 0.34); }
-  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
-  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.13) calc(var(--story-top) + var(--story-len) * 0.17), calc(var(--story-top) + var(--story-len) * 0.3) calc(var(--story-top) + var(--story-len) * 0.34); }
-  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
-  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
+  html.story-sda .hero-story .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
+  html.story-sda .hero-story .scan-line { animation: sy-line linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.15) calc(var(--story-top) + var(--story-len) * 0.31); }
+  html.story-sda .hero-story .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.29) calc(var(--story-top) + var(--story-len) * 0.34); }
+  html.story-sda .hero-story .scan-t0 { animation: sy-fade-out linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
+  html.story-sda .hero-story .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.13) calc(var(--story-top) + var(--story-len) * 0.17), calc(var(--story-top) + var(--story-len) * 0.3) calc(var(--story-top) + var(--story-len) * 0.34); }
+  html.story-sda .hero-story .scan-results { animation: sy-results ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
+  html.story-sda .hero-story .scan-shutter { animation: sy-shutter linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
   @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: calc(var(--story-vh, 100svh) * 0.6); --shift: -10vw; } }
 
   @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
