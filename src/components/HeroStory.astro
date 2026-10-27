@@ -36,7 +36,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740)))).toFixed(3));
   })();
 </script>
-<section class="hero-story relative" data-story data-beat="0" style="--p:0;--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
+<section class="hero-story relative" data-story style="--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
   <div class="story-stage relative">
     <Ambient variant="hero" />
     <div class="story-body container-page relative h-full">
@@ -172,29 +172,25 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-hub { position: absolute; left: 50%; top: 50%; width: 360px; transform-origin: 50% 50%; }
   html.story-on .story-phone > .story-screen { display: block; }
   html.story-on .story-card { display: flex; }
-  html.story-on .story-panel { display: block; position: absolute; border-radius: 32px; opacity: var(--t, 0); transform: translateY(calc((1 - var(--t, 0)) * 40px)); will-change: transform, opacity; }
+  html.story-on .story-panel { display: block; position: absolute; border-radius: 32px; opacity: 0; will-change: transform, opacity; }
   html.story-on .story-side { display: block; position: absolute; top: 0; left: 50%; width: 300px; margin-inline-start: -150px; z-index: 0; will-change: transform, opacity; }
   html.story-on .story-phone { z-index: 1; }
   html.story-on .story-hub { perspective: 1400px; }
-  html.story-on .story-side-l { transform: translate3d(calc(var(--t, 0) * var(--side) * -1), calc(56px + (1 - var(--t, 0)) * 40px), 0) rotateY(calc(var(--t, 0) * 12deg)) scale(calc(0.78 + var(--t, 0) * 0.08)); opacity: var(--t, 0); }
-  html.story-on .story-side-r { transform: translate3d(calc(var(--t, 0) * var(--side)), calc(56px + (1 - var(--t, 0)) * 40px), 0) rotateY(calc(var(--t, 0) * -12deg)) scale(calc(0.78 + var(--t, 0) * 0.08)); opacity: var(--t, 0); }
+  html.story-on .story-side { opacity: 0; }
   html.story-on .story-side .phone-frame { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 40px 80px -40px rgba(0,0,0,.3); }
   html.story-on .story-captions { position: absolute; display: block; max-width: none; }
   html.story-on .story-dots { display: flex; }
   html.story-on [data-off] { visibility: hidden; }
 
-  /* Intro fades up and out as the phone arrives */
-  html.story-on .story-intro { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * -56px)) scale(calc(1 - var(--t, 0) * 0.04)); will-change: transform, opacity; }
+  /* Intro fades up and out as the phone arrives (styles written by the script) */
+  html.story-on .story-intro { will-change: transform, opacity; }
 
   /* Hub: starts low and small (peeking under the headline), settles into its slot */
-  html.story-on .story-hub {
-    --dy: calc((1 - var(--t, 0)) * var(--arrive));
-    --dx: calc((1 - var(--t, 0)) * var(--shift));
-    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(calc(var(--ps) * (0.86 + var(--t, 0) * 0.14)));
-    will-change: transform;
-  }
+  html.story-on .story-hub { transform: translate(-50%, -50%) scale(var(--ps)); will-change: transform; }
+  /* Frosted glass on the moving phones is what makes phones stutter: the panel behind keeps the frost, the frames go solid */
+  html.story-on .story-hub .phone-frame { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(255, 255, 255, 0.84); }
   /* Phone screens stack; each crossfades on its own window */
-  html.story-on .story-screen { position: absolute; inset: 0; opacity: calc(var(--in, 1) * (1 - var(--out, 0))); transform: translateY(calc((1 - var(--in, 1)) * 28px)) scale(calc(1 - var(--out, 0) * 0.03)); will-change: transform, opacity; }
+  html.story-on .story-screen { position: absolute; inset: 0; will-change: transform, opacity; }
   html.story-on .story-screen[data-screen="1"] { position: relative; }
   html.story-on .story-screen .guest-phone { gap: 0; }
 
@@ -219,11 +215,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   /* Cards: counter-scaled so they keep their natural size whatever the phone scale */
   .story-card { position: absolute; width: 256px; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.35; text-align: start; }
   .story-card-icon { display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 9999px; }
-  html.story-on .story-card {
-    opacity: calc(var(--in, 0) * (1 - var(--out, 0)));
-    transform: scale(calc(1 / var(--ps))) translateY(calc((1 - var(--in, 0)) * 36px + var(--out, 0) * -20px));
-    will-change: transform, opacity;
-  }
+  html.story-on .story-card { opacity: 0; will-change: transform, opacity; }
   .story-card-a { right: -210px; top: 12%; transform-origin: 100% 0; }
   .story-card-b { left: -220px; bottom: 18%; transform-origin: 0 100%; }
   .story-card-c { left: -230px; bottom: 26%; transform-origin: 0 100%; }
@@ -231,14 +223,14 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   .story-card-e { right: -210px; bottom: 20%; transform-origin: 100% 100%; }
 
   /* Captions */
-  html.story-on .story-cap { position: absolute; inset-inline: 0; top: 0; opacity: calc(var(--in, 0) * (1 - var(--out, 0))); transform: translateY(calc((1 - var(--in, 0)) * 32px + var(--out, 0) * -24px)); will-change: transform, opacity; }
+  html.story-on .story-cap { position: absolute; inset-inline: 0; top: 0; opacity: 0; will-change: transform, opacity; }
   .story-dots { gap: 6px; }
   .story-dots li { width: 22px; height: 3px; border-radius: 999px; background: rgba(0,0,0,.1); transition: background 240ms ease; }
-  .hero-story[data-beat="1"] .story-dots li:nth-child(1), .hero-story[data-beat="2"] .story-dots li:nth-child(2), .hero-story[data-beat="3"] .story-dots li:nth-child(3), .hero-story[data-beat="4"] .story-dots li:nth-child(4) { background: var(--color-gold); }
-  html.story-on .story-dots { position: absolute; opacity: calc(var(--dots, 0)); }
+  .story-dots[data-beat="1"] li:nth-child(1), .story-dots[data-beat="2"] li:nth-child(2), .story-dots[data-beat="3"] li:nth-child(3), .story-dots[data-beat="4"] li:nth-child(4) { background: var(--color-gold); }
+  html.story-on .story-dots { position: absolute; opacity: 0; }
 
   /* Mobile composition: phone top-centred, captions at the bottom */
-  html.story-on .story-hub { --arrive: 58vh; --shift: 0px; --side: 243px; top: calc(88px + 370px * var(--ps)); }
+  html.story-on .story-hub { top: calc(88px + 370px * var(--ps)); }
   html.story-on .story-panel { inset-inline: 12px; top: 68px; height: calc(790px * var(--ps) + 48px); }
   html.story-on .story-captions { inset-inline: 0; top: calc(68px + 790px * var(--ps) + 48px + 28px); text-align: center; }
   html.story-on .story-cap { display: flex; flex-direction: column; align-items: center; top: 0; }
@@ -259,7 +251,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   /* Desktop composition: captions left, phone right of centre */
   @media (min-width: 64rem) {
     html.story-on .story-intro { top: 18%; }
-    html.story-on .story-hub { --arrive: 60vh; --shift: -10vw; --side: 243px; top: 53%; }
+    html.story-on .story-hub { top: 53%; }
     html.story-on .story-panel { left: 34%; right: -2%; top: 9%; bottom: 9%; border-radius: 40px; }
     html.story-on .story-captions { inset-inline: auto; left: 0; top: 50%; bottom: auto; width: 31%; height: 280px; transform: translateY(-50%); text-align: start; }
     html.story-on .story-cap { display: block; top: 0; bottom: auto; }
@@ -271,55 +263,100 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
 </style>
 
 <script>
+  // Scroll-driven story. Progress is read on scroll (one write per animation frame) and every animated
+  // element gets its final transform/opacity written directly, so no custom property changes on a big
+  // ancestor and the phone subtrees never restyle. Small scan details still use --t / --in / --out.
   const sec = document.querySelector<HTMLElement>('[data-story]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (sec && !reduce) {
+    type Win = [number, number];
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
     const ease = (x: number) => { x = clamp(x); return x * x * (3 - 2 * x); };
-    const parse = (s?: string) => (s ? (s.split(',').map(Number) as [number, number]) : null);
-    const seg = (p: number, w: [number, number]) => ease((p - w[0]) / (w[1] - w[0]));
-    const items = Array.from(sec.querySelectorAll<HTMLElement>('[data-win],[data-in]')).map((el) => ({
-      el, win: parse(el.dataset.win), i: parse(el.dataset.in), o: parse(el.dataset.out),
-    }));
-    const dots = sec.querySelector<HTMLElement>('.story-dots');
-    const desktop = window.matchMedia('(min-width: 64rem)');
+    const parse = (s?: string) => (s ? (s.split(',').map(Number) as Win) : null);
+    const seg = (p: number, w: Win) => ease((p - w[0]) / (w[1] - w[0]));
+    const q = (sel: string) => sec.querySelector<HTMLElement>(sel)!;
+    const qa = (sel: string) => Array.from(sec.querySelectorAll<HTMLElement>(sel));
+    const BIG = '.story-intro,.story-panel,.story-hub,.story-screen,.story-card,.story-cap';
+    const intro = q('.story-intro'), panel = q('.story-panel'), hub = q('.story-hub');
+    const sideL = q('.story-side-l'), sideR = q('.story-side-r'), dots = q('.story-dots');
+    const faders = (sel: string) => qa(sel).map((el) => ({ el, i: parse(el.dataset.in)!, o: parse(el.dataset.out), last: '' }));
+    const screens = faders('.story-screen'), cards = faders('.story-card'), caps = faders('.story-cap');
+    const small = qa('[data-win],[data-in]').filter((el) => !el.matches(BIG)).map((el) => ({ el, win: parse(el.dataset.win), i: parse(el.dataset.in), o: parse(el.dataset.out), last: '' }));
+    const desktopMq = window.matchMedia('(min-width: 64rem)');
+    const SIDE = 243;
+    let ps = 1, arrive = 0, shift = 0, last = -1;
 
-    // Phone scale from the viewport height (natural phone: 360 × ~740 px).
+    // Phone scale and arrival distances from the viewport (natural phone: 360 × ~740 px; fan: 744 wide).
     const size = () => {
-      const vh = window.innerHeight;
-      const fit = desktop.matches ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740);
-      document.documentElement.style.setProperty('--story-ps', Math.max(0.4, Math.min(1, fit)).toFixed(3));
+      const vh = window.innerHeight, vw = window.innerWidth, desktop = desktopMq.matches;
+      const fit = desktop ? (vh - 200) / 740 : Math.min((vw - 32) / 744, (vh * 0.5) / 740);
+      ps = Math.max(0.4, Math.min(1, fit));
+      document.documentElement.style.setProperty('--story-ps', ps.toFixed(3));
+      arrive = desktop ? vh * 0.6 : vh * 0.58;
+      shift = desktop ? -vw * 0.1 : 0;
+      last = -1;
+    };
+    const f3 = (v: number) => v.toFixed(3);
+    // Write opacity + transform only when they change; hide fully transparent layers so they cost nothing.
+    const fade = (it: { el: HTMLElement; i: Win; o: Win | null; last: string }, p: number, move: (i: number, o: number) => string) => {
+      const i = seg(p, it.i), o = it.o ? seg(p, it.o) : 0;
+      const key = f3(i) + '/' + f3(o);
+      if (key === it.last) return;
+      it.last = key;
+      const v = i * (1 - o);
+      it.el.style.opacity = f3(v);
+      it.el.style.transform = move(i, o);
+      it.el.style.visibility = v === 0 ? 'hidden' : '';
     };
 
-    let last = -1;
     const frame = () => {
       const r = sec.getBoundingClientRect();
       const total = r.height - window.innerHeight;
       const p = total > 0 ? clamp(-r.top / total) : 0;
       if (p === last) return;
       last = p;
-      sec.style.setProperty('--p', p.toFixed(4));
-      sec.dataset.beat = String(p < 0.14 ? 0 : p < 0.42 ? 1 : p < 0.62 ? 2 : p < 0.84 ? 3 : 4);
-      if (dots) dots.style.setProperty('--dots', ease((p - 0.14) / 0.06).toFixed(3));
-      for (const it of items) {
-        let off = false;
-        if (it.win) { const t = seg(p, it.win); it.el.style.setProperty('--t', t.toFixed(4)); off = it.el.dataset.offAt === 'end' && t === 1; }
-        if (it.i) {
-          const i = seg(p, it.i), o = it.o ? seg(p, it.o) : 0;
-          it.el.style.setProperty('--in', i.toFixed(4)); it.el.style.setProperty('--out', o.toFixed(4));
-          off = i === 0 || o === 1;
-        }
+      // Beat marker
+      const beat = String(p < 0.14 ? 0 : p < 0.42 ? 1 : p < 0.62 ? 2 : p < 0.84 ? 3 : 4);
+      if (dots.dataset.beat !== beat) dots.dataset.beat = beat;
+      dots.style.opacity = f3(ease((p - 0.14) / 0.06));
+      // Headline out
+      const ti = seg(p, [0, 0.12]);
+      intro.style.opacity = f3(1 - ti);
+      intro.style.transform = `translateY(${f3(-56 * ti)}px) scale(${f3(1 - 0.04 * ti)})`;
+      intro.style.visibility = ti >= 1 ? 'hidden' : '';
+      // Fan arrives: hub rises and grows, panel fades in, side phones fan out
+      const th = seg(p, [0.02, 0.18]);
+      hub.style.transform = `translate(-50%, -50%) translate(${f3((1 - th) * shift)}px, ${f3((1 - th) * arrive)}px) scale(${f3(ps * (0.86 + 0.14 * th))})`;
+      panel.style.opacity = f3(th);
+      panel.style.transform = `translateY(${f3((1 - th) * 40)}px)`;
+      const sy = f3(56 + (1 - th) * 40), ss = f3(0.78 + th * 0.08), so = f3(th);
+      sideL.style.transform = `translate3d(${f3(-th * SIDE)}px, ${sy}px, 0) rotateY(${f3(th * 12)}deg) scale(${ss})`;
+      sideR.style.transform = `translate3d(${f3(th * SIDE)}px, ${sy}px, 0) rotateY(${f3(-th * 12)}deg) scale(${ss})`;
+      sideL.style.opacity = so; sideR.style.opacity = so;
+      // Screens, cards, captions
+      for (const it of screens) fade(it, p, (i, o) => `translateY(${f3((1 - i) * 28)}px) scale(${f3(1 - o * 0.03)})`);
+      for (const it of cards) fade(it, p, (i, o) => `scale(${f3(1 / ps)}) translateY(${f3((1 - i) * 36 - o * 20)}px)`);
+      for (const it of caps) fade(it, p, (i, o) => `translateY(${f3((1 - i) * 32 - o * 24)}px)`);
+      // Small scan details keep their custom properties (tiny subtrees)
+      for (const it of small) {
+        let off = false, key = '';
+        let t = 0, i = 0, o = 0;
+        if (it.win) { t = seg(p, it.win); key += f3(t); off = it.el.dataset.offAt === 'end' && t === 1; }
+        if (it.i) { i = seg(p, it.i); o = it.o ? seg(p, it.o) : 0; key += '/' + f3(i) + '/' + f3(o); off = i === 0 || o === 1; }
+        if (key === it.last) continue;
+        it.last = key;
+        if (it.win) it.el.style.setProperty('--t', f3(t));
+        if (it.i) { it.el.style.setProperty('--in', f3(i)); it.el.style.setProperty('--out', f3(o)); }
         if (off) it.el.setAttribute('data-off', ''); else it.el.removeAttribute('data-off');
       }
     };
 
-    // Read progress every frame while the section is on screen (works inside a scrolling frame too).
-    let raf = 0;
-    const tick = () => { frame(); raf = requestAnimationFrame(tick); };
-    new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { if (!raf) tick(); } else { cancelAnimationFrame(raf); raf = 0; frame(); } });
-    }).observe(sec);
-    window.addEventListener('resize', () => { size(); last = -1; frame(); });
+    // One update per frame, only when the page actually scrolled (or resized / the section came into view).
+    let queued = false;
+    const schedule = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; frame(); }); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', () => { size(); schedule(); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(schedule, { threshold: [0, 0.01, 0.5, 0.99, 1] }).observe(sec);
     size(); frame();
   }
 </script>

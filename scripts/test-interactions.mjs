@@ -20,14 +20,15 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const story = page.locator('[data-story]');
   const total = await story.evaluate((el) => el.getBoundingClientRect().height - window.innerHeight);
   await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200);
-  const beat0 = await story.getAttribute('data-beat');
+  const dots = story.locator('.story-dots');
+  const beat0 = await dots.getAttribute('data-beat');
+  const s1 = await story.locator('[data-screen="1"]').evaluate((el) => getComputedStyle(el).opacity);
   await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.5)); await page.waitForTimeout(300);
-  const p1 = Number(await story.evaluate((el) => el.style.getPropertyValue('--p')));
-  const beat2 = await story.getAttribute('data-beat');
-  const s2 = await story.locator('[data-screen="2"]').evaluate((el) => Number(el.style.getPropertyValue('--in')));
-  check(beat0 === '0' && p1 > 0.4 && beat2 === '2' && s2 > 0.9, `hero story follows scroll (beat ${beat0} → ${beat2}, p ${p1.toFixed(2)}, guest screen in ${s2})`);
+  const beat2 = await dots.getAttribute('data-beat');
+  const s2 = await story.locator('[data-screen="2"]').evaluate((el) => getComputedStyle(el).opacity);
+  check(beat0 === '0' && Number(s1) === 1 && beat2 === '2' && Number(s2) > 0.9, `hero story follows scroll (beat ${beat0} → ${beat2}, scan screen ${s1}, guest screen ${s2})`);
   await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.98)); await page.waitForTimeout(300);
-  check((await story.getAttribute('data-beat')) === '4', 'hero story ends on beat 4 (safe travels)');
+  check((await dots.getAttribute('data-beat')) === '4', 'hero story ends on beat 4 (safe travels)');
   // Reveal: a section far down is hidden until scrolled to.
   const team = page.locator('#company > .container-page > *').first();
   const before = await team.evaluate((el) => getComputedStyle(el).opacity);
