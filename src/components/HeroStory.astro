@@ -12,6 +12,7 @@
 import { Picture } from 'astro:assets';
 import carScan from '../assets/car-scan.jpg';
 import GuestPhone from './GuestPhone.astro';
+import StaffScreen from './StaffScreen.astro';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
 import Plate from './Plate.astro';
@@ -32,7 +33,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     document.documentElement.classList.add('story-on');
     var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
-    document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, (desktop ? vh - 200 : vh * 0.6) / 740)).toFixed(3));
+    document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, (desktop ? vh - 200 : vh * 0.52) / 740)).toFixed(3));
   })();
 </script>
 <section class="hero-story relative" data-story data-beat="0" style="--p:0;--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
@@ -53,6 +54,9 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
 
       {/* The phone and its floating cards share one transform (position + scale) */}
       <div class="story-hub z-10" data-win="0.02,0.18">
+        {/* Side phones: the staff app, fanned out behind the guest's phone (same composition on mobile) */}
+        <div class="story-side story-side-l" aria-hidden="true"><StaffScreen screen="request" /></div>
+        <div class="story-side story-side-r" aria-hidden="true"><StaffScreen screen="ticket" /></div>
         <div class="story-phone relative w-[360px]" role="img" aria-label="One phone walking through Valett: the staff camera reads the plate from a photo; the guest's ticket appears on their phone; they request the car from the table and watch the driver come; they rate, tip and get a receipt by text.">
           {/* Screen 1: staff camera, scan driven by scroll */}
           <div class="story-screen phone-frame" data-screen="1" data-in="0,0.001" data-out="0.40,0.46" aria-hidden="true">
@@ -148,6 +152,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   .story-phone > .story-screen { display: none; }
   .story-phone > .story-screen[data-screen="3"] { display: block; }
   .story-card { display: none; }
+  .story-side { display: none; }
   .story-captions { display: grid; gap: 40px; width: 100%; max-width: 980px; }
   .story-dots { display: none; }
   @media (min-width: 48rem) { .story-captions { grid-template-columns: 1fr 1fr; } }
@@ -163,6 +168,12 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-hub { position: absolute; left: 50%; top: 50%; width: 360px; transform-origin: 50% 50%; }
   html.story-on .story-phone > .story-screen { display: block; }
   html.story-on .story-card { display: flex; }
+  html.story-on .story-side { display: block; position: absolute; top: 0; left: 50%; width: 300px; margin-inline-start: -150px; z-index: 0; will-change: transform, opacity; }
+  html.story-on .story-phone { z-index: 1; }
+  html.story-on .story-hub { perspective: 1400px; }
+  html.story-on .story-side-l { transform: translate3d(calc(var(--t, 0) * var(--side) * -1), calc(44px + (1 - var(--t, 0)) * 40px), 0) rotateY(calc(var(--t, 0) * 14deg)) scale(calc(0.78 + var(--t, 0) * 0.08)); opacity: var(--t, 0); }
+  html.story-on .story-side-r { transform: translate3d(calc(var(--t, 0) * var(--side)), calc(44px + (1 - var(--t, 0)) * 40px), 0) rotateY(calc(var(--t, 0) * -14deg)) scale(calc(0.78 + var(--t, 0) * 0.08)); opacity: var(--t, 0); }
+  html.story-on .story-side .phone-frame { box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 40px 80px -40px rgba(0,0,0,.3); }
   html.story-on .story-captions { position: absolute; display: block; max-width: none; }
   html.story-on .story-dots { display: flex; }
   html.story-on [data-off] { visibility: hidden; }
@@ -208,11 +219,11 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     transform: scale(calc(1 / var(--ps))) translateY(calc((1 - var(--in, 0)) * 36px + var(--out, 0) * -20px));
     will-change: transform, opacity;
   }
-  .story-card-a { right: -150px; top: 12%; transform-origin: 100% 0; }
-  .story-card-b { left: -160px; bottom: 16%; transform-origin: 0 100%; }
-  .story-card-c { right: -170px; top: 36%; transform-origin: 100% 0; }
-  .story-card-d { left: -160px; top: 7%; transform-origin: 0 0; }
-  .story-card-e { right: -150px; bottom: 18%; transform-origin: 100% 100%; }
+  .story-card-a { right: -210px; top: 12%; transform-origin: 100% 0; }
+  .story-card-b { left: -220px; bottom: 18%; transform-origin: 0 100%; }
+  .story-card-c { left: -230px; bottom: 26%; transform-origin: 0 100%; }
+  .story-card-d { right: -220px; top: 9%; transform-origin: 100% 0; }
+  .story-card-e { right: -210px; bottom: 20%; transform-origin: 100% 100%; }
 
   /* Captions */
   html.story-on .story-cap { position: absolute; inset-inline: 0; top: 0; opacity: calc(var(--in, 0) * (1 - var(--out, 0))); transform: translateY(calc((1 - var(--in, 0)) * 32px + var(--out, 0) * -24px)); will-change: transform, opacity; }
@@ -222,24 +233,24 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-dots { position: absolute; opacity: calc(var(--dots, 0)); }
 
   /* Mobile composition: phone top-centred, captions at the bottom */
-  html.story-on .story-hub { --arrive: 58vh; --shift: 0px; top: calc(76px + 370px * var(--ps)); }
+  html.story-on .story-hub { --arrive: 58vh; --shift: 0px; --side: 190px; top: calc(76px + 370px * var(--ps)); }
   html.story-on .story-captions { inset-inline: 0; bottom: 36px; text-align: center; }
   html.story-on .story-cap { display: flex; flex-direction: column; align-items: center; top: auto; bottom: 0; }
   html.story-on .story-dots { left: 50%; bottom: -22px; transform: translateX(-50%); }
   @media (max-width: 63.98rem) {
-    .story-card { width: 220px; font-size: 12px; padding: 10px 12px; }
-    .story-card-a, .story-card-c, .story-card-e { right: -36px; }
-    .story-card-b, .story-card-d { left: -36px; }
+    .story-card { width: 184px; font-size: 12px; padding: 10px 12px; gap: 10px; }
+    .story-card-a, .story-card-d, .story-card-e { right: auto; left: calc(100% - 96px); transform-origin: 0 50%; }
+    .story-card-b, .story-card-c { left: auto; right: calc(100% - 96px); transform-origin: 100% 50%; }
     .story-card-a { top: 6%; }
     .story-card-b { bottom: 6%; }
-    .story-card-c { top: auto; bottom: 30%; }
+    .story-card-c { bottom: 22%; }
     .story-card-d { top: 4%; }
     .story-card-e { bottom: 8%; }
   }
   /* Desktop composition: captions left, phone right of centre */
   @media (min-width: 64rem) {
     html.story-on .story-intro { top: 18%; }
-    html.story-on .story-hub { --arrive: 60vh; --shift: -10vw; top: 53%; }
+    html.story-on .story-hub { --arrive: 60vh; --shift: -10vw; --side: 225px; top: 53%; }
     html.story-on .story-captions { inset-inline: auto; left: 0; top: 50%; bottom: auto; width: 36%; height: 280px; transform: translateY(-50%); text-align: start; }
     html.story-on .story-cap { display: block; top: 0; bottom: auto; }
     html.story-on .story-dots { left: 0; bottom: 0; transform: none; }
@@ -266,7 +277,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     // Phone scale from the viewport height (natural phone: 360 × ~740 px).
     const size = () => {
       const vh = window.innerHeight;
-      const avail = desktop.matches ? vh - 200 : vh * 0.6;
+      const avail = desktop.matches ? vh - 200 : vh * 0.52;
       document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, avail / 740)).toFixed(3));
     };
 
