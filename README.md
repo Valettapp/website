@@ -9,6 +9,7 @@ npm run build        # static build → dist/
 npm run check        # astro type check
 npm run screenshots  # 1440 + 390 px captures → screenshots/ (needs dist/)
 npm run lighthouse   # mobile + desktop reports → lighthouse/ (needs dist/)
+npm run preview:bundle  # relative-path copy of dist/ for a hosted preview → preview/
 node scripts/test-interactions.mjs   # drives the samples headlessly (needs dist/)
 node scripts/assets.mjs              # regenerates icons, poster placeholder, OG image
 ```

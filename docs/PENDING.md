@@ -39,6 +39,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Plate recognition block in §8 with four HTML demo plates (Dubai, Abu Dhabi, Sharjah, Fujairah formats) and the recognition output; claim "reads plates across emirates, day and night" needs Leon's tick.
 - §10 is now a team section: three divisions (founders, investors and advisors, product and AI engineering with "profiles to follow"), founder and investor profile cards. Division names and the engineering team's profiles are inferred; confirm or replace.
 
+- Hosted preview (27 Oct): https://claude.ai/artifact/WX3Sz7QCSdS99GVor4QvfV, built with `npm run preview:bundle`. Private until shared from the page.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

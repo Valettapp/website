@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "screenshots": "node scripts/screenshots.mjs",
-    "lighthouse": "node scripts/lighthouse.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "preview:bundle": "node scripts/preview-bundle.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

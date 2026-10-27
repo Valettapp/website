@@ -9,3 +9,5 @@ screenshots/
 lighthouse/
 *.log
 .DS_Store
+preview/
+preview-files.json
