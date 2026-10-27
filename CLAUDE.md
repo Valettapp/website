@@ -31,6 +31,8 @@ Status pills (12 px uppercase): `live` gold text + gold hairline; `in developmen
 
 Do not: full-bleed dark hero, drop shadows heavier than the glass recipe, gradients, illustrations, stock photos. The product screens are the imagery.
 
+Number plates (approved 27 Oct): always the generated vector replicas in `src/assets/plates/*.svg` through `Plate.astro`, never photo crops of plates, anywhere on the site. The only photographed plate is the one inside the Defender photo in the camera feed, where the scan reads it.
+
 ## Page structure and copy
 
 ### 1 Hero (white)
