@@ -37,7 +37,7 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Polish pass (27 Oct): single wordmark in the nav only; §2 film placeholder is a slim 21:9 "The film · coming soon" strip (poster image only renders once the film exists); eyebrows on Money and Who it's for; static mockups labelled "Demo data"; staff steps, back-office tiles and venue cards are swipeable snap rows on mobile; sections fade up on scroll (JS-only, off under reduced motion); glass mobile menu in the nav.
 
 - Plate recognition block in §8 with four HTML demo plates (Dubai, Abu Dhabi, Sharjah, Fujairah formats) and the recognition output; claim "reads plates across emirates, day and night" needs Leon's tick.
-- §10 is now a team section: three divisions (founders, investors and advisors, product and AI engineering with "profiles to follow"), founder and investor profile cards. Division names and the engineering team's profiles are inferred; confirm or replace.
+- §10 is now a team section: three divisions (founders, investors and advisors, product and AI engineering with "profiles to follow"), founder and investor profile cards. Leon is co-founder and CEO with his own wording (27 Oct); Tom is co-founder, CTO and head of technology. Engineering team profiles still to come.
 
 - Hosted preview (27 Oct): https://claude.ai/artifact/WX3Sz7QCSdS99GVor4QvfV, built with `npm run preview:bundle`. Private until shared from the page.
 

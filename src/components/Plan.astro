@@ -2,17 +2,17 @@
 import SectionHead from './SectionHead.astro';
 // Portraits: initials on #F2F2F0 circles until photos arrive.
 const founders = [
-  { name: 'Leon Lumley-Savile', role: 'Co-founder', focus: 'Partnerships, capital and venues', bio: 'Real estate and commodity trading, with a network of ultra-high-net-worth clients who trust him to deliver vetted products and deals worldwide.' },
-  { name: 'Tom Beenham', role: 'Co-founder', focus: 'Marketing and growth', bio: 'Marketing. Built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.' },
+  { name: 'Leon Lumley-Savile', role: 'Co-founder and CEO', focus: 'Partnerships, venues and capital', bio: 'Leon comes from a real estate and commodity trading background, with access to a wide network of UHNWI who trust him to deliver vetted products and deals across the world.' },
+  { name: 'Tom Beenham', role: 'Co-founder, CTO and head of technology', focus: 'Product, AI and engineering', bio: 'Marketing. Built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.' },
 ];
 const investors = [
   { name: 'Abdulla Al Shaibani', role: 'Investor and advisor', focus: 'Real estate and development', bio: 'Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East’s Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto.' },
   { name: 'Mo Aziz', role: 'Investor and advisor', focus: 'Fintech and operations', bio: 'Third-generation serial technology entrepreneur with deep operational expertise. Fintech specialist, and the first UAE-based founder to go through Y Combinator, in 2019.' },
 ];
 const divisions = [
-  { title: 'Founders', body: 'Partnerships, venues, capital and growth. The two people who waited thirty minutes for a car and decided to fix it.' },
+  { title: 'Founders', body: 'Leon leads the company, partnerships and capital. Tom leads technology. The two people who waited thirty minutes for a car and decided to fix it.' },
   { title: 'Investors and advisors', body: 'Real estate, development, fintech and operations. The people who opened the doors in Dubai.' },
-  { title: 'Product and AI engineering', body: 'The team building the recognition, the guest page and the board. Profiles to follow.' },
+  { title: 'Product and AI engineering', body: 'Led by Tom. The team building the recognition, the guest page and the board. Profiles to follow.' },
 ];
 const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(0, 2).join('');
 ---
