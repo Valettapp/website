@@ -33,8 +33,10 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var html = document.documentElement;
     html.classList.add('story-on');
-    // Browsers with native scroll-driven animations (Safari 26+, Chrome 115+) run the story on the compositor, no script per frame.
-    if (window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) html.classList.add('story-sda');
+    // Chromium runs the story on the compositor from native scroll-driven animations. WebKit claims support but does
+    // not drive `contain` ranges on a subject taller than the scrollport (verified in WebKit 26), so it uses the script driver.
+    var webkit = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|CriOS|Chromium|Edg/.test(navigator.userAgent);
+    if (!webkit && window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) html.classList.add('story-sda');
     var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
     var ps = Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740))));
     html.style.setProperty('--story-ps', ps.toFixed(3));
@@ -381,7 +383,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
       const total = r.height - window.innerHeight;
       const p = total > 0 ? clamp(-r.top / total) : 0;
       if (p === last) return;
-      last = p;
+      last = p; sec.dataset.p = p.toFixed(3);
       // Beat marker
       const beat = String(p < 0.14 ? 0 : p < 0.43 ? 1 : p < 0.62 ? 2 : p < 0.82 ? 3 : 4);
       if (dots.dataset.beat !== beat) dots.dataset.beat = beat;
