@@ -8,7 +8,7 @@ import type { ImageMetadata } from 'astro';
 // Founder portraits supplied 27 Oct; investors keep initials until photos arrive.
 const founders = [
   { name: 'Leon Lumley-Savile', photo: leon, role: 'Co-founder and CEO', focus: 'Partnerships, venues and capital', bio: 'Leon leads Valett and its business development, bringing the first major hotels and luxury venues in Dubai onto the platform. Before Valett he built his career in real estate and commodity trading, structuring and closing multi-million-dollar deals for a wide network of ultra-high-net-worth clients who trust him to deliver vetted products and opportunities across the world. He brings that network, and that standard of diligence, to every venue Valett signs.' },
-  { name: 'Tom Beenham', photo: tom, role: 'Co-founder, CTO and head of technology', focus: 'Product, AI and engineering', bio: 'Tom leads Valett’s technology and AI, and the engineering team that builds it: the vehicle recognition, the guest page, the staff app and the board the whole operation runs on. Before Valett he built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry. He brings that record of building products people pay for to the platform Valett runs on.' },
+  { name: 'Tom Beenham', photo: tom, role: 'Co-founder, CTO and head of technology', focus: 'Technology and AI', bio: 'Tom leads Valett’s technology and AI, and the engineering team that builds it. Under his direction the company has developed its own vehicle recognition, the AI models that read a car from a single photo, and the platform that runs every venue on the network, with demand prediction and automatic driver assignment next. Before Valett he built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.' },
 ];
 const investors = [
   { name: 'Abdulla Al Shaibani', photo: abdulla as ImageMetadata | undefined, role: 'Investor and advisor', focus: 'Real estate and development', bio: 'Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East’s Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto.' },
@@ -17,7 +17,7 @@ const investors = [
 const divisions = [
   { title: 'Founders', body: 'Leon leads the company, partnerships and capital. Tom leads technology. The two people who waited thirty minutes for a car and decided to fix it.' },
   { title: 'Investors and advisors', body: 'Real estate, development, fintech and operations. The people who opened the doors in Dubai.' },
-  { title: 'Product and AI engineering', body: 'Led by Tom. The team building the recognition, the guest page and the board. Profiles to follow.' },
+  { title: 'Technology and AI', body: 'Led by Tom. The engineering team behind Valett’s vehicle recognition, its AI models and the platform that runs every venue. Profiles to follow.' },
 ];
 const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(0, 2).join('');
 ---
