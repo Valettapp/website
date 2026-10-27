@@ -33,10 +33,9 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var html = document.documentElement;
     html.classList.add('story-on');
-    // Chromium runs the story on the compositor from native scroll-driven animations. WebKit claims support but does
-    // not drive `contain` ranges on a subject taller than the scrollport (verified in WebKit 26), so it uses the script driver.
-    var webkit = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|CriOS|Chromium|Edg/.test(navigator.userAgent);
-    if (!webkit && window.CSS && CSS.supports && CSS.supports('animation-timeline: view()')) html.classList.add('story-sda');
+    // Browsers with scroll-driven animations (Chromium 115+, Safari 26+) run the story on the compositor from a root
+    // scroll timeline; the ranges need the section's top offset, measured by the main script.
+    if (window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll(root)') && CSS.supports('animation-range: calc(1px + 1svh) 2px')) html.classList.add('story-sda');
     var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
     var ps = Math.max(0.42, Math.min(1, (desktop ? (vh - 200) / 740 : Math.min((window.innerWidth - 32) / 744, vh * 0.5 / 740))));
     html.style.setProperty('--story-ps', ps.toFixed(3));
@@ -273,39 +272,41 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   }
 
   /* ---------- Native scroll-driven animations (html.story-sda): the whole story runs on the compositor ---------- */
-  html.story-sda .hero-story { view-timeline: --story block; }
-  html.story-sda .story-intro { animation: sy-intro linear both; animation-timeline: --story; animation-range: contain 0% contain 12%; }
-  html.story-sda .story-panel { animation: sy-panel ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-hub { --arrive: 58svh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-side-l { animation: sy-side-l ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-side-r { animation: sy-side-r ease-in-out both; animation-timeline: --story; animation-range: contain 2% contain 18%; }
-  html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: --story; animation-range: contain 43% contain 51%; }
-  html.story-sda .story-screen[data-screen="2"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 43% contain 51%, contain 62% contain 70%; }
-  html.story-sda .story-screen[data-screen="3"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 62% contain 70%, contain 82% contain 90%; }
-  html.story-sda .story-screen[data-screen="4"] { animation: sy-screen-in ease-in-out both; animation-timeline: --story; animation-range: contain 82% contain 90%; }
-  html.story-sda .story-card-a { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 36% contain 42%, contain 43% contain 51%; }
-  html.story-sda .story-card-b { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 50% contain 56%, contain 62% contain 70%; }
-  html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 69% contain 75%, contain 82% contain 90%; }
-  html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 74% contain 80%, contain 82% contain 90%; }
-  html.story-sda .story-card-e { animation: sy-card-in ease-in-out both; animation-timeline: --story; animation-range: contain 90% contain 96%; }
-  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 14% contain 20%, contain 40% contain 45%; }
-  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 46% contain 52%, contain 59% contain 64%; }
-  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: --story, --story; animation-range: contain 65% contain 71%, contain 79% contain 84%; }
-  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: --story; animation-range: contain 85% contain 91%; }
-  html.story-sda .story-dots { animation: sy-fade-in linear both; animation-timeline: --story; animation-range: contain 14% contain 20%; }
-  html.story-sda .story-dots li { animation: sy-dot-on linear; animation-timeline: --story; }
-  html.story-sda .story-dots li:nth-child(1) { animation-range: contain 14% contain 43%; }
-  html.story-sda .story-dots li:nth-child(2) { animation-range: contain 43% contain 62%; }
-  html.story-sda .story-dots li:nth-child(3) { animation-range: contain 62% contain 82%; }
-  html.story-sda .story-dots li:nth-child(4) { animation-range: contain 82% contain 100%; }
+  /* Root scroll timeline: ranges are absolute scroll offsets, --story-top (section top, measured once) plus a share of the
+     sticky travel (section height minus one screen). WebKit does not drive view-timeline `contain` ranges on a tall subject. */
+  html.story-sda .hero-story { --story-top: 72px; --story-len: 380svh; }
+  html.story-sda .story-intro { animation: sy-intro linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0) calc(var(--story-top) + var(--story-len) * 0.12); }
+  html.story-sda .story-panel { animation: sy-panel ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
+  html.story-sda .story-hub { --arrive: 58svh; --shift: 0px; animation: sy-hub ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
+  html.story-sda .story-side-l { animation: sy-side-l ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
+  html.story-sda .story-side-r { animation: sy-side-r ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.02) calc(var(--story-top) + var(--story-len) * 0.18); }
+  html.story-sda .story-screen[data-screen="1"] { animation: sy-screen-out ease-in-out forwards; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.43) calc(var(--story-top) + var(--story-len) * 0.51); }
+  html.story-sda .story-screen[data-screen="2"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.43) calc(var(--story-top) + var(--story-len) * 0.51), calc(var(--story-top) + var(--story-len) * 0.62) calc(var(--story-top) + var(--story-len) * 0.7); }
+  html.story-sda .story-screen[data-screen="3"] { animation: sy-screen-in ease-in-out both, sy-screen-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.62) calc(var(--story-top) + var(--story-len) * 0.7), calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 0.9); }
+  html.story-sda .story-screen[data-screen="4"] { animation: sy-screen-in ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 0.9); }
+  html.story-sda .story-card-a { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.36) calc(var(--story-top) + var(--story-len) * 0.42), calc(var(--story-top) + var(--story-len) * 0.43) calc(var(--story-top) + var(--story-len) * 0.51); }
+  html.story-sda .story-card-b { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.5) calc(var(--story-top) + var(--story-len) * 0.56), calc(var(--story-top) + var(--story-len) * 0.62) calc(var(--story-top) + var(--story-len) * 0.7); }
+  html.story-sda .story-card-c { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.69) calc(var(--story-top) + var(--story-len) * 0.75), calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 0.9); }
+  html.story-sda .story-card-d { animation: sy-card-in ease-in-out both, sy-card-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.74) calc(var(--story-top) + var(--story-len) * 0.8), calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 0.9); }
+  html.story-sda .story-card-e { animation: sy-card-in ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.9) calc(var(--story-top) + var(--story-len) * 0.96); }
+  html.story-sda .story-cap:nth-child(1) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.14) calc(var(--story-top) + var(--story-len) * 0.2), calc(var(--story-top) + var(--story-len) * 0.4) calc(var(--story-top) + var(--story-len) * 0.45); }
+  html.story-sda .story-cap:nth-child(2) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.46) calc(var(--story-top) + var(--story-len) * 0.52), calc(var(--story-top) + var(--story-len) * 0.59) calc(var(--story-top) + var(--story-len) * 0.64); }
+  html.story-sda .story-cap:nth-child(3) { animation: sy-cap-in ease-in-out both, sy-cap-out ease-in-out forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.65) calc(var(--story-top) + var(--story-len) * 0.71), calc(var(--story-top) + var(--story-len) * 0.79) calc(var(--story-top) + var(--story-len) * 0.84); }
+  html.story-sda .story-cap:nth-child(4) { animation: sy-cap-in ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.85) calc(var(--story-top) + var(--story-len) * 0.91); }
+  html.story-sda .story-dots { animation: sy-fade-in linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.14) calc(var(--story-top) + var(--story-len) * 0.2); }
+  html.story-sda .story-dots li { animation: sy-dot-on linear; animation-timeline: scroll(root); }
+  html.story-sda .story-dots li:nth-child(1) { animation-range: calc(var(--story-top) + var(--story-len) * 0.14) calc(var(--story-top) + var(--story-len) * 0.43); }
+  html.story-sda .story-dots li:nth-child(2) { animation-range: calc(var(--story-top) + var(--story-len) * 0.43) calc(var(--story-top) + var(--story-len) * 0.62); }
+  html.story-sda .story-dots li:nth-child(3) { animation-range: calc(var(--story-top) + var(--story-len) * 0.62) calc(var(--story-top) + var(--story-len) * 0.82); }
+  html.story-sda .story-dots li:nth-child(4) { animation-range: calc(var(--story-top) + var(--story-len) * 0.82) calc(var(--story-top) + var(--story-len) * 1); }
   /* Scan details */
-  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: --story; animation-range: contain 33% contain 41%; }
-  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: --story; animation-range: contain 15% contain 31%; }
-  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: --story; animation-range: contain 29% contain 34%; }
-  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: --story; animation-range: contain 12% contain 16%; }
-  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: --story, --story; animation-range: contain 13% contain 17%, contain 30% contain 34%; }
-  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: --story; animation-range: contain 33% contain 41%; }
-  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: --story; animation-range: contain 12% contain 16%; }
+  html.story-sda .scan-feed-wrap { animation: sy-feed ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
+  html.story-sda .scan-line { animation: sy-line linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.15) calc(var(--story-top) + var(--story-len) * 0.31); }
+  html.story-sda .scan-plate { animation: sy-plate ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.29) calc(var(--story-top) + var(--story-len) * 0.34); }
+  html.story-sda .scan-t0 { animation: sy-fade-out linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
+  html.story-sda .scan-t1 { animation: sy-fade-in linear both, sy-fade-out linear forwards; animation-timeline: scroll(root), scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.13) calc(var(--story-top) + var(--story-len) * 0.17), calc(var(--story-top) + var(--story-len) * 0.3) calc(var(--story-top) + var(--story-len) * 0.34); }
+  html.story-sda .scan-results { animation: sy-results ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
+  html.story-sda .scan-shutter { animation: sy-shutter linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
   @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: 60svh; --shift: -10vw; } }
 
   @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
@@ -337,6 +338,11 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   // ancestor and the phone subtrees never restyle. Small scan details still use --t / --in / --out.
   const sec = document.querySelector<HTMLElement>('[data-story]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (sec && !reduce && document.documentElement.classList.contains('story-sda')) {
+    // Native path: give the timeline the section's document offset (stable; re-measured on resize).
+    const top = () => { const r = sec.getBoundingClientRect(); const y = r.top + (window.scrollY || document.documentElement.scrollTop); sec.style.setProperty('--story-top', `${Math.round(y)}px`); };
+    top(); window.addEventListener('resize', top); window.addEventListener('load', top);
+  }
   if (sec && !reduce && !document.documentElement.classList.contains('story-sda')) {
     type Win = [number, number];
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
