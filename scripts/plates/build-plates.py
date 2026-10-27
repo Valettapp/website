@@ -39,26 +39,29 @@ print('ref02 digits', len(tall2), [(c['w'], c['h']) for c in tall2])
 for ch, c in zip('12345', tall2): lib['r2' + ch] = c
 print('aspect ref07 9/8', [(k, round(lib[k]['w']/lib[k]['h'],2)) for k in ['r79','r78']], 'ref02', [(k, round(lib[k]['w']/lib[k]['h'],2)) for k in ['r23','r25']], 'ref04', [(k, round(lib[k]['w']/lib[k]['h'],2)) for k in ['9','5','8']])
 
-# ---- Dubai: layout measured on the rectified Defender plate (face 992 x 207) ----
+# ---- Dubai: classic plate design from the reference sheet (ref 03 wordmark/layout, ref 05 digit cut),
+#      laid out on the positions measured on the Defender's plate (face 992 x 207) ----
 W, H = 992, 207
 face = load('face.png'); fm = mask_black(face, 110)
 fc = components(fm, 60)
 def pick(cs, x0, x1, y0, y1): return [c for c in cs if x0 <= c['x'] < x1 and y0 <= c['y'] < y1]
 photo_digits = [c for c in fc if c['h'] > 120 and c['x'] > 400 and c['w'] < 100]
-print('photo digits', [(c['x'], c['w']) for c in photo_digits])
 photo_M = pick(fc, 90, 170, 100, 120)[0]
-# Wordmark: the clean "DUBAI" from reference 03 (classic plate, same design)
+# digit cut from the small classic plates (ref 05): 0 1 2 3 5 6 7 8; the 9 is the 6 turned through 180 degrees
+r5 = np.array(Image.open('ref05.png').convert('RGB')); m5 = mask_black(r5, 100)
+c5 = sorted([c for c in components(m5, 60) if 25 < c['h'] < 80 and c['w'] < 80], key=lambda c: (round(c['y'] / 40), c['x']))
+idx = {'1': 16, '0': 17, '2': 11, '3': 20, '5': 42, '6': 9, '7': 49, '8': 27}
+d5 = {ch: c5[i] for ch, i in idx.items()}
+six = d5['6']; d5['9'] = dict(six, mask=cv2.rotate(six['mask'], cv2.ROTATE_180))
 face3, m3, c3, s3 = ref_glyphs('ref03', thr=90)
 wm = merge([c for c in c3 if c['y'] + c['h'] < 0.45 * s3[1] and c['x'] < 0.45 * s3[0] and c['area'] > 100])
-print('wordmark ref03', wm['x'], wm['y'], wm['w'], wm['h'], 'of', s3)
 wm_box = (53, 19, 167, 64)   # measured on the photo
 body = paths_el(glyph_paths(wm, wm_box, fit='width', sigma=1.2, eps=0.5))
 body += paths_el(glyph_paths(photo_M, (97, 106, 66, 90), sigma=2.5, eps=2.2))
-narrow = {'9': 'r79', '8': 'r78', '3': 'r23', '5': 'r25'}  # narrow federal cut, as on the Defender's plate
-print('photo digit aspects', [(ch, round(c['w']/c['h'],2)) for ch, c in zip('95378', photo_digits)])
+dh = 0.68 * H; dy = (H - dh) / 2 + 0.02 * H          # digit height and baseline as on reference 03
 for ch, c in zip('95378', photo_digits):
-    # every digit is the plate's own glyph (narrow federal cut), smoothed and regularised
-    body += paths_el(glyph_paths(c, (c['x'], c['y'], c['w'], c['h']), sigma=2.2, eps=1.4))
+    g = d5[ch]; gw = g['w'] * dh / g['h']; cx = c['x'] + c['w'] / 2
+    body += paths_el(glyph_paths(g, (cx - gw / 2, dy, gw, dh), sigma=1.6, eps=0.7))
 open('dubai.svg', 'w').write(svg(W, H, body, radius=10, bw=6))
 
 # ---- Abu Dhabi: reference 04 as is (black + red layers) ----
