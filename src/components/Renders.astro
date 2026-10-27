@@ -1,0 +1,60 @@
+---
+/** AI 3D renders: a replica of the exact model and colour on every ticket. */
+import { Picture } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import Pill from './Pill.astro';
+import Plate from './Plate.astro';
+import Ambient from './Ambient.astro';
+import SampleLabel from './SampleLabel.astro';
+import carStaff from '../assets/car-staff.png';
+---
+<section data-reveal-group id="renders" class="section-pad scroll-mt-20" aria-labelledby="renders-title">
+  <div class="container-page">
+    <div class="grid items-start gap-14 lg:grid-cols-12 lg:gap-16">
+      <div class="flex flex-col gap-6 lg:col-span-5">
+        <SectionHead id="renders-title" eyebrow="AI renders" title="Every ticket carries a 3D replica of the car." />
+        <p class="t-body measure">
+          When a car is checked in, Valett’s AI generates a 3D render of the exact model in the exact colour. The guest sees their own car on their ticket, not a stock icon. The driver knows which car to bring, and what it looks like, before touching a key. <Pill status="live" class="ms-1 align-[2px]" />
+        </p>
+        <ul class="measure flex flex-col">
+          {['Model and colour matched from the check-in photo', 'The same render on the guest page, the staff app and the board', 'White-label: the venue’s brand, the guest’s car'].map((t) => (
+            <li class="hairline-t py-3 text-[16px] text-ink-2">{t}</li>
+          ))}
+          <li class="hairline-t"></li>
+        </ul>
+      </div>
+
+      <div class="relative lg:col-span-7" data-reveal="right">
+        <Ambient variant="wide" class="-inset-[8%]" />
+        <div class="grid gap-6 sm:grid-cols-2">
+          {/* Guest ticket */}
+          <div class="glass-card flex flex-col gap-4 p-5 md:p-6">
+            <div class="flex items-center justify-between"><span class="t-wordmark text-[12px]">The Marquee</span><span class="t-caption">Ticket V777</span></div>
+            <div class="rounded-card bg-field p-4">
+              <Picture src={carStaff} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="3D render of a white Land Rover Defender" class="mx-auto block w-[88%]" loading="lazy" decoding="async" />
+            </div>
+            <div>
+              <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Parked · 01:06 AM</p>
+              <p class="mt-1 text-[20px] font-semibold tracking-[-0.02em]">Land Rover Defender</p>
+              <p class="t-caption">White</p>
+            </div>
+            <Plate emirate="Dubai" code="M" number="95378" scale={0.7} />
+          </div>
+          {/* Staff view */}
+          <div class="flex flex-col gap-4 rounded-[16px] bg-ink p-5 text-white md:p-6">
+            <div class="flex items-center justify-between"><span class="t-wordmark text-[12px] text-white/80">Valett</span><span class="text-[11px] font-medium uppercase tracking-[0.14em] text-gold">New request</span></div>
+            <div class="rounded-card bg-white/[.06] p-4">
+              <Picture src={carStaff} formats={['avif', 'webp']} widths={[520, 1040]} sizes="(min-width: 640px) 320px, 80vw" alt="" class="mx-auto block w-[88%]" loading="lazy" decoding="async" />
+            </div>
+            <div>
+              <p class="text-[20px] font-semibold tracking-[-0.02em]">Land Rover Defender</p>
+              <p class="text-[13px] text-white/60">Zone P3 · Bay 55 · Hook 55</p>
+            </div>
+            <Plate emirate="Dubai" code="M" number="95378" scale={0.7} />
+          </div>
+        </div>
+        <SampleLabel class="mt-4" text="Demo data" />
+      </div>
+    </div>
+  </div>
+</section>

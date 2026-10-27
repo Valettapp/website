@@ -50,6 +50,9 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Plates (27 Oct): `Plate.astro` reproduces the reference set in HTML (Dubai blue/magenta lettering; Abu Dhabi red code block with bilingual stack; Sharjah and Fujairah grey faces with Arabic over Latin). The same component is used on the guest page, staff ticket and request screens, the scan results and the recognition cards.
 
+- Plates are now photographic replicas: Dubai from the Defender photo (M 95378), Sharjah / Abu Dhabi / Fujairah cropped from the reference sheet (the Sharjah reference carries a faint stock-photo watermark; a clean photo would replace it). Scan feed uses the Defender photo, zoomed on the grille.
+- New §: AI renders (`Renders.astro`), between Technology and Who it's for. Marked `live` because the staff app shows the render; confirm status and wording.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."
