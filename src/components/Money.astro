@@ -1,35 +1,78 @@
 ---
+/**
+ * The savings — a ledger, not a mockup. Six places a paper operation leaks time and money,
+ * each read across three columns: how it runs today, what Valett changes, what the venue keeps.
+ * No figures, by decision: the maths is done on the venue's own numbers at the demo.
+ */
 import SectionHead from './SectionHead.astro';
-import Receipt from './Receipt.astro';
-import SampleLabel from './SampleLabel.astro';
 import Ambient from './Ambient.astro';
-const items = [
-  { title: 'Staff time', body: 'No tickets to write, no radios to call, no bays to search. The board tells the driver where the car is.' },
-  { title: 'Damage disputes', body: 'Time-stamped photos at check-in and check-out settle the argument before it starts.' },
-  { title: 'Lost tickets', body: 'The ticket is on the guest’s phone and in the system. It cannot be lost.' },
-  { title: 'Validation leakage', body: 'Every validation is a scan, logged against a venue and a ticket.' },
-  { title: 'Tips', body: 'Guests tip on the receipt, digitally, and the operation sees who earned what.' },
-  { title: 'Reputation', body: 'The wait is the last thing a guest remembers. Now it is a text.' },
+const cols = ['Today, on paper', 'With Valett', 'What you keep'];
+const kinds: Record<string, string> = { time: 'Time', risk: 'Risk', revenue: 'Revenue', guests: 'Guests' };
+const rows = [
+  { title: 'Staff time', kind: 'time', today: 'A valet writes a ticket, radios the bay and walks the car park looking for the car.', valett: 'One photo checks the car in. The board shows zone, bay and key hook, and the driver goes straight to it.', keep: 'Minutes per car, on every car, every shift. The same door runs with fewer drivers.' },
+  { title: 'Damage disputes', kind: 'risk', today: 'A guest says the scratch was not there. Nobody can prove otherwise, and the hotel pays.', valett: 'Time-stamped photos at check-in and check-out, with who touched the car and when.', keep: 'Claims settled in minutes, on evidence. No goodwill payouts for damage you did not do.' },
+  { title: 'Lost tickets', kind: 'risk', today: 'A lost paper ticket means ID checks, release forms, a delayed car and a frustrated guest.', valett: 'The ticket is on the guest’s phone and in the system. It cannot be lost.', keep: 'No lost-ticket procedure, no forms, and no risk of handing the wrong car to the wrong person.' },
+  { title: 'Validation leakage', kind: 'revenue', today: 'Stamped tickets get copied, shared or forgotten. The venue cannot reconcile what it is paying for.', valett: 'Every validation is a scan, logged against a venue and a ticket.', keep: 'Validated parking is paid for by the venue that granted it, down to the single ticket.' },
+  { title: 'Tips', kind: 'revenue', today: 'Cash tips vanish into pockets. The operation never sees who earned what, or whether a guest tipped at all.', valett: 'Guests tip digitally on the receipt, and the tip is recorded against the driver who brought the car.', keep: 'Drivers earn more, the best ones are visible, and nothing goes missing between the kerb and the cash-up.' },
+  { title: 'Reputation', kind: 'guests', today: 'A guest stands in the heat with no idea where their car is. That is what they remember of the evening.', valett: 'They watch the car come on their phone, and every minute of the wait is on the record.', keep: 'The last impression of the night is a text, not a queue. Guests come back, and say why.' },
 ];
 ---
 <section data-reveal-group id="money" class="section-pad scroll-mt-20" aria-labelledby="money-title">
   <div class="container-page">
-    <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
-      <div class="flex flex-col gap-10 lg:col-span-5">
-        <SectionHead id="money-title" eyebrow="The savings" title="Where the savings come from." />
-        <div class="glass-panel relative !rounded-frame p-6 md:p-10"><Ambient variant="left" class="-inset-[15%]" />
-          <Receipt />
-          <SampleLabel class="mt-5" text="Demo data" />
-        </div>
+    <SectionHead id="money-title" eyebrow="The savings" title="Where the savings come from." lede="Six places a paper operation leaks time and money, and what changes at each one." />
+
+    <div class="glass-panel relative mt-14 overflow-hidden !rounded-frame md:mt-20"><Ambient variant="wide" class="-inset-[10%]" />
+      {/* Column headings (desktop) */}
+      <div class="ledger-head hidden lg:grid" aria-hidden="true">
+        <span></span>
+        {cols.map((c) => <span class="t-eyebrow">{c}</span>)}
       </div>
-      <dl class="grid gap-x-10 sm:grid-cols-2 lg:col-span-7 lg:pt-2" data-reveal-stagger>
-        {items.map((it) => (
-          <div class="hairline-t py-6">
-            <dt class="t-h3">{it.title}</dt>
-            <dd class="mt-2 text-[16px] leading-relaxed text-ink-2 md:text-[17px]">{it.body}</dd>
+
+      <dl class="ledger" data-reveal-stagger>
+        {rows.map((r) => (
+          <div class="ledger-row">
+            <dt class="ledger-title">
+              <span class="t-h3 block">{r.title}</span>
+              <span class:list={['pill mt-3', `pill-${r.kind}`]}>{kinds[r.kind]}</span>
+            </dt>
+            <dd class="ledger-cell"><span class="ledger-label t-eyebrow lg:hidden">{cols[0]}</span><p>{r.today}</p></dd>
+            <dd class="ledger-cell ledger-cell-valett"><span class="ledger-label t-eyebrow lg:hidden">{cols[1]}</span><p>{r.valett}</p></dd>
+            <dd class="ledger-cell ledger-cell-keep"><span class="ledger-label t-eyebrow lg:hidden">{cols[2]}</span><p>{r.keep}</p></dd>
           </div>
         ))}
       </dl>
     </div>
+
+    <div class="mt-10 flex flex-col gap-4 md:mt-12 md:flex-row md:items-center md:justify-between">
+      <p class="max-w-[36em] text-[15px] leading-relaxed text-ink-2 md:text-[16px]">No figures on this page, on purpose. Every door is different. Bring one shift’s numbers to the demo and we will show the maths on yours.</p>
+      <a href="#demo" class="btn-ghost glass shrink-0 !px-6 !py-3">Book a demo</a>
+    </div>
   </div>
 </section>
+
+<style>
+  .ledger-head { grid-template-columns: 1.1fr 1.5fr 1.5fr 1.5fr; gap: 32px; padding: 28px 40px 20px; border-bottom: 1px solid var(--color-line); }
+  .ledger { display: grid; }
+  .ledger-row { display: grid; gap: 20px; padding: 28px 24px; border-bottom: 1px solid var(--color-line); }
+  .ledger-row:last-child { border-bottom: 0; }
+  .ledger-title { display: flex; flex-direction: column; align-items: flex-start; }
+  .ledger-cell p { font-size: 15px; line-height: 1.6; color: var(--color-ink-2); }
+  .ledger-label { display: block; margin-bottom: 6px; font-size: 11px; }
+  .ledger-cell-valett p { color: var(--color-ink); }
+  .ledger-cell-keep p { color: var(--color-ink); font-weight: 500; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid var(--color-line); color: var(--color-ink-2); }
+  .pill::before { content: ''; width: 5px; height: 5px; border-radius: 999px; background: currentColor; }
+  .pill-revenue, .pill-guests { border-color: rgba(197, 162, 83, 0.55); color: var(--color-gold-text); }
+  @media (min-width: 40rem) {
+    .ledger-row { grid-template-columns: 1fr 1fr; padding: 32px; }
+    .ledger-title { grid-column: 1 / -1; }
+    .ledger-cell-keep { grid-column: 1 / -1; }
+  }
+  @media (min-width: 64rem) {
+    .ledger-row { grid-template-columns: 1.1fr 1.5fr 1.5fr 1.5fr; gap: 32px; padding: 32px 40px; }
+    .ledger-title, .ledger-cell-keep { grid-column: auto; }
+    .ledger-cell p { font-size: 15.5px; }
+    .ledger-cell-keep { position: relative; padding-inline-start: 24px; }
+    .ledger-cell-keep::before { content: ''; position: absolute; inset-block: 4px; inset-inline-start: 0; width: 2px; border-radius: 2px; background: var(--color-gold); }
+  }
+</style>

@@ -58,3 +58,4 @@ Items the site needs before launch, in the order they block work. Each has a pla
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."
 - Technology card caption: "One photo. Plate, make, model and colour, in under a second."
 - 404 page and privacy notice copy.
+- Savings (27 Oct, Leon): the receipt mockup is gone. §6 is now a ledger: six rows (staff time, damage disputes, lost tickets, validation leakage, tips, reputation) read across "Today, on paper" / "With Valett" / "What you keep", each tagged Time, Risk, Revenue or Guests. Still no figures; the closing line invites the venue to bring one shift's numbers to the demo.
