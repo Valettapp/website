@@ -16,6 +16,7 @@ renameSync(join(out, '_astro'), join(out, 'assets')); // "_" prefixes are reserv
 const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
 const rewrite = (s) => s
   .replace(/\/_astro\//g, 'assets/')
+  .replace(/"\/film\//g, '"film/') // film paths are absolute on the real site, relative on the artifact host
   .replace(/href="\/privacy"/g, 'href="privacy.html"')
   .replace(/href="\/(favicon\.svg|favicon\.ico|apple-touch-icon\.png|site\.webmanifest)"/g, 'href="$1"')
   .replace(/href="\/"/g, 'href="index.html"')
