@@ -1,17 +1,19 @@
 ---
 import Film from './Film.astro';
-import HeroStage from './HeroStage.astro';
+import HeroStory from './HeroStory.astro';
 import { site } from '../data/site';
 const hasFilm = Boolean(site.film.mp4);
 ---
-<section class="relative pt-24 pb-32 md:pt-44 md:pb-56" aria-labelledby="hero-title" data-reveal-group>
-  <div class="container-page flex flex-col items-center text-center">
-    <h1 id="hero-title" class="t-display max-w-[10em] lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>
-    <p class="mt-8 max-w-[26em] text-[18px] leading-relaxed text-ink-2 md:mt-10 md:text-[21px]">Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text.</p>
-    <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-4 md:mt-12">
-      <a href="#demo" class="btn-primary md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>
-      <a href="#why" class="btn-ghost glass !px-6 !py-3.5 !text-[15px] md:!text-[16px]">Watch the film</a>
+{hasFilm ? (
+  <section class="relative pt-24 pb-32 md:pt-44 md:pb-56" aria-labelledby="hero-title" data-reveal-group>
+    <div class="container-page flex flex-col items-center text-center">
+      <h1 id="hero-title" class="t-display max-w-[10em] lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>
+      <p class="mt-8 max-w-[26em] text-[18px] leading-relaxed text-ink-2 md:mt-10 md:text-[21px]">Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text.</p>
+      <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-4 md:mt-12">
+        <a href="#demo" class="btn-primary md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>
+        <a href="#why" class="btn-ghost glass !px-6 !py-3.5 !text-[15px] md:!text-[16px]">Watch the film</a>
+      </div>
+      <Film variant="hero" priority class="mt-20 w-full max-w-[1100px] md:mt-28" />
     </div>
-    {hasFilm ? <Film variant="hero" priority class="mt-20 w-full max-w-[1100px] md:mt-28" /> : <HeroStage />}
-  </div>
-</section>
+  </section>
+) : <HeroStory />}

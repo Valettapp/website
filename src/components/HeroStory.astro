@@ -1,0 +1,305 @@
+---
+/**
+ * HeroStory — the pinned, scroll-driven hero. The section is ~3.6 screens tall; a sticky stage
+ * holds while scrolling drives one phone through the Valett story in four beats:
+ *   0  Headline.                         1  Photograph: the staff camera reads the plate.
+ *   2  The guest's ticket, from the QR.   3  Request from the table, driver on it.
+ *   4  Safe travels: rate, tip, receipt.
+ * Scroll progress (0–1) is read from the section's position each frame; every element with
+ * data-win / data-in / data-out gets an eased 0–1 variable for its own window. No JS or
+ * reduced motion → the story renders as a static page (headline, phone on beat 3, four captions).
+ */
+import { Picture } from 'astro:assets';
+import carScan from '../assets/car-scan.jpg';
+import GuestPhone from './GuestPhone.astro';
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+import Plate from './Plate.astro';
+import Ambient from './Ambient.astro';
+import { site } from '../data/site';
+
+const beats = [
+  { n: '01', where: 'At the door', title: 'One photo. Plate, make, model and colour.', body: 'The valet photographs the car. Nothing typed, nothing written down.', in: '0.14,0.20', out: '0.40,0.46' },
+  { n: '02', where: 'On the guest’s phone', title: 'A ticket from the QR. Nothing to download.', body: 'The car’s photo, the ticket and the validation, in English or Arabic. No account.', in: '0.42,0.48', out: '0.62,0.67' },
+  { n: '03', where: 'From the table', title: 'Request from the table. Watch the car come.', body: 'The driver taps once and the guest’s page moves. Every minute on the record.', in: '0.62,0.67', out: '0.84,0.89' },
+  { n: '04', where: 'At the kerb', title: 'Rate, tip and receipt. By text.', body: 'The wait is the last thing a guest remembers. Now it is a text.', in: '0.84,0.90', out: '' },
+];
+const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White']];
+---
+{/* Runs before the section is parsed, so the pinned layout is in place at first paint (no layout shift). */}
+<script is:inline>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('story-on');
+    var vh = window.innerHeight, desktop = window.matchMedia('(min-width: 64rem)').matches;
+    document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, (desktop ? vh - 200 : vh * 0.6) / 740)).toFixed(3));
+  })();
+</script>
+<section class="hero-story relative" data-story data-beat="0" style="--p:0;--ps:var(--story-ps, 1)" aria-labelledby="hero-title">
+  <div class="story-stage relative">
+    <Ambient variant="hero" />
+    <div class="story-body container-page relative h-full">
+
+      {/* Beat 0: headline */}
+      <div class="story-intro z-20 flex flex-col items-center text-center" data-win="0,0.12" data-off-at="end">
+        <h1 id="hero-title" class="t-display max-w-[10em] lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>
+        <p class="mt-6 max-w-[26em] text-[17px] leading-relaxed text-ink-2 md:mt-8 md:text-[21px]">Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text.</p>
+        <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:gap-4 md:mt-10">
+          <a href="#demo" class="btn-primary md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>
+          <a href="#why" class="btn-ghost glass !px-6 !py-3.5 !text-[15px] md:!text-[16px]">Watch the film</a>
+        </div>
+        <p class="story-hint mt-10 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.14em] text-ink-3 md:mt-14" aria-hidden="true"><Icon name="chevron" size={14} /> Scroll to see it work</p>
+      </div>
+
+      {/* The phone and its floating cards share one transform (position + scale) */}
+      <div class="story-hub z-10" data-win="0.02,0.18">
+        <div class="story-phone relative w-[360px]" role="img" aria-label="One phone walking through Valett: the staff camera reads the plate from a photo; the guest's ticket appears on their phone; they request the car from the table and watch the driver come; they rate, tip and get a receipt by text.">
+          {/* Screen 1: staff camera, scan driven by scroll */}
+          <div class="story-screen phone-frame" data-screen="1" data-in="0,0.001" data-out="0.40,0.46" aria-hidden="true">
+            <div class="scan phone-screen bg-ink text-white">
+              <div class="scan-feed-wrap absolute inset-0" data-win="0.30,0.38">
+                <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="360px" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position: 79% 50%" loading="eager" fetchpriority="high" decoding="async" />
+              </div>
+              <div class="scan-shade absolute inset-0"></div>
+              <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
+                <Wordmark variant="serif" class="text-[12px] text-white/90" />
+                <span class="text-[11px] text-white/70">01:05</span>
+              </div>
+              <div class="scan-frame absolute inset-x-4 top-[30%] z-10 aspect-[4/3]" data-win="0.30,0.38">
+                <div class="scan-corners absolute inset-0"></div>
+                <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]" data-win="0.15,0.29"></div>
+                <div class="scan-plate absolute left-[7%] right-[5%] top-[54%] h-[36%] rounded-[4px] border-2 border-white/70" data-win="0.26,0.31">
+                  <span class="absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
+                </div>
+              </div>
+              <div class="absolute inset-x-5 top-[74%] z-10 text-center">
+                <div class="scan-t0" data-win="0.13,0.17">
+                  <p class="text-[15px] font-medium drop-shadow">Take vehicle photo</p>
+                  <p class="mt-1 text-[12px] text-white/70">Frame the number plate</p>
+                </div>
+                <p class="scan-t1 text-[15px] font-medium" data-in="0.14,0.18" data-out="0.28,0.32"><span class="inline-flex items-center gap-2"><span class="size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
+              </div>
+              <div class="scan-results absolute inset-x-0 bottom-0 z-10 rounded-t-[22px] bg-ink/95 px-5 pb-5 pt-4" data-win="0.30,0.38">
+                <div class="mx-auto mb-3 h-1 w-9 rounded-pill bg-white/20"></div>
+                <ul class="flex flex-col gap-1.5 text-[12px]">
+                  <li class="flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2"><span class="text-white/55">Plate</span><Plate emirate="Dubai" code="M" number="95378" scale={0.55} /></li>
+                  {fields.map(([k, v]) => <li class="flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[.06] px-3 py-2"><span class="text-white/55">{k}</span><span class="font-medium tracking-[0.02em]">{v}</span></li>)}
+                </ul>
+                <span class="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-pill bg-white px-4 py-2.5 text-[13px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised · Continue</span>
+              </div>
+              <div class="scan-shutter absolute inset-x-0 bottom-6 z-10 flex justify-center" data-win="0.13,0.17">
+                <span class="inline-flex size-14 items-center justify-center rounded-full border-2 border-white/90"><span class="size-11 rounded-full bg-white/95"></span></span>
+              </div>
+            </div>
+          </div>
+          {/* Screens 2–4: the guest page */}
+          <div class="story-screen" data-screen="2" data-in="0.42,0.48" data-out="0.62,0.67" aria-hidden="true"><GuestPhone static state={1} /></div>
+          <div class="story-screen" data-screen="3" data-in="0.62,0.67" data-out="0.84,0.89" aria-hidden="true"><GuestPhone static state={4} /></div>
+          <div class="story-screen" data-screen="4" data-in="0.84,0.89" aria-hidden="true"><GuestPhone static state={5} /></div>
+        </div>
+
+        {/* Floating glass cards, one or two per beat */}
+        <div class="story-card glass-card story-card-a" data-in="0.33,0.39" data-out="0.40,0.46" aria-hidden="true">
+          <span class="story-card-icon border border-gold text-gold"><Icon name="check" size={14} /></span>
+          <span class="min-w-0"><strong class="block font-semibold">Vehicle recognised</strong><span class="block text-ink-2">Land Rover Defender · White · M 95378</span></span>
+        </div>
+        <div class="story-card glass-card story-card-b" data-in="0.47,0.53" data-out="0.62,0.67" aria-hidden="true">
+          <span class="story-card-icon border border-gold text-gold"><Icon name="sms" size={14} /></span>
+          <span class="min-w-0"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your car is parked. Ticket V777.</span></span>
+        </div>
+        <div class="story-card glass-card story-card-c" data-in="0.67,0.73" data-out="0.84,0.89" aria-hidden="true">
+          <span class="story-card-icon bg-ink text-white"><Icon name="bolt" size={14} /></span>
+          <span class="min-w-0"><strong class="block font-semibold">Driver on it</strong><span class="block text-ink-2">Zone P3 · Bay 55 · keys from hook 55</span></span>
+        </div>
+        <div class="story-card glass-card story-card-d" data-in="0.72,0.78" data-out="0.84,0.89" aria-hidden="true">
+          <span class="story-card-icon border border-gold text-gold"><Icon name="sms" size={14} /></span>
+          <span class="min-w-0"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your driver is bringing your car. 4 min.</span></span>
+        </div>
+        <div class="story-card glass-card story-card-e" data-in="0.90,0.96" aria-hidden="true">
+          <span class="story-card-icon border border-gold text-gold"><Icon name="star" size={14} class="fill-current" /></span>
+          <span class="min-w-0"><strong class="block font-semibold">Receipt sent</strong><span class="block text-ink-2">AED 80 tip · 5 stars · +971 58 ···· ····</span></span>
+        </div>
+      </div>
+
+      {/* Captions, one per beat */}
+      <div class="story-captions z-10">
+        {beats.map((b, i) => (
+          <div class="story-cap" data-in={b.in} {...(b.out ? { 'data-out': b.out } : {})}>
+            <p class="t-eyebrow"><span class="text-gold-text">{b.n}</span> · {b.where}</p>
+            <h2 class="mt-3 text-[26px] font-semibold leading-[1.1] tracking-[-0.03em] md:text-[34px] lg:text-[40px]" style="text-wrap: balance">{b.title}</h2>
+            <p class="mt-3 max-w-[24em] text-[15px] leading-relaxed text-ink-2 md:text-[17px]">{b.body}</p>
+            {i === beats.length - 1 && <a href="#demo" class="btn-primary mt-6 md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>}
+          </div>
+        ))}
+        <ol class="story-dots" aria-hidden="true">{beats.map(() => <li></li>)}</ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* ---------- Static layout (no JS, or reduced motion): one page, phone on beat 3 ---------- */
+  .hero-story { padding-block: 96px 64px; }
+  .story-stage { height: auto; }
+  .story-body { display: flex; flex-direction: column; align-items: center; gap: 56px; }
+  .story-intro .story-hint { display: none; }
+  .story-hub { position: relative; width: 360px; max-width: 100%; }
+  .story-phone > .story-screen { display: none; }
+  .story-phone > .story-screen[data-screen="3"] { display: block; }
+  .story-card { display: none; }
+  .story-captions { display: grid; gap: 40px; width: 100%; max-width: 980px; }
+  .story-dots { display: none; }
+  @media (min-width: 48rem) { .story-captions { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .story-cap .btn-primary { display: none; } }
+
+  /* ---------- Scroll-driven story (html.story-on, set by the script) ---------- */
+  html.story-on .hero-story { height: 360vh; padding: 0; }
+  html.story-on .story-stage { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 560px; overflow: hidden; }
+  html.story-on .story-body { display: block; height: 100%; }
+  html.story-on .story-intro { position: absolute; inset-inline: 0; top: 13%; display: flex; }
+  html.story-on .story-intro .story-hint { display: inline-flex; }
+  html.story-on .story-intro .story-hint svg { transform: rotate(0deg); animation: story-nudge 1.8s ease-in-out infinite; }
+  html.story-on .story-hub { position: absolute; left: 50%; top: 50%; width: 360px; transform-origin: 50% 50%; }
+  html.story-on .story-phone > .story-screen { display: block; }
+  html.story-on .story-card { display: flex; }
+  html.story-on .story-captions { position: absolute; display: block; max-width: none; }
+  html.story-on .story-dots { display: flex; }
+  html.story-on [data-off] { visibility: hidden; }
+
+  /* Intro fades up and out as the phone arrives */
+  html.story-on .story-intro { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * -56px)) scale(calc(1 - var(--t, 0) * 0.04)); will-change: transform, opacity; }
+
+  /* Hub: starts low and small (peeking under the headline), settles into its slot */
+  html.story-on .story-hub {
+    --dy: calc((1 - var(--t, 0)) * var(--arrive));
+    --dx: calc((1 - var(--t, 0)) * var(--shift));
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(calc(var(--ps) * (0.86 + var(--t, 0) * 0.14)));
+    will-change: transform;
+  }
+  /* Phone screens stack; each crossfades on its own window */
+  html.story-on .story-screen { position: absolute; inset: 0; opacity: calc(var(--in, 1) * (1 - var(--out, 0))); transform: translateY(calc((1 - var(--in, 1)) * 28px)) scale(calc(1 - var(--out, 0) * 0.03)); will-change: transform, opacity; }
+  html.story-on .story-screen[data-screen="1"] { position: relative; }
+  html.story-on .story-screen .guest-phone { gap: 0; }
+
+  /* Scan internals */
+  .scan-shade { background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(10,10,10,.92) 84%, #0a0a0a 100%); }
+  .scan-corners { background:
+    linear-gradient(#fff,#fff) top left/22px 2px no-repeat, linear-gradient(#fff,#fff) top left/2px 22px no-repeat,
+    linear-gradient(#fff,#fff) top right/22px 2px no-repeat, linear-gradient(#fff,#fff) top right/2px 22px no-repeat,
+    linear-gradient(#fff,#fff) bottom left/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom left/2px 22px no-repeat,
+    linear-gradient(#fff,#fff) bottom right/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom right/2px 22px no-repeat; }
+  html.story-on .scan-feed-wrap { transform: translateY(calc(var(--t, 0) * -22%)); will-change: transform; }
+  html.story-on .scan-frame { transform: translateY(calc(var(--t, 0) * -71%)); will-change: transform; }
+  html.story-on .scan-line { opacity: calc(min(var(--t, 0), 1 - var(--t, 0)) * 4); top: calc(var(--t, 0) * 96%); }
+  html.story-on .scan-plate { opacity: var(--t, 0); transform: scale(calc(1.08 - var(--t, 0) * 0.08)); }
+  html.story-on .scan-t0 { opacity: calc(1 - var(--t, 0)); }
+  html.story-on .scan-t1 { opacity: calc(var(--in, 0) * (1 - var(--out, 0))); position: absolute; inset-inline: 0; top: 0; }
+  html.story-on .scan-results { transform: translateY(calc((1 - var(--t, 0)) * 100%)); will-change: transform; }
+  html.story-on .scan-shutter { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * 24px)); }
+  /* Static: show the scan screen finished */
+  html:not(.story-on) .scan-feed-wrap { transform: translateY(-22%); }
+  html:not(.story-on) .scan-frame { transform: translateY(-71%); }
+  html:not(.story-on) .scan-line, html:not(.story-on) .scan-t0, html:not(.story-on) .scan-t1, html:not(.story-on) .scan-shutter { display: none; }
+
+  /* Cards: counter-scaled so they keep their natural size whatever the phone scale */
+  .story-card { position: absolute; width: 256px; align-items: center; gap: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.35; text-align: start; }
+  .story-card-icon { display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 9999px; }
+  html.story-on .story-card {
+    opacity: calc(var(--in, 0) * (1 - var(--out, 0)));
+    transform: scale(calc(1 / var(--ps))) translateY(calc((1 - var(--in, 0)) * 36px + var(--out, 0) * -20px));
+    will-change: transform, opacity;
+  }
+  .story-card-a { right: -150px; top: 12%; transform-origin: 100% 0; }
+  .story-card-b { left: -160px; bottom: 16%; transform-origin: 0 100%; }
+  .story-card-c { right: -170px; top: 36%; transform-origin: 100% 0; }
+  .story-card-d { left: -160px; top: 7%; transform-origin: 0 0; }
+  .story-card-e { right: -150px; bottom: 18%; transform-origin: 100% 100%; }
+
+  /* Captions */
+  html.story-on .story-cap { position: absolute; inset-inline: 0; top: 0; opacity: calc(var(--in, 0) * (1 - var(--out, 0))); transform: translateY(calc((1 - var(--in, 0)) * 32px + var(--out, 0) * -24px)); will-change: transform, opacity; }
+  .story-dots { gap: 6px; }
+  .story-dots li { width: 22px; height: 3px; border-radius: 999px; background: rgba(0,0,0,.1); transition: background 240ms ease; }
+  .hero-story[data-beat="1"] .story-dots li:nth-child(1), .hero-story[data-beat="2"] .story-dots li:nth-child(2), .hero-story[data-beat="3"] .story-dots li:nth-child(3), .hero-story[data-beat="4"] .story-dots li:nth-child(4) { background: var(--color-gold); }
+  html.story-on .story-dots { position: absolute; opacity: calc(var(--dots, 0)); }
+
+  /* Mobile composition: phone top-centred, captions at the bottom */
+  html.story-on .story-hub { --arrive: 58vh; --shift: 0px; top: calc(76px + 370px * var(--ps)); }
+  html.story-on .story-captions { inset-inline: 0; bottom: 36px; text-align: center; }
+  html.story-on .story-cap { display: flex; flex-direction: column; align-items: center; top: auto; bottom: 0; }
+  html.story-on .story-dots { left: 50%; bottom: -22px; transform: translateX(-50%); }
+  @media (max-width: 63.98rem) {
+    .story-card { width: 220px; font-size: 12px; padding: 10px 12px; }
+    .story-card-a, .story-card-c, .story-card-e { right: -36px; }
+    .story-card-b, .story-card-d { left: -36px; }
+    .story-card-a { top: 6%; }
+    .story-card-b { bottom: 6%; }
+    .story-card-c { top: auto; bottom: 30%; }
+    .story-card-d { top: 4%; }
+    .story-card-e { bottom: 8%; }
+  }
+  /* Desktop composition: captions left, phone right of centre */
+  @media (min-width: 64rem) {
+    html.story-on .story-intro { top: 18%; }
+    html.story-on .story-hub { --arrive: 60vh; --shift: -10vw; top: 53%; }
+    html.story-on .story-captions { inset-inline: auto; left: 0; top: 50%; bottom: auto; width: 36%; height: 280px; transform: translateY(-50%); text-align: start; }
+    html.story-on .story-cap { display: block; top: 0; bottom: auto; }
+    html.story-on .story-dots { left: 0; bottom: 0; transform: none; }
+    html.story-on .story-hub { left: 62%; }
+  }
+  @keyframes story-nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  @media (prefers-reduced-motion: reduce) { html.story-on .story-intro .story-hint svg { animation: none; } }
+</style>
+
+<script>
+  const sec = document.querySelector<HTMLElement>('[data-story]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (sec && !reduce) {
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    const ease = (x: number) => { x = clamp(x); return x * x * (3 - 2 * x); };
+    const parse = (s?: string) => (s ? (s.split(',').map(Number) as [number, number]) : null);
+    const seg = (p: number, w: [number, number]) => ease((p - w[0]) / (w[1] - w[0]));
+    const items = Array.from(sec.querySelectorAll<HTMLElement>('[data-win],[data-in]')).map((el) => ({
+      el, win: parse(el.dataset.win), i: parse(el.dataset.in), o: parse(el.dataset.out),
+    }));
+    const dots = sec.querySelector<HTMLElement>('.story-dots');
+    const desktop = window.matchMedia('(min-width: 64rem)');
+
+    // Phone scale from the viewport height (natural phone: 360 × ~740 px).
+    const size = () => {
+      const vh = window.innerHeight;
+      const avail = desktop.matches ? vh - 200 : vh * 0.6;
+      document.documentElement.style.setProperty('--story-ps', Math.max(0.42, Math.min(1, avail / 740)).toFixed(3));
+    };
+
+    let last = -1;
+    const frame = () => {
+      const r = sec.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      const p = total > 0 ? clamp(-r.top / total) : 0;
+      if (p === last) return;
+      last = p;
+      sec.style.setProperty('--p', p.toFixed(4));
+      sec.dataset.beat = String(p < 0.14 ? 0 : p < 0.42 ? 1 : p < 0.62 ? 2 : p < 0.84 ? 3 : 4);
+      if (dots) dots.style.setProperty('--dots', ease((p - 0.14) / 0.06).toFixed(3));
+      for (const it of items) {
+        let off = false;
+        if (it.win) { const t = seg(p, it.win); it.el.style.setProperty('--t', t.toFixed(4)); off = it.el.dataset.offAt === 'end' && t === 1; }
+        if (it.i) {
+          const i = seg(p, it.i), o = it.o ? seg(p, it.o) : 0;
+          it.el.style.setProperty('--in', i.toFixed(4)); it.el.style.setProperty('--out', o.toFixed(4));
+          off = i === 0 || o === 1;
+        }
+        if (off) it.el.setAttribute('data-off', ''); else it.el.removeAttribute('data-off');
+      }
+    };
+
+    // Read progress every frame while the section is on screen (works inside a scrolling frame too).
+    let raf = 0;
+    const tick = () => { frame(); raf = requestAnimationFrame(tick); };
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { if (!raf) tick(); } else { cancelAnimationFrame(raf); raf = 0; frame(); } });
+    }).observe(sec);
+    window.addEventListener('resize', () => { size(); last = -1; frame(); });
+    size(); frame();
+  }
+</script>

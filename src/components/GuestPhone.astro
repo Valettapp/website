@@ -11,18 +11,20 @@ import SampleLabel from './SampleLabel.astro';
 import Plate from './Plate.astro';
 
 interface Props {
-  /** Render one state (4, driver on the way) with no controls or script. Used in the hero. */
+  /** Render one state with no controls or script. Used in the hero story. */
   static?: boolean;
+  /** Which state a static phone shows (default 4, driver on the way). */
+  state?: 1 | 2 | 3 | 4 | 5;
   /** Load the car photo eagerly (above the fold). */
   priority?: boolean;
   /** Cycle through the five states on a fixed clock until the visitor taps. */
   autoplay?: boolean;
   class?: string;
 }
-const { static: isStatic = false, priority = false, autoplay = false, class: className = '' } = Astro.props;
+const { static: isStatic = false, state: staticState = 4, priority = false, autoplay = false, class: className = '' } = Astro.props;
 const stateNames = ['Parked', 'Get a text', 'Request received', 'Driver on the way', 'All done'];
 const track = ['Requested', 'On it', 'Bringing', 'Outside'];
-const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
+const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
 ---
 <div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })} {...(autoplay ? { 'data-autoplay': '' } : {})}>
   <div class="phone-frame w-full max-w-[360px]">
@@ -151,9 +153,10 @@ const hiddenIf = (n: number) => (isStatic ? n !== 4 : n !== 1);
           <div class="mt-5">
             <p class="text-[14px] font-medium">How was it today?</p>
             <div class="mt-2 flex justify-center gap-1.5" role="group" aria-label="Rating">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button type="button" class="text-ink/15 data-[on]:text-gold" data-star={n} aria-label={`${n} star${n > 1 ? 's' : ''}`} data-on=""><Icon name="star" size={22} class="fill-current" /></button>
-              ))}
+              {[1, 2, 3, 4, 5].map((n) => {
+                const Star = isStatic ? 'span' : 'button';
+                return <Star {...(isStatic ? {} : { type: 'button', 'aria-label': `${n} star${n > 1 ? 's' : ''}` })} class="text-ink/15 data-[on]:text-gold" data-star={n} data-on=""><Icon name="star" size={22} class="fill-current" /></Star>;
+              })}
             </div>
           </div>
           <div class="mt-auto flex w-full flex-col gap-2.5">

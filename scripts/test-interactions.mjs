@@ -16,25 +16,24 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on('pageerror', (e) => { console.log('pageerror', e.message); failures++; });
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
-  // Hero stage: scroll-driven variables move, pointer tilt responds.
-  const stage = page.locator('[data-hero-stage]');
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(300);
-  const enter0 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
-  await page.evaluate(() => window.scrollTo(0, 700));
-  await page.waitForTimeout(400);
-  const enter1 = await stage.evaluate((el) => el.style.getPropertyValue('--enter'));
-  check(Number(enter1) > Number(enter0), `hero stage enter progress responds to scroll (${enter0} → ${enter1})`);
+  // Hero story: scroll progress drives the beats; the phone changes screen.
+  const story = page.locator('[data-story]');
+  const total = await story.evaluate((el) => el.getBoundingClientRect().height - window.innerHeight);
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200);
+  const beat0 = await story.getAttribute('data-beat');
+  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.5)); await page.waitForTimeout(300);
+  const p1 = Number(await story.evaluate((el) => el.style.getPropertyValue('--p')));
+  const beat2 = await story.getAttribute('data-beat');
+  const s2 = await story.locator('[data-screen="2"]').evaluate((el) => Number(el.style.getPropertyValue('--in')));
+  check(beat0 === '0' && p1 > 0.4 && beat2 === '2' && s2 > 0.9, `hero story follows scroll (beat ${beat0} → ${beat2}, p ${p1.toFixed(2)}, guest screen in ${s2})`);
+  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.98)); await page.waitForTimeout(300);
+  check((await story.getAttribute('data-beat')) === '4', 'hero story ends on beat 4 (safe travels)');
   // Reveal: a section far down is hidden until scrolled to.
   const team = page.locator('#company > .container-page > *').first();
   const before = await team.evaluate((el) => getComputedStyle(el).opacity);
   await team.scrollIntoViewIfNeeded(); await page.waitForTimeout(1000);
   const after = await team.evaluate((el) => getComputedStyle(el).opacity);
   check(Number(before) < 0.5 && Number(after) > 0.9, `scroll reveal animates sections in (${before} → ${after})`);
-  await stage.hover({ position: { x: 40, y: 40 } });
-  await page.waitForTimeout(100);
-  const ty = await stage.evaluate((el) => el.style.getPropertyValue('--ty'));
-  check(ty !== '' && ty !== '0deg', `hero phone tilts with the pointer (${ty})`);
   await page.evaluate(() => window.scrollTo(0, 0));
 
   const guest = page.locator('#guest [data-guest]');

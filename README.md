@@ -29,7 +29,7 @@ Screenshots, Lighthouse and the interaction test use Playwright's Chromium. In t
 - `docs/PENDING.md` — assets and confirmations still needed, and what stands in for them.
 - `src/styles/global.css` — design tokens (`@theme`), type scale, surfaces, pills.
 - `src/data/site.ts` — site metadata, contact details, film paths, nav.
-- `src/components/` — one component per section; `GuestPhone`, `KeyBoard`, `ScanAnimation` are the interactive samples; `StaffScreen` holds the rebuilt dark screens.
+- `src/components/` — one component per section; `HeroStory` is the pinned scroll-driven hero; `GuestPhone`, `KeyBoard`, `ScanAnimation` are the interactive samples; `StaffScreen` holds the rebuilt dark screens.
 - `src/layouts/Base.astro` — `<head>`: meta, OG, JSON-LD, Plausible.
 
 ## Conventions
