@@ -48,6 +48,8 @@ Items the site needs before launch, in the order they block work. Each has a pla
 
 - Scan screen (27 Oct): live camera feed on the real Defender (crop of the guest screenshot), plate detection box, then the results sheet. Scroll effects now run on IntersectionObserver so they work inside the preview frame; variants up / scale / left / right with staggered children.
 
+- Plates (27 Oct): `Plate.astro` reproduces the reference set in HTML (Dubai blue/magenta lettering; Abu Dhabi red code block with bilingual stack; Sharjah and Fujairah grey faces with Arabic over Latin). The same component is used on the guest page, staff ticket and request screens, the scan results and the recognition cards.
+
 ## Copy added outside the brief
 
 - Key board intro (§4): "Every ticket, every promise, on one board. When a request runs late, the shift manager knows before the guest does."

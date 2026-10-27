@@ -60,7 +60,7 @@ const reads = [
       <ul class="snap-row mt-10 sm:grid sm:grid-cols-2 sm:gap-5 lg:grid-cols-4" data-reveal-stagger="scale">
         {reads.map((r) => (
           <li class="snap-item glass-card flex flex-col gap-4 p-5">
-            <div class="flex justify-center rounded-card bg-field py-6"><Plate emirate={r.emirate} code={r.code} number={r.number} /></div>
+            <div class="flex justify-center rounded-card bg-field py-6 px-3"><Plate emirate={r.emirate} code={r.code} number={r.number} scale={0.95} /></div>
             <div class="flex items-start gap-2.5 text-[13px]">
               <span class="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full border border-gold text-gold"><Icon name="check" size={11} /></span>
               <span><strong class="block font-semibold">{r.emirate} · {r.code} {r.number}</strong><span class="text-ink-2">{r.out}</span></span>
