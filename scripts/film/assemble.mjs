@@ -1,6 +1,6 @@
 // Assembles the Valett film from the generated clips and the HTML-rendered overlays.
 // Usage: node scripts/film/assemble.mjs <workdir>   (workdir holds clips/, overlays/; writes out/)
-// Shot ids: shot01, shotA/B/C/D (27 Oct re-shoot of the arrival; D is the valet driving off), shot06..shot10.
+// Shot ids: shot01, shotA/B/C/D (arrival), shotR1/R2/R3 (dinner), shotK1/K2 (departure); all but shot01 re-shot 27 Oct.
 // Each shot: clip, trim, phone panel (real UI, slides in), caption. Output: 16:9 1080p and 9:16 720p.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -20,11 +20,14 @@ const shots = [
   { f: 'shotB.mp4', len: 6, panels: [{ img: 'staff-scanning.png', from: 0.3, to: 2.0 }, { img: 'staff-ticket.png', from: 2.0, to: 4.0 }, { img: 'guest-1.png', from: 4.0, to: 6 }], cap: [{ img: 'c3.png', from: 0.6, to: 3.0 }, { img: 'c4.png', from: 3.4, to: 6 }] },
   { f: 'shotC.mp4', len: 5 },
   { f: 'shotD.mp4', len: 4.5 },
-  { f: 'shot06.mp4', len: 6 },
-  { f: 'shot07.mp4', len: 4, panels: [{ img: 'guest-1.png', from: 0.4, to: 1.8 }, { img: 'guest-3.png', from: 1.8, to: 4 }], cap: { img: 'c7.png', from: 0.8, to: 4 } },
-  { f: 'shot08.mp4', len: 4, panels: [{ img: 'guest-4.png', from: 0.3, to: 4 }], cap: { img: 'c8.png', from: 0.6, to: 4 } },
-  { f: 'shot09.mp4', len: 3, panels: [{ img: 'guest-4.png', from: 0, to: 3 }], cap: { img: 'c9.png', from: 0.3, to: 3 } },
-  { f: 'shot10.mp4', len: 8, panels: [{ img: 'guest-5.png', from: 0.6, to: 4.2 }], cap: { img: 'c10.png', from: 4.4, to: 7.8 } },
+  // Second half, re-shot 27 Oct from new stills (plain skyline, no landmarks): a calm end of dinner, the
+  // request from the table, the walk out, the car waiting at the night kerb, the valet closes the door,
+  // the car drives off and the empty entrance cuts to the end card. Old shots 06-10 retired.
+  { f: 'shotR1.mp4', len: 6 },
+  { f: 'shotR2.mp4', len: 5, panels: [{ img: 'guest-1.png', from: 0.2, to: 1.6 }, { img: 'guest-3.png', from: 1.6, to: 3.2 }, { img: 'guest-4.png', from: 3.2, to: 5 }], cap: [{ img: 'c7.png', from: 0.4, to: 2.6 }, { img: 'c8.png', from: 2.9, to: 5 }] },
+  { f: 'shotR3.mp4', len: 6, panels: [{ img: 'guest-4.png', from: 0.6, to: 3.6 }], cap: { img: 'c9.png', from: 0.9, to: 4.2 } },
+  { f: 'shotK1.mp4', len: 6 },
+  { f: 'shotK2.mp4', len: 8, panels: [{ img: 'guest-5.png', from: 0.8, to: 4.0 }], cap: { img: 'c10.png', from: 1.0, to: 4.6 } },
 ];
 const END = 4; // end card seconds
 
