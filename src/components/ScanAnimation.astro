@@ -20,26 +20,27 @@ const fields = [
 ---
 <div class:list={[framed ? (dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
   <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app camera: one photo of the car reads the plate, make, model and colour">
-    {/* Camera feed: the Defender, plate M 95378 */}
-    <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="300px" alt="" class="scan-feed absolute inset-0 h-full w-full object-cover" style="object-position: 79% 50%" loading="lazy" decoding="async" />
-    <div class="scan-shade absolute inset-0" aria-hidden="true"></div>
+    {/* Camera feed: the Defender, plate M 95378. Viewfinder and plate box ride with the feed. */}
+    <div class="scan-feed absolute inset-0">
+      <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="300px" alt="" class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+      <div class="scan-frame absolute left-[8%] right-[8%] top-[43%] z-10 aspect-[4/3]">
+        <div class="scan-corners absolute inset-0"></div>
+        <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]"></div>
+      </div>
+      {/* The measured plate: 20–80 % across, 54.7–62 % down, plus a little padding */}
+      <div class="scan-plate absolute left-[18.5%] top-[53%] z-10 h-[10.5%] w-[63%] rounded-[4px] border-2 border-white/60" data-plate-box>
+        <span class="scan-plate-tag absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
+      </div>
+    </div>
+    <div class="scan-shade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
     <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
       <Wordmark variant="serif" class="text-[12px] text-white/90" />
       <span class="text-[11px] text-white/70">01:05</span>
     </div>
 
-    {/* Viewfinder + plate detection */}
-    <div class="scan-frame absolute inset-x-4 top-[30%] z-10 aspect-[4/3]">
-      <div class="scan-corners absolute inset-0"></div>
-      <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]"></div>
-      <div class="scan-plate absolute left-[7%] right-[5%] top-[54%] h-[36%] rounded-[4px] border-2 border-white/60" data-plate-box>
-        <span class="scan-plate-tag absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
-      </div>
-    </div>
-
     {/* Captions */}
-    <div class="absolute inset-x-5 top-[74%] z-10 text-center">
+    <div class="absolute inset-x-5 top-[77%] z-10 text-center">
       <p class="scan-t0 text-[15px] font-medium drop-shadow">Take vehicle photo</p>
       <p class="scan-t0 mt-1 text-[12px] text-white/70">Frame the number plate</p>
       <p class="scan-t1 text-[15px] font-medium"><span class="inline-flex items-center gap-2"><span class="scan-dot size-1.5 rounded-full bg-gold"></span>Scanning vehicle…</span></p>
@@ -59,7 +60,7 @@ const fields = [
     </div>
 
     {/* Shutter */}
-    <div class="scan-shutter absolute inset-x-0 bottom-6 z-10 flex justify-center">
+    <div class="scan-shutter absolute inset-x-0 bottom-5 z-10 flex justify-center">
       <span class="inline-flex size-14 items-center justify-center rounded-full border-2 border-white/90"><span class="size-11 rounded-full bg-white/95"></span></span>
     </div>
     <button type="button" class="absolute inset-0 z-20 cursor-pointer" aria-label="Replay scan animation" data-replay></button>
@@ -91,9 +92,8 @@ const fields = [
   [data-phase="2"] .scan-shutter { display: none; }
   [data-phase="2"] .scan-done { opacity: 1; transition: opacity 300ms ease 760ms; }
   [data-phase="2"] .scan-t1 { opacity: 0; }
-  .scan-feed, .scan-frame { transition: transform 450ms cubic-bezier(.2,.8,.2,1); }
-  [data-phase="2"] .scan-feed { transform: translateY(-22%); }
-  [data-phase="2"] .scan-frame { transform: translateY(-71%); } /* same distance: frame height is ~31 % of the screen */
+  .scan-feed { transition: transform 450ms cubic-bezier(.2,.8,.2,1); }
+  [data-phase="2"] .scan-feed { transform: translateY(-30%); } /* clears the results sheet on the smallest phones */
   .scan-t0, .scan-t1, .scan-line { transition: opacity 300ms ease; }
   .scan-t1 { position: absolute; inset-inline: 0; top: 0; }
   @media (prefers-reduced-motion: reduce) { .scan-line { animation: none !important; } }

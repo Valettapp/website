@@ -58,21 +58,22 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
           <div class="story-screen phone-frame" data-screen="1" data-in="0,0.001" data-out="0.40,0.46" aria-hidden="true">
             <div class="scan phone-screen bg-ink text-white">
               <div class="scan-feed-wrap absolute inset-0" data-win="0.30,0.38">
-                <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="360px" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position: 79% 50%" loading="eager" fetchpriority="high" decoding="async" />
+                <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="360px" alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" decoding="async" />
+                {/* Viewfinder and plate box ride with the feed; the box sits on the measured plate (20–80 % × 54.7–62 %) */}
+                <div class="scan-frame absolute left-[8%] right-[8%] top-[43%] z-10 aspect-[4/3]">
+                  <div class="scan-corners absolute inset-0"></div>
+                  <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]" data-win="0.15,0.29"></div>
+                </div>
+                <div class="scan-plate absolute left-[18.5%] top-[53%] z-10 h-[10.5%] w-[63%] rounded-[4px] border-2 border-white/70" data-win="0.26,0.31">
+                  <span class="absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
+                </div>
               </div>
               <div class="scan-shade absolute inset-0"></div>
               <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
                 <Wordmark variant="serif" class="text-[12px] text-white/90" />
                 <span class="text-[11px] text-white/70">01:05</span>
               </div>
-              <div class="scan-frame absolute inset-x-4 top-[30%] z-10 aspect-[4/3]" data-win="0.30,0.38">
-                <div class="scan-corners absolute inset-0"></div>
-                <div class="scan-line absolute inset-x-2 top-0 h-px bg-gold/90 shadow-[0_0_14px_2px_rgba(197,162,83,.55)]" data-win="0.15,0.29"></div>
-                <div class="scan-plate absolute left-[7%] right-[5%] top-[54%] h-[36%] rounded-[4px] border-2 border-white/70" data-win="0.26,0.31">
-                  <span class="absolute -top-6 right-0 rounded-[4px] bg-gold px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">Plate</span>
-                </div>
-              </div>
-              <div class="absolute inset-x-5 top-[74%] z-10 text-center">
+              <div class="absolute inset-x-5 top-[77%] z-10 text-center">
                 <div class="scan-t0" data-win="0.13,0.17">
                   <p class="text-[15px] font-medium drop-shadow">Take vehicle photo</p>
                   <p class="mt-1 text-[12px] text-white/70">Frame the number plate</p>
@@ -87,7 +88,7 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
                 </ul>
                 <span class="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-pill bg-white px-4 py-2.5 text-[13px] font-medium text-ink"><Icon name="check" size={13} /> Vehicle recognised · Continue</span>
               </div>
-              <div class="scan-shutter absolute inset-x-0 bottom-6 z-10 flex justify-center" data-win="0.13,0.17">
+              <div class="scan-shutter absolute inset-x-0 bottom-5 z-10 flex justify-center" data-win="0.13,0.17">
                 <span class="inline-flex size-14 items-center justify-center rounded-full border-2 border-white/90"><span class="size-11 rounded-full bg-white/95"></span></span>
               </div>
             </div>
@@ -182,23 +183,21 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
   html.story-on .story-screen .guest-phone { gap: 0; }
 
   /* Scan internals */
-  .scan-shade { background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(10,10,10,.92) 84%, #0a0a0a 100%); }
+  .scan-shade { pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(10,10,10,.92) 84%, #0a0a0a 100%); }
   .scan-corners { background:
     linear-gradient(#fff,#fff) top left/22px 2px no-repeat, linear-gradient(#fff,#fff) top left/2px 22px no-repeat,
     linear-gradient(#fff,#fff) top right/22px 2px no-repeat, linear-gradient(#fff,#fff) top right/2px 22px no-repeat,
     linear-gradient(#fff,#fff) bottom left/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom left/2px 22px no-repeat,
     linear-gradient(#fff,#fff) bottom right/22px 2px no-repeat, linear-gradient(#fff,#fff) bottom right/2px 22px no-repeat; }
   html.story-on .scan-feed-wrap { transform: translateY(calc(var(--t, 0) * -22%)); will-change: transform; }
-  html.story-on .scan-frame { transform: translateY(calc(var(--t, 0) * -71%)); will-change: transform; }
   html.story-on .scan-line { opacity: calc(min(var(--t, 0), 1 - var(--t, 0)) * 4); top: calc(var(--t, 0) * 96%); }
-  html.story-on .scan-plate { opacity: var(--t, 0); transform: scale(calc(1.08 - var(--t, 0) * 0.08)); }
+  html.story-on .scan-plate { opacity: var(--t, 0); transform: scale(calc(1.08 - var(--t, 0) * 0.08)); border-color: #c5a253; box-shadow: 0 0 0 2px rgba(197,162,83,.25), 0 0 24px rgba(197,162,83,.35); }
   html.story-on .scan-t0 { opacity: calc(1 - var(--t, 0)); }
   html.story-on .scan-t1 { opacity: calc(var(--in, 0) * (1 - var(--out, 0))); position: absolute; inset-inline: 0; top: 0; }
   html.story-on .scan-results { transform: translateY(calc((1 - var(--t, 0)) * 100%)); will-change: transform; }
   html.story-on .scan-shutter { opacity: calc(1 - var(--t, 0)); transform: translateY(calc(var(--t, 0) * 24px)); }
   /* Static: show the scan screen finished */
   html:not(.story-on) .scan-feed-wrap { transform: translateY(-22%); }
-  html:not(.story-on) .scan-frame { transform: translateY(-71%); }
   html:not(.story-on) .scan-line, html:not(.story-on) .scan-t0, html:not(.story-on) .scan-t1, html:not(.story-on) .scan-shutter { display: none; }
 
   /* Cards: counter-scaled so they keep their natural size whatever the phone scale */
