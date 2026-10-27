@@ -26,7 +26,7 @@ const steps = [
           <div class="flex flex-col gap-2">
             <p class="t-eyebrow">0{i + 1}</p>
             <h3 class="t-h3">{s.title}</h3>
-            <p class="t-body text-ink-2">{s.body} <Pill status="live" class="ms-1 align-[2px]" /></p>
+            <p class="t-body text-ink-2">{s.body}</p>
           </div>
         </li>
       ))}
@@ -41,7 +41,7 @@ const steps = [
       <div class="lg:col-span-7 flex flex-col gap-4" data-reveal="right">
         <p class="t-eyebrow">04</p>
         <h3 class="t-h3 max-w-[22em]">“New request, just now. Land Rover Defender, Zone P3, Bay 55. On my way.”</h3>
-        <p class="t-body measure text-ink-2">The driver taps once and the guest’s page moves. <Pill status="live" class="ms-1 align-[2px]" /></p>
+        <p class="t-body measure text-ink-2">The driver taps once and the guest’s page moves.</p>
       </div>
     </div>
 
@@ -49,14 +49,13 @@ const steps = [
       <Ambient variant="wide" class="-inset-y-[10%]" />
       <div class="mb-8 flex flex-col gap-3">
         <p class="t-eyebrow">The key controller</p>
-        <h3 class="t-h3 max-w-[26em]">Every ticket on one board, from checked in to at the podium. The shift manager sees who is on, what is requested and what is running late. <Pill status="live" class="ms-1 align-[3px]" /></h3>
+        <h3 class="t-h3 max-w-[26em]">Every ticket on one board, from checked in to at the podium. The shift manager sees who is on, what is requested and what is running late.</h3>
       </div>
       <div class="glass-panel !rounded-frame p-3 md:p-8">
         <BrowserFrame url="admin.valettuae.com/key-controller">
           <Picture src={keyController} formats={['avif', 'webp']} widths={[800, 1200, 1800]} sizes="(min-width: 1280px) 1150px, 94vw" alt="Key controller board: columns for checked in, parked, requested, with driver, en route and at podium, each ticket with its hook, car and timing." class="block w-full" loading="lazy" decoding="async" />
         </BrowserFrame>
       </div>
-      <p class="t-caption mt-4">Admin software, demo data.</p>
     </div>
   </div>
 </section>

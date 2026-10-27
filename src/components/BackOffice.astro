@@ -3,7 +3,6 @@ import { Picture } from 'astro:assets';
 import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import BrowserFrame from './BrowserFrame.astro';
-import SampleLabel from './SampleLabel.astro';
 import Ambient from './Ambient.astro';
 import superAdmin from '../assets/reports/super-admin.jpg';
 import shiftManager from '../assets/reports/shift-manager.jpg';
@@ -31,7 +30,6 @@ const tiles = [
   <div class="container-page">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <SectionHead id="backoffice-title" eyebrow="Back office" title="Run one door or forty from the same screen." />
-      <SampleLabel class="md:pb-2" text="Admin software, demo data" />
     </div>
 
     {/* Showcase: super admin dashboard + key controller */}
@@ -49,7 +47,7 @@ const tiles = [
         </div>
         <div class="flex flex-col gap-3 px-1">
           <h3 class="t-h3">One screen for the operator, one for every door.</h3>
-          <p class="text-[16px] leading-relaxed text-ink-2">Operators and groups see every venue on a map with live counts. Each venue runs its own key controller, reports, staff and settings, and the guest page carries the venue’s brand, not ours. <Pill status="live" class="ms-1 align-[2px]" /></p>
+          <p class="text-[16px] leading-relaxed text-ink-2">Operators and groups see every venue on a map with live counts. Each venue runs its own key controller, reports, staff and settings, and the guest page carries the venue’s brand, not ours.</p>
         </div>
       </div>
     </div>
@@ -65,7 +63,7 @@ const tiles = [
           <div class="flex flex-1 flex-col gap-2 px-1 pt-5">
             <h3 class="t-h3 !text-[18px] md:!text-[20px]">{t.title}</h3>
             <p class="text-[15px] leading-relaxed text-ink-2">{t.body}</p>
-            <div class="mt-auto pt-2"><Pill status="live" /></div>
+            <div class="mt-auto pt-2"></div>
           </div>
         </li>
       ))}

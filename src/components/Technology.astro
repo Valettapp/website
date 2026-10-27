@@ -4,7 +4,6 @@ import Pill from './Pill.astro';
 import ScanAnimation from './ScanAnimation.astro';
 import Plate from './Plate.astro';
 import Icon from './Icon.astro';
-import SampleLabel from './SampleLabel.astro';
 import Ambient from './Ambient.astro';
 import type { Status } from '../data/site';
 const rows: { label: string; status: Status }[] = [
@@ -55,7 +54,6 @@ const reads = [
           <p class="t-eyebrow">Plate recognition</p>
           <h3 class="t-h3 max-w-[26em]">Reads the plate as the valet frames it: emirate, code and number, then the make, model and colour of the car behind it.</h3>
         </div>
-        <SampleLabel text="Demo plates" class="md:pb-1" />
       </div>
       <ul class="snap-row mt-10 sm:grid sm:grid-cols-2 sm:gap-5 lg:grid-cols-4" data-reveal-stagger="scale">
         {reads.map((r) => (
@@ -68,7 +66,7 @@ const reads = [
           </li>
         ))}
       </ul>
-      <p class="t-caption mt-6 max-w-[40em]">Recognition runs on the photo the valet takes at the door, in daylight and at night. Plate formats shown are demo data. <Pill status="live" class="ms-1 align-[1px]" /></p>
+      <p class="t-caption mt-6 max-w-[40em]">Recognition runs on the photo the valet takes at the door, in daylight and at night.</p>
     </div>
   </div>
 </section>

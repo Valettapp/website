@@ -5,7 +5,6 @@
  * "Shift manager pinged" toast appears. Deterministic and resettable.
  */
 import Icon from './Icon.astro';
-import SampleLabel from './SampleLabel.astro';
 
 // due: seconds (demo time) from board start; null = no promise (parked, no request).
 const tickets = [
@@ -60,7 +59,6 @@ const tickets = [
     </div>
   </div>
   <div class="flex items-center justify-between border-t border-line px-5 py-3">
-    <SampleLabel />
     <p class="t-caption hidden sm:block">Sorted by promised time</p>
   </div>
   <div class="toast glass pointer-events-none absolute inset-x-4 bottom-16 z-10 flex items-center gap-3 rounded-card px-4 py-3 text-[14px] opacity-0 transition-opacity duration-300 sm:inset-x-auto sm:end-4 sm:w-[300px] data-[on]:opacity-100" role="status" data-toast>

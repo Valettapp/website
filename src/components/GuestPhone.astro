@@ -7,7 +7,6 @@
 import { Picture } from 'astro:assets';
 import carGuest from '../assets/car-guest.jpg';
 import Icon from './Icon.astro';
-import SampleLabel from './SampleLabel.astro';
 import Plate from './Plate.astro';
 
 interface Props {
@@ -182,7 +181,6 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
       <button type="button" class="btn-ghost !p-2" data-next aria-label="Next state"><Icon name="arrow-right" size={16} /></button>
     </div>
     <div class="flex items-center gap-4">
-      <SampleLabel />
       <button type="button" class="inline-flex items-center gap-1.5 text-[13px] text-ink-2 hover:text-ink" data-reset><Icon name="reset" size={14} /> Reset</button>
     </div>
     <p class="sr-only" data-announce></p>

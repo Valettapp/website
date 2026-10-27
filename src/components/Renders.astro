@@ -5,7 +5,6 @@ import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import Plate from './Plate.astro';
 import Ambient from './Ambient.astro';
-import SampleLabel from './SampleLabel.astro';
 import carPhoto from '../assets/car-photo.jpg';
 ---
 <section data-reveal-group id="renders" class="section-pad scroll-mt-20" aria-labelledby="renders-title">
@@ -14,7 +13,7 @@ import carPhoto from '../assets/car-photo.jpg';
       <div class="flex flex-col gap-6 lg:col-span-5">
         <SectionHead id="renders-title" eyebrow="AI renders" title="Every ticket carries a 3D replica of the car." />
         <p class="t-body measure">
-          When a car is checked in, Valett’s AI generates a 3D render of the exact model in the exact colour. The guest sees their own car on their ticket, not a stock icon. The driver knows which car to bring, and what it looks like, before touching a key. <Pill status="live" class="ms-1 align-[2px]" />
+          When a car is checked in, Valett’s AI generates a 3D render of the exact model in the exact colour. The guest sees their own car on their ticket, not a stock icon. The driver knows which car to bring, and what it looks like, before touching a key.
         </p>
         <ul class="measure flex flex-col">
           {['Model and colour matched from the check-in photo', 'The same render on the guest page, the staff app and the board', 'White-label: the venue’s brand, the guest’s car'].map((t) => (
@@ -53,7 +52,6 @@ import carPhoto from '../assets/car-photo.jpg';
             <Plate emirate="Dubai" code="M" number="95378" scale={0.7} />
           </div>
         </div>
-        <SampleLabel class="mt-4" text="Demo data" />
       </div>
     </div>
   </div>

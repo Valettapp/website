@@ -1,8 +1,0 @@
----
-interface Props { class?: string; text?: string }
-const { class: className = '', text = 'Live sample, demo data' } = Astro.props;
----
-<p class:list={['t-caption inline-flex items-center gap-2', className]}>
-  <span aria-hidden="true" class="inline-block size-1.5 rounded-full bg-gold"></span>
-  {text}
-</p>
