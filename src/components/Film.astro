@@ -79,9 +79,28 @@ const posterSrcAttr = poster.src;
 
 <script>
   // Lazy-attach the mp4 after first paint; respect reduced motion for the silent hero.
+  // Two ways to feed the <video>: stream it (normal), or fetch the whole file and play it from a blob URL.
+  // Safari needs HTTP range support to stream; hosts without it (the design preview) get the blob route,
+  // and any browser falls back to it when streaming errors or never yields metadata.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const portrait = window.matchMedia('(max-width: 767px)').matches;
   const figures = document.querySelectorAll<HTMLElement>('[data-film]');
+  const start = (video: HTMLVideoElement, variant?: string) => { video.dataset.ready = '1'; if (variant === 'hero') video.play().catch(() => {}); };
+  const viaBlob = async (fig: HTMLElement, video: HTMLVideoElement, src: string) => {
+    if (video.dataset.blob) return;
+    video.dataset.blob = '1';
+    fig.setAttribute('data-film-loading', '');
+    try {
+      const res = await fetch(src);
+      if (!res.ok) throw new Error(String(res.status));
+      const url = URL.createObjectURL(await res.blob());
+      video.querySelectorAll('source').forEach((s) => s.remove());
+      video.src = url;
+      video.load();
+      start(video, fig.dataset.variant);
+    } catch { /* leave the poster */ }
+    fig.removeAttribute('data-film-loading');
+  };
   const attach = (fig: HTMLElement) => {
     const video = fig.querySelector('video');
     if (!video || video.dataset.ready) return;
@@ -89,13 +108,20 @@ const posterSrcAttr = poster.src;
     if (!src) return;
     const variant = fig.dataset.variant;
     if (variant === 'hero' && reduce) return; // no autoplay under reduced motion
+    if (fig.hasAttribute('data-film-blob')) { viaBlob(fig, video, src); return; }
     const source = document.createElement('source');
     source.src = src;
     source.type = 'video/mp4';
+    source.addEventListener('error', () => viaBlob(fig, video, src));
+    video.addEventListener('error', () => viaBlob(fig, video, src));
     video.appendChild(source);
     video.load();
-    video.dataset.ready = '1';
-    if (variant === 'hero') video.play().catch(() => {});
+    start(video, variant);
+    // No metadata after a few seconds of trying: the host cannot stream it, fetch it whole instead.
+    const timer = window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 4000);
+    video.addEventListener('loadedmetadata', () => window.clearTimeout(timer), { once: true });
+    // The full variant only starts loading on play; arm the check then too.
+    video.addEventListener('play', () => { window.setTimeout(() => { if (video.readyState < 1 && !video.dataset.blob) viaBlob(fig, video, src); }, 3000); }, { once: true });
   };
   const run = () => {
     if ('IntersectionObserver' in window) {
@@ -107,3 +133,8 @@ const posterSrcAttr = poster.src;
   };
   if ('requestIdleCallback' in window) (window as any).requestIdleCallback(run); else setTimeout(run, 300);
 </script>
+
+<style>
+  [data-film-loading] video { opacity: 0; }
+  [data-film-loading]::after { content: 'Loading the film…'; position: absolute; inset-inline: 0; bottom: 18%; text-align: center; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); pointer-events: none; }
+</style>
