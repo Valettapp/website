@@ -13,7 +13,8 @@ export default defineConfig({
     plugins: [/** @type {any} */ (tailwindcss())],
   },
   build: {
-    inlineStylesheets: 'auto',
+    // Inline all CSS: removes the render-blocking stylesheet requests that delayed first paint on mobile.
+    inlineStylesheets: 'always',
     // Flat files (hotel-valet-app.html) so hosts serve /hotel-valet-app without redirecting to a trailing slash;
     // canonical and sitemap URLs then match what is served.
     format: 'file',

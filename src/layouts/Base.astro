@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import { site } from '../data/site';
 import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
-import serifUrl from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-400-normal.woff2?url';
 interface Props {
   title?: string;
   description?: string;
@@ -77,12 +76,13 @@ const jsonLd = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    {site.verification.google && <meta name="google-site-verification" content={site.verification.google} />}
+    {site.verification.bing && <meta name="msvalidate.01" content={site.verification.bing} />}
     <meta name="theme-color" content="#ffffff" />
     <meta name="color-scheme" content="light" />
     <meta property="og:type" content="website" />
@@ -100,7 +100,14 @@ const jsonLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={og} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    <script defer data-domain={site.plausibleDomain} src="https://plausible.io/js/script.outbound-links.js"></script>
+    {/* Analytics after the page is idle, so it never competes with first paint. */}
+    <script is:inline define:vars={{ domain: site.plausibleDomain }}>
+      (function () {
+        var load = function () { var s = document.createElement('script'); s.defer = true; s.dataset.domain = domain; s.src = 'https://plausible.io/js/script.outbound-links.js'; document.head.appendChild(s); };
+        var later = function () { ('requestIdleCallback' in window) ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 2000); };
+        if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
+      })();
+    </script>
   </head>
   <body class="min-h-dvh bg-bg text-ink antialiased" id="top">
     <a href="#main" class="sr-only-focusable z-[100] btn-primary">Skip to content</a>

@@ -24,7 +24,7 @@ export const solutions: Solution[] = [
     nav: 'Valet management software',
     metaTitle: 'Valet Management Software in Dubai | Valett',
     metaDescription:
-      'Valett is valet management software built in Dubai for hotels, malls, restaurants and residences. One photo checks the car in, the ticket lives on the guest’s phone, and every car, key and minute is on the record.',
+      'Valet management software for Dubai hotels, malls, restaurants and residences. Check-in by photo, a ticket on the guest’s phone, every car on record.',
     eyebrow: 'Valet management software · Dubai',
     h1: 'Valet management software for Dubai’s venues.',
     lede:
@@ -48,7 +48,7 @@ export const solutions: Solution[] = [
     nav: 'Hotels and resorts',
     metaTitle: 'Hotel Valet App for Dubai Hotels and Resorts | Valett',
     metaDescription:
-      'A white-label hotel valet app: the guest page carries the hotel’s name, concierge sees every car, and every arrival is photographed and on the record. Built in Dubai for luxury hotels and resorts.',
+      'A white-label hotel valet app: the guest page carries your hotel’s name, concierge sees every car, and every arrival is photographed. Built in Dubai.',
     eyebrow: 'Hotels and resorts',
     h1: 'The hotel valet app that carries your name, not ours.',
     lede:
@@ -72,7 +72,7 @@ export const solutions: Solution[] = [
     nav: 'Malls',
     metaTitle: 'Mall Valet Parking System with Digital Validation | Valett',
     metaDescription:
-      'A valet parking system for malls: thousands of tickets a day, validation by store, keys and bays tracked, and no paper to reconcile. Built in Dubai for high-volume retail.',
+      'Valet parking for malls: thousands of tickets a day, digital validation by store, keys and bays tracked, nothing to reconcile on paper. Built in Dubai.',
     eyebrow: 'Malls',
     h1: 'Valet parking for malls, without the paper.',
     lede:
@@ -96,7 +96,7 @@ export const solutions: Solution[] = [
     nav: 'Restaurants',
     metaTitle: 'Restaurant Valet Software: Request the Car from the Table | Valett',
     metaDescription:
-      'Valet software for restaurants: guests request the car from the table, pay and tip by text, and walk out to a car at the kerb. Built in Dubai for fine dining and beach clubs.',
+      'Restaurant valet software: guests request the car from the table, pay and tip on their phone, and walk out to a car at the kerb. Built in Dubai.',
     eyebrow: 'Restaurants',
     h1: 'Restaurant valet, requested from the table.',
     lede:
@@ -120,7 +120,7 @@ export const solutions: Solution[] = [
     nav: 'Residences',
     metaTitle: 'Residential Valet and Visitor Parking Management | Valett',
     metaDescription:
-      'Valet and visitor parking management for residential buildings in Dubai: residents’ permanent plans, visitor tickets, keys tracked, and one record per building.',
+      'Valet and visitor parking for residential buildings in Dubai: residents’ plans, visitor tickets on the phone, keys tracked, one record per building.',
     eyebrow: 'Residences',
     h1: 'Residential valet and visitor parking, one record per building.',
     lede:

@@ -22,7 +22,6 @@ const { variant, class: className = '', priority = false } = Astro.props;
 const hasFilm = Boolean(site.film.mp4);
 const poster = hasFilm ? filmPoster : placeholder;
 const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
-const posterSrcAttr = poster.src;
 ---
 <figure
   class:list={['film glass rounded-frame p-2 md:p-3', className]}
@@ -61,7 +60,6 @@ const posterSrcAttr = poster.src;
     {hasFilm ? (
       <video
         class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 data-[ready]:opacity-100"
-        poster={posterSrcAttr}
         preload="none"
         playsinline
         {...(variant === 'hero' ? { muted: true, loop: true, 'aria-label': 'The Valett film, silent preview' } : { controls: true, 'aria-label': 'The Valett film' })}

@@ -2,9 +2,9 @@ export const site = {
   name: 'Valett',
   domain: 'valett.si',
   url: 'https://valett.si',
-  title: 'Valett — Valet Management Software for Hotels, Malls and Restaurants in Dubai',
+  title: 'Valett | Valet Management Software for Hotels in Dubai',
   description:
-    'Valett is valet management software built in Dubai. One photo checks the car in, the ticket lives on the guest’s phone with no app, and every car, key and minute is on the record. For hotels, malls, restaurants and residences.',
+    'Valet management software built in Dubai. One photo checks the car in, the ticket lives on the guest’s phone, and every car and key is on the record.',
   tagline: 'A new era for a timeless service.',
   slogan: 'A new era for a timeless service.',
   email: 'info@valett.si',
@@ -23,6 +23,13 @@ export const site = {
   formspreeId: import.meta.env.FORMSPREE_ID ?? '',
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
   plausibleDomain: 'valett.si',
+  /** Search engine ownership checks. Paste the content="…" value from each tool's "HTML tag" method. */
+  verification: {
+    google: '', // Google Search Console
+    bing: '', // Bing Webmaster Tools
+  },
+  /** IndexNow key (Bing, Yandex, Seznam, Naver): the file public/<key>.txt holds it; the deploy pings after each publish. */
+  indexNowKey: 'cd8df2ff6de06232be66e54bac95e726',
 };
 
 export type Status = 'live' | 'dev' | 'exploring';

@@ -3,9 +3,8 @@
 # Token permissions: Account · Cloudflare Pages · Edit, Zone · DNS · Edit, Zone · Zone · Read (zone valett.si).
 # Manual run with cutover=true also points valett.si and www at Pages (replaces the GitHub Pages records).
 name: Deploy to Cloudflare Pages
+# Parked 29 Oct: Cloudflare cannot take .si zones yet, so this runs only by hand.
 on:
-  push:
-    branches: [claude/new-session-790f1f, main]
   workflow_dispatch:
     inputs:
       cutover:

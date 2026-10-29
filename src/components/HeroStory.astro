@@ -81,11 +81,11 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
       {/* The phones and their floating cards share one transform (position + scale) */}
       <div class="story-hub z-10" data-win="0.02,0.18">
         {/* Side phones: the staff app, fanned out behind the guest's phone (same composition on mobile) */}
-        <div class="story-side story-side-l" aria-hidden="true"><StaffScreen screen="request" /></div>
-        <div class="story-side story-side-r" aria-hidden="true"><StaffScreen screen="ticket" /></div>
+        <div class="story-side story-side-l" aria-hidden="true" inert><StaffScreen screen="request" /></div>
+        <div class="story-side story-side-r" aria-hidden="true" inert><StaffScreen screen="ticket" /></div>
         <div class="story-phone relative w-[360px]" role="img" aria-label="One phone walking through Valett: the staff camera reads the plate from a photo; the guest's ticket appears on their phone; they request the car from the table and watch the driver come; they rate, tip and get a receipt by text.">
           {/* Screen 1: staff camera, scan driven by scroll */}
-          <div class="story-screen phone-frame" data-screen="1" data-in="-0.2,-0.1" data-out="0.43,0.51" aria-hidden="true">
+          <div class="story-screen phone-frame" data-screen="1" data-in="-0.2,-0.1" data-out="0.43,0.51" aria-hidden="true" inert>
             <div class="scan phone-screen bg-ink text-white">
               <div class="scan-feed-wrap absolute inset-0" data-win="0.33,0.41">
                 <Picture src={carScan} formats={['avif', 'webp']} widths={[380, 760]} sizes="360px" alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" fetchpriority="high" decoding="async" />
@@ -124,9 +124,9 @@ const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White
             </div>
           </div>
           {/* Screens 2–4: the guest page */}
-          <div class="story-screen" data-screen="2" data-in="0.43,0.51" data-out="0.62,0.70" aria-hidden="true"><GuestPhone static state={1} /></div>
-          <div class="story-screen" data-screen="3" data-in="0.62,0.70" data-out="0.82,0.90" aria-hidden="true"><GuestPhone static state={4} /></div>
-          <div class="story-screen" data-screen="4" data-in="0.82,0.90" aria-hidden="true"><GuestPhone static state={5} /></div>
+          <div class="story-screen" data-screen="2" data-in="0.43,0.51" data-out="0.62,0.70" aria-hidden="true" inert><GuestPhone static state={1} /></div>
+          <div class="story-screen" data-screen="3" data-in="0.62,0.70" data-out="0.82,0.90" aria-hidden="true" inert><GuestPhone static state={4} /></div>
+          <div class="story-screen" data-screen="4" data-in="0.82,0.90" aria-hidden="true" inert><GuestPhone static state={5} /></div>
         </div>
 
         {/* Floating glass cards, one or two per beat */}

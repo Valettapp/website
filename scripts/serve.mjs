@@ -2,6 +2,9 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, join } from 'node:path';
+import { gzipSync } from 'node:zlib';
+// Compress text the way GitHub Pages does, so Lighthouse measures what visitors download.
+const compressible = new Set(['.html', '.css', '.js', '.mjs', '.json', '.svg', '.xml', '.txt', '.webmanifest', '.vtt']);
 
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -20,9 +23,10 @@ export function serve(dir, port = 4321) {
       if (s?.isDirectory()) { file = join(file, 'index.html'); s = await stat(file).catch(() => null); }
       if (!s) { file = join(root, p + '.html'); s = await stat(file).catch(() => null); }
       if (!s) { file = join(root, '404.html'); s = await stat(file).catch(() => null); if (!s) { res.writeHead(404); res.end('Not found'); return; } res.statusCode = 404; }
-      const data = await readFile(file);
+      let data = await readFile(file);
       const ext = extname(file);
       res.setHeader('Content-Type', types[ext] || 'application/octet-stream');
+      if (compressible.has(ext) && /gzip/.test(req.headers['accept-encoding'] || '')) { data = gzipSync(data); res.setHeader('Content-Encoding', 'gzip'); res.setHeader('Vary', 'Accept-Encoding'); }
       if (p.startsWith('/_astro/')) res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.end(data);
     } catch (e) { res.writeHead(500); res.end(String(e)); }

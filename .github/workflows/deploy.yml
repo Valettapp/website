@@ -40,3 +40,13 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Notify search engines (IndexNow)
+        continue-on-error: true
+        env:
+          key: cd8df2ff6de06232be66e54bac95e726 # public by design; must match public/<key>.txt and site.indexNowKey
+        run: |
+          sleep 20
+          urls=$(curl -s https://valett.si/sitemap-0.xml http://valett.si/sitemap-0.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//' | sort -u | jq -R . | jq -sc .)
+          echo "key $key, urls $urls"
+          curl -s -o /dev/null -w 'IndexNow HTTP %{http_code}\n' -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' \
+            -d "{\"host\":\"valett.si\",\"key\":\"$key\",\"keyLocation\":\"https://valett.si/$key.txt\",\"urlList\":$urls}"

@@ -3,12 +3,12 @@
 You own the repo, framework, components, interactive samples, form, image pipeline, responsive testing, Lighthouse, deployment. Report with screenshots at 1440 and 390 px after every milestone. Source of truth for copy and decisions: `docs/VALETT-WEBSITE-BRIEF.md` (original brief) and this file (approved decisions, 27 Oct 2026). Full annotated copy doc: https://claude.ai/artifact/U6mYTdyjSa2Qtrb1mD1iuh
 
 ## Stack
-- Astro 5 + Tailwind 4, static output. Hosting: Cloudflare Pages (`.github/workflows/deploy-cloudflare.yml`, project "valett"; GitHub Pages workflow kept until the move is done). Domain valett.si, DNS moving from Hostinger to Cloudflare.
+- Astro 5 + Tailwind 4, static output, flat page files. Hosting: GitHub Pages (`.github/workflows/deploy.yml`), domain valett.si, DNS at Hostinger. Cloudflare Pages workflow is parked (manual only) because Cloudflare does not take .si zones yet.
 - One long page `/`. Build HTML with `dir`/`lang` attributes and logical CSS properties (margin-inline etc.) so an Arabic RTL version can be added later.
 - Form: Formspree (endpoint id supplied by Leon; use `FORMSPREE_ID` env), honeypot + Turnstile. Fields: Name, Venue, Role, Phone, Preferred time. Success text: "Thank you. We will text you to confirm."
 - Images AVIF/WebP with srcset. Hero video: poster first, `preload="none"`, lazy-load the mp4 after first paint; 16:9 desktop, 9:16 mobile. Everything below the fold lazy.
-- Lighthouse mobile targets: 90+ performance, 100 accessibility, 100 SEO. OG image, favicon, sitemap, robots, Plausible.
-- SEO: structured data graph in `Base.astro`; keyword pages from `src/data/solutions.ts` (one per venue type plus the core term), each with H1, explainer, FAQ and the demo form; FAQ on the home page. Keep the approved voice on these pages: short sentences, proof, no superlatives.
+- Lighthouse mobile targets: 90+ performance, 100 accessibility, 100 SEO (29 Oct: every page 98–100 on all four, measured with `node scripts/lighthouse.mjs <paths>`; the local server gzips like GitHub Pages). `node scripts/check-links.mjs` after every build: links, anchors, assets, titles ≤ 70, descriptions ≤ 170, one h1, canonicals, alts. OG image, favicon, sitemap, robots, Plausible (loaded after idle).
+- SEO: Google/Bing verification codes go in `site.verification`; IndexNow ping runs after each GitHub Pages deploy (key file in `public/`). Structured data graph in `Base.astro`; keyword pages from `src/data/solutions.ts` (one per venue type plus the core term), each with H1, explainer, FAQ and the demo form; FAQ on the home page. Keep the approved voice on these pages: short sentences, proof, no superlatives.
 - Respect `prefers-reduced-motion`: every stepper/counter renders its final state, no autoplay video.
 
 ## Design system (approved)
