@@ -71,6 +71,8 @@ const jsonLd = {
 <html lang={site.lang} dir={site.dir}>
   <head>
     <meta charset="utf-8" />
+    {/* Send any plain-http visit to https before anything else loads (backs up GitHub's Enforce HTTPS). */}
+    <script is:inline>if (location.protocol === 'http:' && /(^|\.)valett\.si$/.test(location.hostname)) location.replace('https://valett.si' + location.pathname + location.search + location.hash);</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
