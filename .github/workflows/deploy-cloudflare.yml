@@ -1,22 +1,36 @@
-# Builds the site and publishes it to Cloudflare Pages (project "valett", custom domain valett.si).
-# Runs only once the two secrets exist: CLOUDFLARE_API_TOKEN (Pages: Edit) and CLOUDFLARE_ACCOUNT_ID.
+# Builds the site and publishes it to Cloudflare Pages (project "valett", domains valett.si + www.valett.si).
+# Does nothing until the secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID exist.
+# Token permissions: Account · Cloudflare Pages · Edit, Zone · DNS · Edit, Zone · Zone · Read (zone valett.si).
+# Manual run with cutover=true also points valett.si and www at Pages (replaces the GitHub Pages records).
 name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [claude/new-session-790f1f, main]
   workflow_dispatch:
+    inputs:
+      cutover:
+        description: 'Point valett.si DNS at Cloudflare Pages (replaces the GitHub Pages records)'
+        type: boolean
+        default: false
 permissions:
   contents: read
   deployments: write
 concurrency:
   group: cloudflare-pages
-  cancel-in-progress: true
+  cancel-in-progress: false
+env:
+  PROJECT: valett
+  ZONE: valett.si
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
       HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
+      - run: echo "Cloudflare secrets not set yet; nothing deployed."
+        if: env.HAS_CF != 'true'
       - uses: actions/checkout@v4
         if: env.HAS_CF == 'true'
       - uses: actions/setup-node@v4
@@ -31,11 +45,59 @@ jobs:
         env:
           FORMSPREE_ID: ${{ secrets.FORMSPREE_ID }}
           PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
-      - uses: cloudflare/wrangler-action@v3
+
+      - name: Check the token
         if: env.HAS_CF == 'true'
+        run: |
+          curl -s -H "Authorization: Bearer $CF_TOKEN" https://api.cloudflare.com/client/v4/user/tokens/verify | jq '{success, status: .result.status, errors}'
+          echo "Zone:"; curl -s -H "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/zones?name=$ZONE" | jq '{success, zones: [.result[] | {id, name, status, name_servers}], errors}'
+
+      - name: Create the Pages project (first run only)
+        if: env.HAS_CF == 'true'
+        run: |
+          code=$(curl -s -o /tmp/p.json -w '%{http_code}' -H "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/$PROJECT")
+          if [ "$code" = "200" ]; then echo "project exists"; else
+            curl -s -X POST -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' \
+              "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects" \
+              -d "{\"name\":\"$PROJECT\",\"production_branch\":\"main\"}" | jq '{success, errors, subdomain: .result.subdomain}'
+          fi
+
+      - name: Publish
+        if: env.HAS_CF == 'true'
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=valett --branch=main --commit-dirty=true
-      - run: echo "Cloudflare secrets not set yet; nothing deployed."
-        if: env.HAS_CF != 'true'
+
+      - name: Attach the domains
+        if: env.HAS_CF == 'true'
+        run: |
+          for d in valett.si www.valett.si; do
+            curl -s -X POST -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' \
+              "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/$PROJECT/domains" -d "{\"name\":\"$d\"}" \
+              | jq -c "{domain: \"$d\", success, errors: [.errors[]?.message]}"
+          done
+          curl -s -H "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/$PROJECT/domains" \
+            | jq -c '.result[]? | {name, status, verification: .verification_data.status, validation: .validation_data.status}'
+
+      - name: Cut DNS over to Pages
+        if: env.HAS_CF == 'true' && inputs.cutover
+        run: |
+          api=https://api.cloudflare.com/client/v4
+          zid=$(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones?name=$ZONE" | jq -r '.result[0].id')
+          [ -n "$zid" ] && [ "$zid" != "null" ] || { echo "zone $ZONE not found in this account"; exit 1; }
+          sub=$(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/accounts/$CF_ACCOUNT/pages/projects/$PROJECT" | jq -r '.result.subdomain')
+          echo "zone $zid, pages $sub"
+          # Remove the GitHub Pages records for the apex and www
+          for rec in $(curl -s -H "Authorization: Bearer $CF_TOKEN" "$api/zones/$zid/dns_records?per_page=100" \
+              | jq -r --arg z "$ZONE" '.result[] | select((.name==$z or .name==("www."+$z)) and (.type=="A" or .type=="AAAA" or .type=="CNAME")) | .id'); do
+            curl -s -X DELETE -H "Authorization: Bearer $CF_TOKEN" "$api/zones/$zid/dns_records/$rec" | jq -c '{deleted: .result.id, success}'
+          done
+          for n in "$ZONE" "www.$ZONE"; do
+            curl -s -X POST -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' "$api/zones/$zid/dns_records" \
+              -d "{\"type\":\"CNAME\",\"name\":\"$n\",\"content\":\"$sub\",\"proxied\":true,\"ttl\":1}" | jq -c "{name: \"$n\", success, errors: [.errors[]?.message]}"
+          done
+          # HTTPS everywhere
+          curl -s -X PATCH -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' "$api/zones/$zid/settings/always_use_https" -d '{"value":"on"}' | jq -c '{always_use_https: .result.value, success, errors: [.errors[]?.message]}'
+          curl -s -X PATCH -H "Authorization: Bearer $CF_TOKEN" -H 'Content-Type: application/json' "$api/zones/$zid/settings/ssl" -d '{"value":"full"}' | jq -c '{ssl: .result.value, success, errors: [.errors[]?.message]}'
