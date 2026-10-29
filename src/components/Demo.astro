@@ -90,10 +90,12 @@ const fields = [
         status.textContent = 'Please fill in your name, venue and phone number.';
         return;
       }
-      if (!form.action) { status.textContent = 'The form is not connected yet. Email info@valett.si and we will call you.'; return; }
+      // form.action falls back to the page's own URL when the attribute is missing, so read the attribute itself.
+      const endpoint = form.getAttribute('action');
+      if (!endpoint) { status.textContent = 'The form is not connected yet. Email info@valett.si and we will call you.'; return; }
       button.disabled = true;
       try {
-        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
         if (res.ok) {
           form.querySelectorAll('input, button').forEach((el) => ((el as HTMLInputElement).disabled = true));
           status.textContent = SUCCESS;

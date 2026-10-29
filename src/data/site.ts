@@ -20,7 +20,8 @@ export const site = {
     /** true: the film replaces the scroll story in the hero (the brief's original hero). false: story hero, film in §2 only. */
     inHero: false,
   },
-  formspreeId: import.meta.env.FORMSPREE_ID ?? '',
+  /** Formspree form id (the part after formspree.io/f/). Public by design: it appears in the page. Submissions go to the inbox set on Formspree (info@valett.si). */
+  formspreeId: import.meta.env.FORMSPREE_ID || '',
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
   plausibleDomain: 'valett.si',
   /** Search engine ownership checks. Paste the content="…" value from each tool's "HTML tag" method. */
