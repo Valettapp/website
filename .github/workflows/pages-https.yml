@@ -1,0 +1,48 @@
+# Repairs the GitHub Pages HTTPS setup for valett.si with the repository's own token (Leon asked for this, 29 Oct).
+#   status  - show the Pages config, certificate state and GitHub's DNS health check
+#   reset   - clear the custom domain and set it again (restarts certificate provisioning)
+#   enforce - turn on Enforce HTTPS (only works once the certificate is issued)
+name: Pages HTTPS
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: status | reset | enforce
+        default: status
+        type: choice
+        options: [status, reset, enforce]
+permissions:
+  contents: read
+  pages: write
+jobs:
+  https:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      DOMAIN: valett.si
+    steps:
+      - name: Pages config before
+        run: gh api "repos/$REPO/pages" | jq '{cname, status, https_enforced, https_certificate, protected_domain_state, build_type, html_url}' || true
+      - name: DNS health check (GitHub's own view)
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(gh api "repos/$REPO/pages/health" -i 2>/dev/null | head -1 | awk '{print $2}')
+            echo "attempt $i: HTTP $code"
+            if [ "$code" = "200" ]; then gh api "repos/$REPO/pages/health" | jq '{domain: .domain | {host, is_valid, reason, is_https_eligible, responds_to_https, https_error, caa_error, should_be_a_record, is_a_record}, alt_domain: (.alt_domain // null | if . then {host, is_valid, reason, is_cname_to_github_user_domain, is_https_eligible, https_error} else null end)}'; break; fi
+            sleep 10
+          done
+      - name: Reset custom domain
+        if: inputs.action == 'reset'
+        run: |
+          gh api -X PUT "repos/$REPO/pages" -F cname=null && echo "cleared" || echo "clear failed"
+          sleep 15
+          gh api -X PUT "repos/$REPO/pages" -f cname="$DOMAIN" && echo "set to $DOMAIN" || echo "set failed"
+          sleep 20
+      - name: Enforce HTTPS
+        if: inputs.action == 'enforce'
+        run: gh api -X PUT "repos/$REPO/pages" -F https_enforced=true && echo "HTTPS enforced" || echo "enforce failed (certificate not issued yet?)"
+      - name: Pages config after
+        if: inputs.action != 'status'
+        run: gh api "repos/$REPO/pages" | jq '{cname, https_enforced, https_certificate, protected_domain_state}' || true
