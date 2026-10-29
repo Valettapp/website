@@ -44,9 +44,57 @@ export const solutions: Solution[] = [
     sections: ['guest', 'staff', 'money', 'integrations'],
   },
   {
+    slug: 'valet-parking-dubai',
+    nav: 'Valet parking in Dubai',
+    metaTitle: 'Valet Parking in Dubai, Run on One Record | Valett',
+    metaDescription:
+      'Valet parking for Dubai hotels, restaurants, malls and residences: every car photographed, the ticket on the guest’s phone, keys and bays tracked.',
+    eyebrow: 'Valet parking · Dubai',
+    h1: 'Valet parking in Dubai, without the wait.',
+    lede:
+      'Dubai runs on valet. Hotels, restaurants, malls and towers hand over thousands of cars a night, most of them on paper tickets and radio calls. Valett puts the whole valet operation on one record: the car photographed at the door, the ticket on the guest’s phone, the car requested from the table and waiting at the kerb when the guest walks out.',
+    points: ['Car valet with a photo of every car', 'Request from the table, a text when it is outside', 'For in-house valet teams and valet companies'],
+    body: [
+      { title: 'For venues', text: 'In-house team or contracted operator, the guest sees the same thing: a ticket on their phone with their car’s photo, a button to request it, and a text when it is at the door. The venue sees every car, every request and every promised time, under its own brand.' },
+      { title: 'For valet companies', text: 'Valet companies running several doors across Dubai run them from one board: drivers and shifts, keys and bays, tips and cash variances, incidents with time-stamped photos. Every venue gets its own white-label guest page; the operator sees them all on one map.' },
+      { title: 'Built for the Dubai summer', text: 'Nobody should wait in 40-degree heat wondering if anyone wrote down their plate. The guest requests the car from inside, sees the driver bringing it, and walks out when the text arrives. The wait becomes the shortest part of the evening.' },
+    ],
+    faqs: [
+      { q: 'How does valet parking work with Valett?', a: 'The valet photographs the car at the door. One photo reads the plate, make, model and colour, and the ticket appears with a QR code. The guest scans it and gets a page on their phone. When they are ready, they request the car with one tap and get a text when it is outside.' },
+      { q: 'Do you work with existing valet companies?', a: 'Yes. Valett is the system a valet operation runs on. Venues with their own team and valet companies running several venues use the same staff app, key board and back office.' },
+      { q: 'Where in Dubai is Valett available?', a: 'Valett launches in Dubai with luxury hospitality brands first. It works at any door: hotels, restaurants and beach clubs, malls and residential towers, in English and Arabic.' },
+      { q: 'Can guests pay and tip the valet digitally?', a: 'Yes. Online card payments, Apple Pay and digital tipping are live. The receipt goes to the guest by text, and the operation sees tips per driver and per shift.' },
+    ],
+    sections: ['guest', 'staff', 'money'],
+  },
+  {
+    slug: 'digital-valet-software',
+    nav: 'Digital valet',
+    metaTitle: 'Digital Valet Software: the Ticket on the Guest’s Phone | Valett',
+    metaDescription:
+      'Digital valet software from Dubai: the paper ticket replaced by a QR and a page on the guest’s phone, check-in by photo, requests, payments and tips by text.',
+    eyebrow: 'Digital valet',
+    h1: 'Digital valet: the paper ticket, replaced.',
+    lede:
+      'A digital valet ticket lives on the guest’s phone, not in their pocket. It cannot be lost, it carries a photo of the car, and it is how the guest asks for the car back. No app to download, no account to create.',
+    points: ['No paper ticket to lose', 'Nothing for the guest to download', 'Check-in by photo, plate read automatically'],
+    body: [
+      { title: 'What digital valet means', text: 'The valet takes one photo. Vehicle recognition reads the plate, make, model and colour. A ticket code and QR appear on the valet’s phone; the guest scans it and the ticket opens on theirs, with the car’s photo, the ticket number and a button to request the car. It can still be sent by SMS or printed.' },
+      { title: 'What changes for the team', text: 'No ticket books, no stubs, no radio calls to find a car. The zone and bay are recorded when the car is parked, keys are tracked, and requests arrive on the driver’s phone. The key controller sees every live ticket on one board, sorted by promised time.' },
+      { title: 'What changes for the venue', text: 'Every car is on the record before it moves, with time-stamped photos for damage disputes. Validation is a scan, not a stamp. Reports show cars, wait times, revenue and tips per shift, per venue and per driver.' },
+    ],
+    faqs: [
+      { q: 'What is a digital valet ticket?', a: 'A ticket that lives on the guest’s phone instead of on paper. The guest opens it from a QR on the valet’s phone; it shows their car’s photo and lets them request the car, message the shift manager, pay and tip.' },
+      { q: 'Is digital valet the same as a valet app?', a: 'For the team, yes: the staff app runs on the drivers’ phones. For the guest, no: there is nothing to install. The ticket is a web page, in English or Arabic.' },
+      { q: 'Can we still give guests a printed ticket?', a: 'Yes. The ticket can be shown on screen, sent by SMS or printed, whichever the guest prefers.' },
+      { q: 'Does digital valet software need new hardware?', a: 'No. The staff app runs on the drivers’ own phones and the guest uses theirs. The back office runs in a browser.' },
+    ],
+    sections: ['guest', 'staff', 'integrations'],
+  },
+  {
     slug: 'hotel-valet-app',
     nav: 'Hotels and resorts',
-    metaTitle: 'Hotel Valet App for Dubai Hotels and Resorts | Valett',
+    metaTitle: 'Hotel Valet and Parking Solutions for Dubai Hotels | Valett',
     metaDescription:
       'A white-label hotel valet app: the guest page carries your hotel’s name, concierge sees every car, and every arrival is photographed. Built in Dubai.',
     eyebrow: 'Hotels and resorts',
@@ -63,6 +111,7 @@ export const solutions: Solution[] = [
       { q: 'Can the valet app show our hotel’s brand instead of Valett’s?', a: 'Yes. Every venue runs its own white-label brand on the guest page: your wordmark, your colours, your name on the ticket. Guests see the hotel, not us.' },
       { q: 'How do hotel guests request their car?', a: 'From the page on their phone, with one tap, from wherever they are in the hotel. They see the request received, the driver on the way, and a text when the car is at the door.' },
       { q: 'Does Valett integrate with hotel property management systems?', a: 'Hotel PMS integration is in development. Online card payments, Apple Pay and digital tipping are live today.' },
+      { q: 'What hotel parking solutions does Valett cover?', a: 'Valet at the porte-cochère, guest and visitor parking, residents’ permanent plans for branded residences, validation by outlet, and the reporting behind them, on one record per property.' },
       { q: 'What about damage disputes?', a: 'Every car is photographed at check-in and on the walkaround, with timestamps and the driver’s name. Check-out is photographed too. The dispute is settled by the record, not by argument.' },
     ],
     sections: ['guest', 'staff', 'money'],
@@ -145,6 +194,7 @@ export const faqHome: Faq[] = [
   { q: 'What is Valett?', a: 'Valett is valet management software built in Dubai for hotels, malls, restaurants and residences. A camera at the door checks the car in, the ticket lives on the guest’s phone, and the whole operation runs on one board. Every car is documented before it moves, every guest is a text away, and every minute is on the record.' },
   { q: 'Do guests need to download an app?', a: 'No. The guest scans the QR on the valet’s phone and gets a web page with their car’s photo on it. From there they request the car, message the shift manager, pay and tip, in English or Arabic, with no account and no download.' },
   { q: 'How does check-in work?', a: 'The valet takes one photo. Vehicle recognition reads the plate, make, model and colour. The ticket and QR appear instantly, the zone and bay are recorded when the car is parked, and the damage walkaround is photographed with timestamps.' },
+  { q: 'What is digital valet?', a: 'Valet without the paper ticket. The valet photographs the car, the guest scans a QR and the ticket opens on their phone with a photo of their car. They request the car, pay and tip from there. Valett is digital valet software built in Dubai.' },
   { q: 'Which venues is Valett for?', a: 'Hotels and resorts, malls, restaurants and beach clubs, and residential buildings. Each gets its own white-label brand on the guest page and its own rules for validation, tiers and plans.' },
   { q: 'What does Valett integrate with?', a: 'Online card payments, Apple Pay and digital tipping are live. Hotel PMS and parking barrier systems are in development. Salik and Dubai payments, crypto payments and car care while parked are being explored.' },
   { q: 'How do I see it?', a: 'Book a demo. Thirty minutes, on a call or at your venue, with the real app in your hands.' },

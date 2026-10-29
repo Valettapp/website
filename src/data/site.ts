@@ -2,7 +2,7 @@ export const site = {
   name: 'Valett',
   domain: 'valett.si',
   url: 'https://valett.si',
-  title: 'Valett | Valet Management Software for Hotels in Dubai',
+  title: 'Valett | Digital Valet Parking Software in Dubai',
   description:
     'Valet management software built in Dubai. One photo checks the car in, the ticket lives on the guest’s phone, and every car and key is on the record.',
   tagline: 'A new era for a timeless service.',
