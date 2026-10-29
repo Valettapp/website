@@ -2,11 +2,14 @@
 /**
  * The Valett film in a 20 px rounded glass frame.
  * - Poster first (AVIF/WebP via Astro <Picture>), 16:9 on desktop, 9:16 on mobile.
- * - `preload="none"` in the HTML; the mp4 <source> elements are attached after first paint by the script
- *   below (never for the autoplay variant when the user prefers reduced motion).
+ * - full (in-page film, controls): the <source> elements are in the HTML with preload="none", so nothing
+ *   downloads until the viewer taps play, and iOS never sees a player whose sources arrive late (a tap on a
+ *   sourceless <video> locks Safari at 00:00). Portrait cut on phones via <source media>. The poster is set
+ *   when the film nears the viewport. Captions are burned into the film; the VTT track is opt-in (CC button).
+ * - hero (muted autoplay): sources attached after first paint by the script, never under reduced motion.
  * - Until the film exists (site.film.mp4 === null) the poster placeholder is shown alone.
  */
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import placeholder from '../assets/poster-placeholder.png';
 import placeholderPortrait from '../assets/poster-placeholder-portrait.png';
 import filmPoster from '../assets/film-poster.jpg';
@@ -22,6 +25,10 @@ const { variant, class: className = '', priority = false } = Astro.props;
 const hasFilm = Boolean(site.film.mp4);
 const poster = hasFilm ? filmPoster : placeholder;
 const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
+const full = variant === 'full';
+// Poster images for the in-page player (set by script when it nears the viewport)
+const posterWide = hasFilm && full ? await getImage({ src: filmPoster, format: 'webp', width: 1200, quality: 70 }) : null;
+const posterTall = hasFilm && full ? await getImage({ src: filmPosterPortrait, format: 'webp', width: 720, quality: 70 }) : null;
 ---
 <figure
   class:list={['film glass rounded-frame p-2 md:p-3', className]}
@@ -35,7 +42,7 @@ const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
 >
   <div class:list={['film-box relative overflow-hidden rounded-[14px] bg-ink', hasFilm ? 'aspect-[9/16] md:aspect-video' : 'aspect-[4/3] md:aspect-[21/9]']}>
     {/* Poster: portrait on mobile, landscape on md+ (only when the film exists) */}
-    {hasFilm && <Picture
+    {hasFilm && !full && <Picture
       src={posterPortrait}
       formats={['avif', 'webp']}
       widths={[390, 780]}
@@ -46,7 +53,7 @@ const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
     />}
-    {hasFilm && <Picture
+    {hasFilm && !full && <Picture
       src={poster}
       formats={['avif', 'webp']}
       widths={[800, 1200, 1600]}
@@ -57,12 +64,29 @@ const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
     />}
-    {hasFilm ? (
+    {hasFilm && full ? (
+      <video
+        class="absolute inset-0 h-full w-full bg-ink object-cover"
+        preload="none"
+        playsinline
+        controls
+        aria-label="The Valett film"
+        data-film-video
+        data-poster-wide={posterWide?.src}
+        data-poster-tall={posterTall?.src}
+      >
+        {site.film.mp4Portrait && <source src={site.film.mp4Portrait} type="video/mp4" media="(max-width: 767px)" />}
+        <source src={site.film.mp4!} type="video/mp4" />
+        {site.film.captions && <track kind="captions" src={site.film.captions} srclang="en" label="English" />}
+      </video>
+    ) : hasFilm ? (
       <video
         class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 data-[ready]:opacity-100"
         preload="none"
         playsinline
-        {...(variant === 'hero' ? { muted: true, loop: true, 'aria-label': 'The Valett film, silent preview' } : { controls: true, 'aria-label': 'The Valett film' })}
+        muted
+        loop
+        aria-label="The Valett film, silent preview"
       >
         {site.film.captions && <track kind="captions" src={site.film.captions} srclang="en" label="English" default />}
       </video>
@@ -86,7 +110,23 @@ const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
   const portrait = window.matchMedia('(max-width: 767px)').matches;
   const figures = document.querySelectorAll<HTMLElement>('[data-film]');
   const errName = (v: HTMLVideoElement) => (v.error ? ['', 'aborted', 'network', 'decode', 'src-not-supported'][v.error.code] || String(v.error.code) : 'no source could be played');
+  const prepareFull = (fig: HTMLElement) => {
+    const video = fig.querySelector<HTMLVideoElement>('video[data-film-video]');
+    if (!video || video.dataset.ready) return;
+    video.dataset.ready = '1';
+    const poster = (portrait && video.dataset.posterTall) || video.dataset.posterWide;
+    if (poster && !video.poster) video.poster = poster;
+    const sources = video.querySelectorAll('source');
+    sources[sources.length - 1]?.addEventListener('error', () => {
+      if (fig.querySelector('.film-diag')) return;
+      const note = document.createElement('pre');
+      note.className = 'film-diag';
+      note.textContent = `The film could not load here.\n${video.currentSrc || 'no source'}\n${errName(video)}\nua: ${navigator.userAgent.slice(0, 90)}`;
+      fig.querySelector('.film-box')?.appendChild(note);
+    });
+  };
   const attach = (fig: HTMLElement) => {
+    if (fig.dataset.variant === 'full') return prepareFull(fig);
     const video = fig.querySelector('video');
     if (!video || video.dataset.ready) return;
     const primary = (portrait && fig.dataset.mp4Portrait) || fig.dataset.mp4;
@@ -112,7 +152,7 @@ const posterPortrait = hasFilm ? filmPosterPortrait : placeholderPortrait;
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) if (e.isIntersecting) { attach(e.target as HTMLElement); io.unobserve(e.target); }
-      }, { rootMargin: '200px' });
+      }, { rootMargin: '600px' });
       figures.forEach((f) => io.observe(f));
     } else figures.forEach(attach);
   };

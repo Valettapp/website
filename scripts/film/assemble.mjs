@@ -93,9 +93,10 @@ function concat(files, fmt, final) {
     ch.push(`${a}[${i}:a]acrossfade=d=${X}[a${i}]`);
     v = `[v${i}]`; a = `[a${i}]`;
   }
+  // loudnorm resamples to 192 kHz internally; the output is set back to 48 kHz below (iPhones expect 48 kHz AAC).
   ch.push(`${a}loudnorm=I=-18:TP=-1.5:LRA=11[aout]`);
   const land = fmt === 'land';
-  run([...inputs, '-filter_complex', ch.join(';'), '-map', v, '-map', '[aout]', '-c:v', 'libx264', '-preset', 'slow', '-crf', land ? '21' : '23', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-c:a', 'aac', '-b:a', '128k', final]);
+  run([...inputs, '-filter_complex', ch.join(';'), '-map', v, '-map', '[aout]', '-c:v', 'libx264', '-preset', 'slow', '-crf', land ? '21' : '23', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-c:a', 'aac', '-ar', '48000', '-b:a', '128k', final]);
 }
 
 for (const fmt of ['land', 'port']) {
