@@ -21,7 +21,7 @@ export const site = {
     inHero: false,
   },
   /** Formspree form id (the part after formspree.io/f/). Public by design: it appears in the page. Submissions go to the inbox set on Formspree (info@valett.si). */
-  formspreeId: import.meta.env.FORMSPREE_ID || '',
+  formspreeId: import.meta.env.FORMSPREE_ID || 'mdeedyja', // "Valett demo requests", delivers to info@valett.si (29 Oct)
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
   plausibleDomain: 'valett.si',
   /** Search engine ownership checks. Paste the content="…" value from each tool's "HTML tag" method. */
