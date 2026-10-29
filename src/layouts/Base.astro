@@ -7,20 +7,65 @@ interface Props {
   title?: string;
   description?: string;
   path?: string;
+  /** Extra JSON-LD objects for this page (FAQPage, WebPage, BreadcrumbList…). */
+  schema?: Record<string, unknown>[];
 }
-const { title = site.title, description = site.description, path = '/' } = Astro.props;
+const { title = site.title, description = site.description, path = '/', schema = [] } = Astro.props;
 const canonical = new URL(path, site.url).href;
 const og = new URL('/og.png', site.url).href;
+const logo = new URL('/icon-512.png', site.url).href;
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Valett',
-  url: site.url,
-  logo: new URL('/icon-512.png', site.url).href,
-  email: site.email,
-  address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
-  sameAs: [site.linkedin],
-  slogan: site.tagline,
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${site.url}/#organization`,
+      name: 'Valett',
+      legalName: 'Valett',
+      url: site.url,
+      logo,
+      email: site.email,
+      address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
+      areaServed: [{ '@type': 'City', name: 'Dubai' }, { '@type': 'Country', name: 'United Arab Emirates' }],
+      sameAs: [site.linkedin],
+      slogan: site.tagline,
+      description: site.description,
+      foundingDate: '2025',
+      foundingLocation: { '@type': 'Place', name: 'Dubai, United Arab Emirates' },
+      founders: [{ '@type': 'Person', name: 'Leon Lumley-Savile' }, { '@type': 'Person', name: 'Tom Beenham' }],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      url: site.url,
+      name: 'Valett',
+      publisher: { '@id': `${site.url}/#organization` },
+      inLanguage: 'en',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${site.url}/#software`,
+      name: 'Valett',
+      applicationCategory: 'BusinessApplication',
+      applicationSubCategory: 'Valet parking management software',
+      operatingSystem: 'iOS, Android, Web',
+      url: site.url,
+      image: og,
+      description: 'Valet management software for hotels, malls, restaurants and residences: check-in by photo with vehicle recognition, a digital ticket on the guest’s phone, requests, payments and tips by text, key and bay tracking, and reporting for operators.',
+      featureList: [
+        'Vehicle recognition from one photo (plate, make, model, colour)',
+        'Digital valet ticket on the guest’s phone, no app',
+        'Request the car from the table, pay and tip by text',
+        'Key controller board for the shift manager',
+        'Digital validation, residents’ plans, VIP tiers',
+        'Reports per shift, per venue, per driver',
+        'English and Arabic, white-label per venue',
+      ],
+      offers: { '@type': 'Offer', availability: 'https://schema.org/PreOrder', areaServed: 'AE', url: `${site.url}/#demo` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    ...schema,
+  ],
 };
 ---
 <!doctype html>

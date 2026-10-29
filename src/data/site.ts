@@ -2,9 +2,9 @@ export const site = {
   name: 'Valett',
   domain: 'valett.si',
   url: 'https://valett.si',
-  title: 'Valett — A new era for a timeless service.',
+  title: 'Valett — Valet Management Software for Hotels, Malls and Restaurants in Dubai',
   description:
-    'Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text. Built for the venues guests remember.',
+    'Valett is valet management software built in Dubai. One photo checks the car in, the ticket lives on the guest’s phone with no app, and every car, key and minute is on the record. For hotels, malls, restaurants and residences.',
   tagline: 'A new era for a timeless service.',
   slogan: 'A new era for a timeless service.',
   email: 'info@valett.si',
@@ -34,9 +34,9 @@ export const statusLabel: Record<Status, string> = {
 };
 
 export const nav = [
-  { href: '#guest', label: 'Guest' },
-  { href: '#staff', label: 'Staff' },
-  { href: '#back-office', label: 'Back office' },
-  { href: '#technology', label: 'Technology' },
-  { href: '#company', label: 'Team' },
+  { href: '/#guest', label: 'Guest' },
+  { href: '/#staff', label: 'Staff' },
+  { href: '/#back-office', label: 'Back office' },
+  { href: '/#technology', label: 'Technology' },
+  { href: '/#company', label: 'Team' },
 ];

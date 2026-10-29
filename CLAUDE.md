@@ -3,11 +3,12 @@
 You own the repo, framework, components, interactive samples, form, image pipeline, responsive testing, Lighthouse, deployment. Report with screenshots at 1440 and 390 px after every milestone. Source of truth for copy and decisions: `docs/VALETT-WEBSITE-BRIEF.md` (original brief) and this file (approved decisions, 27 Oct 2026). Full annotated copy doc: https://claude.ai/artifact/U6mYTdyjSa2Qtrb1mD1iuh
 
 ## Stack
-- Astro 5 + Tailwind 4, static output. Deploy to Vercel. Domain valett.si (Leon points DNS at Hostinger).
+- Astro 5 + Tailwind 4, static output. Hosting: Cloudflare Pages (`.github/workflows/deploy-cloudflare.yml`, project "valett"; GitHub Pages workflow kept until the move is done). Domain valett.si, DNS moving from Hostinger to Cloudflare.
 - One long page `/`. Build HTML with `dir`/`lang` attributes and logical CSS properties (margin-inline etc.) so an Arabic RTL version can be added later.
 - Form: Formspree (endpoint id supplied by Leon; use `FORMSPREE_ID` env), honeypot + Turnstile. Fields: Name, Venue, Role, Phone, Preferred time. Success text: "Thank you. We will text you to confirm."
 - Images AVIF/WebP with srcset. Hero video: poster first, `preload="none"`, lazy-load the mp4 after first paint; 16:9 desktop, 9:16 mobile. Everything below the fold lazy.
 - Lighthouse mobile targets: 90+ performance, 100 accessibility, 100 SEO. OG image, favicon, sitemap, robots, Plausible.
+- SEO: structured data graph in `Base.astro`; keyword pages from `src/data/solutions.ts` (one per venue type plus the core term), each with H1, explainer, FAQ and the demo form; FAQ on the home page. Keep the approved voice on these pages: short sentences, proof, no superlatives.
 - Respect `prefers-reduced-motion`: every stepper/counter renders its final state, no autoplay video.
 
 ## Design system (approved)

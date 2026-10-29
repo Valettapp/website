@@ -1,0 +1,26 @@
+---
+/** Questions and answers, rendered as plain text for readers and as FAQPage structured data for search. */
+import SectionHead from './SectionHead.astro';
+import type { Faq } from '../data/solutions';
+interface Props { faqs: Faq[]; title?: string; eyebrow?: string; id?: string }
+const { faqs, title = 'Questions venues ask.', eyebrow = 'Questions', id = 'faq' } = Astro.props;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<section data-reveal-group id={id} class="section-pad scroll-mt-20" aria-labelledby={`${id}-title`}>
+  <div class="container-page">
+    <SectionHead id={`${id}-title`} eyebrow={eyebrow} title={title} />
+    <dl class="mt-12 grid gap-x-12 gap-y-10 md:mt-16 md:grid-cols-2">
+      {faqs.map((f) => (
+        <div class="hairline-t flex flex-col gap-3 pt-6">
+          <dt class="t-h3">{f.q}</dt>
+          <dd class="text-[16px] leading-relaxed text-ink-2 md:text-[17px]">{f.a}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</section>

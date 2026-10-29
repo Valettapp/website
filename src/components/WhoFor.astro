@@ -4,10 +4,10 @@ import Icon from './Icon.astro';
 import Ambient from './Ambient.astro';
 // Fictional venues: the guest page carries each venue's own wordmark (white-label).
 const doors = [
-  { venue: 'The Marquee', title: 'Hotels and resorts', body: 'The guest page carries the hotel’s name, not ours. Concierge sees every car.', status: 'Parked · 01:06 AM', line: 'Validation · Ask your concierge' },
-  { venue: 'Arcadia Mall', title: 'Malls', body: 'Thousands of tickets a day, validation by store, no paper to reconcile.', status: 'Parked · Level 2 · 14:22', line: 'Validated · Maison du Thé' },
-  { venue: 'Maison Lune', title: 'Restaurants', body: 'Guests request from the table and walk out to a car at the kerb.', status: 'Request received · 22:48', line: 'At the kerb in 4 min' },
-  { venue: 'One Marina', title: 'Residences', body: 'Residents’ permanent plans, visitor tickets, one record per building.', status: 'Resident · Apt 1204', line: 'Visitor ticket · until 23:00' },
+  { venue: 'The Marquee', href: '/hotel-valet-app', title: 'Hotels and resorts', body: 'The guest page carries the hotel’s name, not ours. Concierge sees every car.', status: 'Parked · 01:06 AM', line: 'Validation · Ask your concierge' },
+  { venue: 'Arcadia Mall', href: '/mall-valet-parking-system', title: 'Malls', body: 'Thousands of tickets a day, validation by store, no paper to reconcile.', status: 'Parked · Level 2 · 14:22', line: 'Validated · Maison du Thé' },
+  { venue: 'Maison Lune', href: '/restaurant-valet-service', title: 'Restaurants', body: 'Guests request from the table and walk out to a car at the kerb.', status: 'Request received · 22:48', line: 'At the kerb in 4 min' },
+  { venue: 'One Marina', href: '/residential-valet-parking', title: 'Residences', body: 'Residents’ permanent plans, visitor tickets, one record per building.', status: 'Resident · Apt 1204', line: 'Visitor ticket · until 23:00' },
 ];
 ---
 <section data-reveal-group id="who" class="section-pad !pb-16 md:!pb-24 scroll-mt-20" aria-labelledby="who-title">
@@ -28,8 +28,9 @@ const doors = [
             </div>
           </div>
           <div class="flex flex-1 flex-col gap-2 px-1 pt-5">
-            <h3 class="t-h3">{d.title}</h3>
+            <h3 class="t-h3"><a class="hover:text-ink-2 transition-colors" href={d.href}>{d.title}</a></h3>
             <p class="text-[16px] leading-relaxed text-ink-2">{d.body}</p>
+            <a class="mt-1 inline-flex items-center gap-1.5 text-[14px] font-medium text-ink hover:text-ink-2 transition-colors" href={d.href}>Valett for {d.title.toLowerCase()} <Icon name="chevron" size={12} class="-rotate-90" /></a>
           </div>
         </li>
       ))}
