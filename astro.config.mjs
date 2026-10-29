@@ -14,5 +14,8 @@ export default defineConfig({
   },
   build: {
     inlineStylesheets: 'auto',
+    // Flat files (hotel-valet-app.html) so hosts serve /hotel-valet-app without redirecting to a trailing slash;
+    // canonical and sitemap URLs then match what is served.
+    format: 'file',
   },
 });
