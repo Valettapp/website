@@ -1,0 +1,52 @@
+---
+/**
+ * A short silent product loop in a glass frame. 16:9 from md up; on phones square (`mobile="1x1"`, default)
+ * or 4:3 (`mobile="4x3"`) for wide scenes. Expects /film/<name>-{16x9,<mobile>}.mp4 and
+ * /film/<name>-{start,end}-{16x9,<mobile>}.webp.
+ * Nothing downloads until the frame nears the viewport; plays only while on screen.
+ * Reduced motion: no playback, the poster shows the final frame.
+ */
+interface Props { name: string; label: string; mobile?: '1x1' | '4x3'; class?: string }
+const { name, label, mobile = '1x1', class: cls = '' } = Astro.props;
+const f = `/film/${name}`;
+---
+<figure class:list={['glass rounded-frame p-2 md:p-3', cls]} data-reveal>
+  <div class:list={['relative overflow-hidden rounded-[14px] bg-[#e9e9e6] md:aspect-video', mobile === '4x3' ? 'aspect-[4/3]' : 'aspect-square']}>
+    <video
+      class="absolute inset-0 h-full w-full object-cover"
+      muted
+      loop
+      playsinline
+      preload="none"
+      disableRemotePlayback
+      aria-label={label}
+      data-loop
+      data-poster-wide={`${f}-start-16x9.webp`}
+      data-poster-tall={`${f}-start-${mobile}.webp`}
+      data-poster-wide-end={`${f}-end-16x9.webp`}
+      data-poster-tall-end={`${f}-end-${mobile}.webp`}
+    >
+      <source src={`${f}-${mobile}.mp4`} type="video/mp4" media="(max-width: 767px)" />
+      <source src={`${f}-16x9.mp4`} type="video/mp4" />
+    </video>
+  </div>
+</figure>
+
+<script>
+  const tall = window.matchMedia('(max-width: 767px)').matches;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const video of document.querySelectorAll<HTMLVideoElement>('[data-loop]')) {
+    const d = video.dataset;
+    video.poster = (reduce ? (tall ? d.posterTallEnd : d.posterWideEnd) : (tall ? d.posterTall : d.posterWide)) || '';
+    if (reduce || !('IntersectionObserver' in window)) continue;
+    let started = false;
+    new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          if (!started) { started = true; video.preload = 'auto'; video.load(); }
+          video.play().catch(() => {});
+        } else if (started) video.pause();
+      }
+    }, { threshold: 0.35 }).observe(video);
+  }
+</script>
