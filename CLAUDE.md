@@ -80,7 +80,7 @@ Staff time — No tickets to write, no radios to call, no bays to search. The bo
 
 ### 7 Integrations and partners (white)
 H2: Built to plug into the venue.
-Online card payments, Apple Pay and digital tipping [live] · Hotel PMS [in development] · Parking and barrier systems [in development] · Salik and Dubai payments [exploring] · Crypto payments [exploring] · Car care while parked (cleaning, fuel) [exploring]. No partner names until Leon confirms in writing.
+Fully digital system [live] · AI scanning technology [live] · Online card payments, Apple Pay and digital tipping [live] · Hotel PMS [live] · Crypto payments [live] · Car care while parked (cleaning, fuel) [live] · Parking and barrier systems [in development] · Salik and Dubai payments [exploring] (statuses updated by Leon 30 Oct). No partner names until Leon confirms in writing.
 
 ### 8 Technology (white; this and the staff section may use a dark card for the scan animation)
 Eyebrow: AI-led from the first line of code · H2: A valet operation that learns.

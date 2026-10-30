@@ -105,12 +105,12 @@ export const solutions: Solution[] = [
     body: [
       { title: 'The arrival', text: 'The valet photographs the car at the porte-cochère. One photo reads the plate, make, model and colour. The ticket and its QR code appear instantly; the guest scans it and is on their way into the lobby in under a minute, with their car’s photo on their phone.' },
       { title: 'The stay', text: 'Guests request the car from the room, the restaurant or the spa and watch it come. They message the shift manager privately. Concierge sees every car on the property, every request and every promised time. VIP tiers follow the guest from visit to visit.' },
-      { title: 'The record', text: 'Damage walkarounds with time-stamped photos, keys tracked, zone and bay recorded, validation stamped digitally by outlets. When a question comes, the answer is already there. Hotel PMS integration is in development so the ticket and the folio meet.' },
+      { title: 'The record', text: 'Damage walkarounds with time-stamped photos, keys tracked, zone and bay recorded, validation stamped digitally by outlets. When a question comes, the answer is already there. Hotel PMS integration is live, so the ticket and the folio meet.' },
     ],
     faqs: [
       { q: 'Can the valet app show our hotel’s brand instead of Valett’s?', a: 'Yes. Every venue runs its own white-label brand on the guest page: your wordmark, your colours, your name on the ticket. Guests see the hotel, not us.' },
       { q: 'How do hotel guests request their car?', a: 'From the page on their phone, with one tap, from wherever they are in the hotel. They see the request received, the driver on the way, and a text when the car is at the door.' },
-      { q: 'Does Valett integrate with hotel property management systems?', a: 'Hotel PMS integration is in development. Online card payments, Apple Pay and digital tipping are live today.' },
+      { q: 'Does Valett integrate with hotel property management systems?', a: 'Yes. Hotel PMS integration is live: room charge and guest profile. Online card payments, Apple Pay, digital tipping and crypto payments are live too.' },
       { q: 'What hotel parking solutions does Valett cover?', a: 'Valet at the porte-cochère, guest and visitor parking, residents’ permanent plans for branded residences, validation by outlet, and the reporting behind them, on one record per property.' },
       { q: 'What about damage disputes?', a: 'Every car is photographed at check-in and on the walkaround, with timestamps and the driver’s name. Check-out is photographed too. The dispute is settled by the record, not by argument.' },
     ],
@@ -196,6 +196,6 @@ export const faqHome: Faq[] = [
   { q: 'How does check-in work?', a: 'The valet takes one photo. Vehicle recognition reads the plate, make, model and colour. The ticket and QR appear instantly, the zone and bay are recorded when the car is parked, and the damage walkaround is photographed with timestamps.' },
   { q: 'What is digital valet?', a: 'Valet without the paper ticket. The valet photographs the car, the guest scans a QR and the ticket opens on their phone with a photo of their car. They request the car, pay and tip from there. Valett is digital valet software built in Dubai.' },
   { q: 'Which venues is Valett for?', a: 'Hotels and resorts, malls, restaurants and beach clubs, and residential buildings. Each gets its own white-label brand on the guest page and its own rules for validation, tiers and plans.' },
-  { q: 'What does Valett integrate with?', a: 'Online card payments, Apple Pay and digital tipping are live. Hotel PMS and parking barrier systems are in development. Salik and Dubai payments, crypto payments and car care while parked are being explored.' },
+  { q: 'What does Valett integrate with?', a: 'Live today: online card payments, Apple Pay and digital tipping, hotel PMS, crypto payments and car care while parked (cleaning, fuel), all on a fully digital system with AI scanning at the door. Parking and barrier systems are in development. Salik and Dubai payments are being explored.' },
   { q: 'How do I see it?', a: 'Book a demo. Thirty minutes, on a call or at your venue, with the real app in your hands.' },
 ];

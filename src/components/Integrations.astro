@@ -3,14 +3,16 @@ import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import BrowserFrame from './BrowserFrame.astro';
 import type { Status } from '../data/site';
-// No partner names until Leon confirms in writing.
+// No partner names until Leon confirms in writing. Statuses confirmed by Leon 30 Oct: PMS, crypto and car care live.
 const rows: { label: string; status: Status; note: string }[] = [
+  { label: 'Fully digital system', status: 'live', note: 'No paper tickets, no radios, no clipboards' },
+  { label: 'AI scanning technology', status: 'live', note: 'Plate, make, model and colour from one photo' },
   { label: 'Online card payments, Apple Pay and digital tipping', status: 'live', note: 'Guests pay and tip on the receipt' },
-  { label: 'Hotel PMS', status: 'dev', note: 'Room charge and guest profile' },
+  { label: 'Hotel PMS', status: 'live', note: 'Room charge and guest profile' },
+  { label: 'Crypto payments', status: 'live', note: 'Guests can settle in crypto' },
+  { label: 'Car care while parked (cleaning, fuel)', status: 'live', note: 'Cleaning or fuel while the car waits' },
   { label: 'Parking and barrier systems', status: 'dev', note: 'Barriers open on the ticket' },
   { label: 'Salik and Dubai payments', status: 'exploring', note: '' },
-  { label: 'Crypto payments', status: 'exploring', note: '' },
-  { label: 'Car care while parked (cleaning, fuel)', status: 'exploring', note: '' },
 ];
 ---
 <section data-reveal-group id="integrations" class="section-pad scroll-mt-20" aria-labelledby="integrations-title">
