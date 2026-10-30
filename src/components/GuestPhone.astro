@@ -137,7 +137,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
             {isStatic ? (
               <span class="btn-primary mt-2.5 w-full !py-3.5 !text-[15px]" aria-hidden="true"><Icon name="apple" size={16} /> Pay with Apple Pay</span>
             ) : (
-              <button type="button" class="btn-primary mt-2.5 w-full !py-3.5 !text-[15px]" data-go="5"><Icon name="apple" size={16} /> Pay with Apple Pay</button>
+              <button type="button" class="btn-primary mt-2.5 w-full !py-3.5 !text-[15px]" data-pay><Icon name="apple" size={16} /> Pay with Apple Pay</button>
             )}
           </div>
         </section>
@@ -164,6 +164,44 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
           </div>
         </section>
       </div>
+
+      {/* Apple Pay sheet: slides up over the guest page, side-button hint, Face ID, Done. Interactive sample only. */}
+      {!isStatic && (
+        <div class="ap" data-applepay hidden aria-hidden="true">
+          <div class="ap-dim"></div>
+          <p class="ap-hint"><span>Double-click<br />to pay</span><i></i></p>
+          <div class="ap-sheet">
+            <div class="ap-head">
+              <span class="ap-mark"><Icon name="apple" size={17} />Pay</span>
+              <span class="ap-x" aria-hidden="true">×</span>
+            </div>
+            <div class="ap-row">
+              <span class="ap-card"></span>
+              <span class="ap-row-main"><b>Visa</b><small>•••• 4421</small></span>
+              <span class="ap-chev">›</span>
+            </div>
+            <div class="ap-row">
+              <span class="ap-row-label">Contact</span>
+              <span class="ap-row-main"><small>+971 58 ···· ····</small></span>
+              <span class="ap-chev">›</span>
+            </div>
+            <div class="ap-sum">
+              <p><small>Tip · The Marquee valet</small><small>AED <span data-ap-amount>80</span>.00</small></p>
+              <p class="ap-total"><span>Pay The Marquee</span><span>AED <span data-ap-amount>80</span>.00</span></p>
+            </div>
+            <div class="ap-confirm">
+              <span class="ap-faceid" aria-hidden="true">
+                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                  <path class="ap-fi-c" d="M4 13V9a5 5 0 0 1 5-5h4M27 4h4a5 5 0 0 1 5 5v4M36 27v4a5 5 0 0 1-5 5h-4M13 36H9a5 5 0 0 1-5-5v-4"/>
+                  <path class="ap-fi-f" d="M14 15v3M26 15v3M20 15v8h-2M15 27c3 2.5 7 2.5 10 0"/>
+                </svg>
+                <svg class="ap-check" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="17"/><path d="M12.5 20.5l5 5 10-11"/></svg>
+              </span>
+              <span class="ap-status"><span class="ap-s1">Confirm with Side Button</span><span class="ap-s2">Face ID</span><span class="ap-s3">Done</span></span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </div>
 
@@ -198,6 +236,51 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   @keyframes v-sheet { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
   [data-state]:not([hidden]) { animation: v-fade-up 300ms ease both; }
   @media (prefers-reduced-motion: reduce) { .sheet, [data-state]:not([hidden]) { animation: none; } }
+
+  /* Apple Pay sheet (light, iOS). Phases on [data-phase]: in → confirm → faceid → done → out. */
+  .ap { position: absolute; inset: 0; z-index: 30; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #000; }
+  .ap[hidden] { display: none; }
+  .ap-dim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.32); opacity: 0; transition: opacity 280ms ease; }
+  .ap-sheet { position: absolute; inset-inline: 6px; bottom: 6px; border-radius: 26px; background: #fff; padding: 14px 16px 18px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(105%); transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1); }
+  .ap-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
+  .ap-mark { display: inline-flex; align-items: center; gap: 1px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+  .ap-mark :global(svg) { margin-top: -3px; }
+  .ap-x { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 999px; background: #eeeef0; color: #8a8a8e; font-size: 17px; line-height: 1; }
+  .ap-row { display: flex; align-items: center; gap: 10px; border-top: 0.5px solid rgba(60, 60, 67, 0.18); padding: 10px 0; font-size: 13px; }
+  .ap-card { width: 34px; height: 22px; flex-shrink: 0; border-radius: 4px; background: linear-gradient(135deg, #1a1f71 0%, #2b3a9c 60%, #f7b600 60% 66%, #2b3a9c 66%); }
+  .ap-row-label { width: 34px; flex-shrink: 0; font-size: 11px; color: #8a8a8e; }
+  .ap-row-main { display: flex; min-width: 0; flex: 1; flex-direction: column; line-height: 1.25; }
+  .ap-row-main b { font-weight: 600; }
+  .ap-row-main small, .ap-sum small { font-size: 12px; color: #6c6c70; }
+  .ap-chev { color: #c4c4c7; font-size: 20px; line-height: 1; }
+  .ap-sum { border-top: 0.5px solid rgba(60, 60, 67, 0.18); padding-top: 10px; }
+  .ap-sum p { display: flex; justify-content: space-between; }
+  .ap-total { margin-top: 4px; font-size: 15px; font-weight: 600; }
+  .ap-confirm { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 16px; }
+  .ap-faceid { position: relative; width: 40px; height: 40px; color: #8a8a8e; }
+  .ap-faceid svg { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity 220ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .ap-check { opacity: 0; transform: scale(0.6); color: #0a84ff; }
+  .ap-check path, .ap-check circle { stroke-dasharray: 120; stroke-dashoffset: 120; transition: stroke-dashoffset 520ms cubic-bezier(0.65, 0, 0.35, 1); }
+  .ap-status { position: relative; height: 16px; width: 100%; font-size: 13px; text-align: center; color: #3c3c43; }
+  .ap-status > span { position: absolute; inset: 0; opacity: 0; transition: opacity 200ms ease; }
+  .ap-hint { position: absolute; top: 16%; inset-inline-end: 0; z-index: 2; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 240ms ease;
+    font: 600 11px/1.15 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #fff; text-align: end; }
+  .ap-hint i { display: block; width: 4px; height: 44px; border-radius: 3px 0 0 3px; background: #fff; }
+  .ap[data-phase] .ap-dim { opacity: 1; }
+  .ap[data-phase] .ap-sheet { transform: none; }
+  .ap[data-phase='confirm'] .ap-hint { opacity: 1; animation: ap-pulse 900ms ease-in-out infinite; }
+  .ap[data-phase='confirm'] .ap-s1, .ap[data-phase='faceid'] .ap-s2, .ap[data-phase='done'] .ap-s3, .ap[data-phase='out'] .ap-s3 { opacity: 1; }
+  .ap[data-phase='faceid'] .ap-faceid { color: #0a84ff; }
+  .ap[data-phase='faceid'] .ap-faceid svg:first-child { animation: ap-scan 700ms ease-in-out infinite alternate; }
+  .ap[data-phase='done'] .ap-faceid svg:first-child, .ap[data-phase='out'] .ap-faceid svg:first-child { opacity: 0; transform: scale(1.3); }
+  .ap[data-phase='done'] .ap-check, .ap[data-phase='out'] .ap-check { opacity: 1; transform: none; }
+  .ap[data-phase='done'] .ap-check path, .ap[data-phase='done'] .ap-check circle, .ap[data-phase='out'] .ap-check path, .ap[data-phase='out'] .ap-check circle { stroke-dashoffset: 0; }
+  .ap[data-phase='done'] .ap-s3 { color: #0a84ff; font-weight: 600; }
+  .ap[data-phase='out'] .ap-dim { opacity: 0; }
+  .ap[data-phase='out'] .ap-sheet { transform: translateY(105%); }
+  @keyframes ap-pulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
+  @keyframes ap-scan { from { transform: scale(1); } to { transform: scale(0.9); } }
 </style>
 
 <script>
@@ -235,10 +318,30 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
       root.querySelectorAll<HTMLElement>('[data-star]').forEach((s) => { if (Number(s.dataset.star) <= n) s.setAttribute('data-on', ''); else s.removeAttribute('data-on'); });
     };
 
+    // Apple Pay: sheet up, side-button hint, Face ID, Done, sheet away, then "All done". Reduced motion: straight to done.
+    const ap = root.querySelector<HTMLElement>('[data-applepay]');
+    let apTimers: number[] = [];
+    const apStop = () => { apTimers.forEach((x) => window.clearTimeout(x)); apTimers = []; if (ap) { ap.hidden = true; ap.removeAttribute('data-phase'); } };
+    const pay = () => {
+      if (!ap || reduce) { show(5); return; }
+      apStop();
+      ap.querySelectorAll('[data-ap-amount]').forEach((el) => { el.textContent = String(tip); });
+      ap.hidden = false;
+      const at = (ms: number, fn: () => void) => apTimers.push(window.setTimeout(fn, ms));
+      requestAnimationFrame(() => requestAnimationFrame(() => ap.setAttribute('data-phase', 'in')));
+      at(650, () => ap.setAttribute('data-phase', 'confirm'));
+      at(2050, () => ap.setAttribute('data-phase', 'faceid'));
+      at(2900, () => ap.setAttribute('data-phase', 'done'));
+      at(3900, () => ap.setAttribute('data-phase', 'out'));
+      at(4350, () => { apStop(); show(5); });
+    };
+
     root.addEventListener('click', (e) => {
-      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-go],[data-dot],[data-prev],[data-next],[data-reset],[data-tip],[data-star]');
+      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-go],[data-dot],[data-prev],[data-next],[data-reset],[data-tip],[data-star],[data-pay]');
       if (!t || !root.contains(t)) return;
       interacted = true; window.clearTimeout(loop);
+      if ('pay' in t.dataset) { pay(); return; }
+      apStop();
       if (t.dataset.go) show(Number(t.dataset.go));
       else if (t.dataset.dot) show(Number(t.dataset.dot));
       else if ('prev' in t.dataset) show(state - 1);

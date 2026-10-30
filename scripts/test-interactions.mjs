@@ -51,7 +51,12 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   await guest.locator('[data-tip="40"]').click();
   await page.waitForTimeout(400); await guest.locator('.phone-screen').screenshot({ path: 'screenshots/states/guest-4.png' });
   await guest.getByRole('button', { name: /Pay with Apple Pay/ }).click();
-  check((await visible()) === '5', 'Apple Pay → state 5 (All done)');
+  await page.waitForTimeout(300);
+  check(await guest.locator('[data-applepay]').isVisible(), 'Apple Pay → sheet slides up');
+  check((await guest.locator('[data-ap-amount]').first().textContent()) === '40', 'Apple Pay sheet shows the chosen tip (AED 40)');
+  await page.waitForTimeout(1500); await guest.locator('.phone-screen').screenshot({ path: 'screenshots/states/guest-applepay.png' });
+  await page.waitForTimeout(3000);
+  check((await visible()) === '5' && !(await guest.locator('[data-applepay]').isVisible()), 'Apple Pay → Face ID → Done → state 5 (All done)');
   check((await guest.locator('[data-tip-out]').textContent()) === '40', 'tip selection carried to receipt');
   await page.waitForTimeout(400); await guest.locator('.phone-screen').screenshot({ path: 'screenshots/states/guest-5.png' });
   await guest.locator('[data-reset]').click();
