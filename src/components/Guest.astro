@@ -3,8 +3,6 @@ import SectionHead from './SectionHead.astro';
 import Pill from './Pill.astro';
 import GuestPhone from './GuestPhone.astro';
 import Ambient from './Ambient.astro';
-import LoopFigure from './LoopFigure.astro';
-import { site } from '../data/site';
 ---
 <section data-reveal-group id="guest" class="section-pad scroll-mt-20" aria-labelledby="guest-title">
   <div class="container-page">
@@ -26,17 +24,5 @@ import { site } from '../data/site';
         </div>
       </div>
     </div>
-    {site.requestLoop && (
-      <div class="mt-16 md:mt-24">
-        <p class="t-caption measure">One tap on the guest’s phone. The request reaches the driver, and the car is on its way.</p>
-        <LoopFigure
-          class="mt-5"
-          name="request"
-          mobile="4x3"
-          bg="#efeeea"
-          label="The guest taps Request My Car. The screen moves to Request received, then Your driver is bringing your car, as a white Land Rover Defender pulls up beside the phone."
-        />
-      </div>
-    )}
   </div>
 </section>

@@ -12,10 +12,6 @@ export const site = {
   location: 'Dubai, UAE',
   lang: 'en',
   dir: 'ltr',
-  /** "From the valet’s phone to the guest’s." all-digital phone loop after the film (30 Oct). Off until Leon approves the preview. */
-  ticketLoop: true,
-  /** "Request My Car" loop in the guest section: the Defender drives up as the screen moves to Bringing (30 Oct, published 30 Oct). */
-  requestLoop: true,
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
   film: {
     mp4: '/film/valett-film-16x9.mp4' as string | null, // 16:9 desktop
@@ -23,6 +19,8 @@ export const site = {
     captions: '/film/valett-film.en.vtt' as string | null, // .vtt
     /** true: the film replaces the scroll story in the hero (the brief's original hero). false: story hero, film in §2 only. */
     inHero: false,
+    /** Off 30 Oct: the film stalls at 00:00 on some iPhones. The two loops in How it works carry the story meanwhile. */
+    show: false,
   },
   /** Formspree form id (the part after formspree.io/f/). Public by design: it appears in the page. Submissions go to the inbox set on Formspree (info@valett.si). */
   formspreeId: import.meta.env.FORMSPREE_ID || 'mdeedyja', // "Valett demo requests", delivers to info@valett.si (29 Oct)

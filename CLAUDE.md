@@ -106,10 +106,11 @@ H2: See it at your door. Body: Thirty minutes, on a call or at your venue, with 
 ### 12 Footer (black)
 VALETT serif wordmark · Dubai, UAE · info@valett.si · LinkedIn · Privacy · © 2026 Valett · Valet, without the wait.
 
-## Product loops (30 Oct, live)
-- Handoff (`TicketLoop.astro`, after the film): valet's and guest's iPhones turn to camera. All digital, never paper tickets. Pipeline: `scripts/film/handoff.md`.
-- Request My Car (`Guest.astro`, under the guest sample): the Defender render as a scale model drives up while the real screen goes Request My Car → Request received → Bringing. Pipeline: `scripts/film/request.md`.
-- Both use `LoopFigure.astro`: nothing downloads until near the viewport, plays only on screen, reduced motion shows the end poster. iPhones always show the Dynamic Island and status bar. Switches: `site.ticketLoop`, `site.requestLoop`.
+## Product loops and film (30 Oct, live)
+- "How it works" (`HowItWorks.astro`) sits straight after the hero; the hero's second button is "See how it works" (#how).
+  01 Handoff: valet's and guest's iPhones turn to camera (`scripts/film/handoff.md`). 02 Request My Car: the Defender render as a scale model drives up while the real screen goes Request My Car → Request received → Bringing (`scripts/film/request.md`).
+- Both use `LoopFigure.astro`: nothing downloads until near the viewport, plays only on screen, reduced motion shows the end poster. All digital, never paper tickets; iPhones always show the Dynamic Island and status bar.
+- The film is off (`site.film.show = false`): it stalled at 00:00 on Leon's iPhone. Files stay in public/film for when it returns.
 
 ## Assets in this folder
 - `assets/screens/` five real screenshots (guest 1–3 light, staff 4–5 dark). Rebuild these as HTML components; do not ship the PNGs (they carry iOS chrome and the TEST3 tenant).

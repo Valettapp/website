@@ -1,0 +1,48 @@
+---
+/**
+ * How it works, straight after the hero: two short product loops, all digital.
+ * 01 the guest scans the valet's phone; 02 Request My Car brings the Defender to the door.
+ * Pipelines: scripts/film/handoff.md, scripts/film/request.md.
+ */
+import LoopFigure from './LoopFigure.astro';
+import SectionHead from './SectionHead.astro';
+const steps = [
+  {
+    n: '01',
+    title: 'From the valet’s phone to the guest’s.',
+    body: 'The valet photographs the car. The guest scans the code on the valet’s phone, and their car is on their own screen. No paper. No app to download.',
+    name: 'handoff',
+    mobile: '1x1' as const,
+    bg: '#ecede8',
+    label: 'Two phones turn to face the camera: the valet’s shows ticket V777 and its QR code, the guest’s shows their Land Rover Defender with a Request My Car button.',
+  },
+  {
+    n: '02',
+    title: 'One tap, and the car is on its way.',
+    body: 'The guest taps Request My Car from the table. The driver gets it at once, and the guest watches it move from requested to bringing.',
+    name: 'request',
+    mobile: '4x3' as const,
+    bg: '#efeeea',
+    label: 'The guest taps Request My Car. The screen moves to Request received, then Your driver is bringing your car, as a white Land Rover Defender pulls up beside the phone.',
+  },
+];
+---
+<section data-reveal-group id="how" class="section-pad scroll-mt-20" aria-labelledby="how-title">
+  <div class="container-page">
+    <SectionHead id="how-title" eyebrow="How it works" title="A ticket on their phone. Their car at the door." />
+    <ol class="mt-12 flex flex-col gap-16 md:mt-16 md:gap-24">
+      {steps.map((s) => (
+        <li>
+          <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-12">
+            <h3 class="t-h3 flex items-baseline gap-4">
+              <span class="text-[13px] font-medium tracking-[0.14em] text-gold-text">{s.n}</span>
+              <span>{s.title}</span>
+            </h3>
+            <p class="t-body max-w-[28em] text-ink-2">{s.body}</p>
+          </div>
+          <LoopFigure class="mt-6 md:mt-8" name={s.name} mobile={s.mobile} bg={s.bg} label={s.label} />
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

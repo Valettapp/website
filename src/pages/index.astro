@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Why from '../components/Why.astro';
-import TicketLoop from '../components/TicketLoop.astro';
+import HowItWorks from '../components/HowItWorks.astro';
 import Guest from '../components/Guest.astro';
 import Staff from '../components/Staff.astro';
 import BackOffice from '../components/BackOffice.astro';
@@ -24,8 +24,8 @@ import Footer from '../components/Footer.astro';
   <Nav />
   <main id="main">
     <Hero />
+    <HowItWorks />
     <Why />
-    {site.ticketLoop && <TicketLoop />}
     <Guest />
     <Staff />
     <BackOffice />
