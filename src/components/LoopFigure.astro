@@ -2,15 +2,19 @@
 /**
  * A short silent product loop in a glass frame. 16:9 from md up; on phones square (`mobile="1x1"`, default)
  * or 4:3 (`mobile="4x3"`) for wide scenes. Expects /film/<name>-{16x9,<mobile>}.mp4 and
- * /film/<name>-{start,end}-{16x9,<mobile>}.webp.
- * Nothing downloads until the frame nears the viewport; plays only while on screen.
- * Reduced motion: no playback, the poster shows the final frame.
+ * /film/<name>-start-{16x9,<mobile>}.webp. Each loop file begins on its finished frame (both screens lit),
+ * so the poster never looks empty and playback picks up from exactly what is already showing.
+ *
+ * Loading: nothing on page load. On the visitor's first scroll (or when a loop is within ~3 screens) the
+ * right file for the screen size is fetched into memory and handed to the video as a blob URL; iOS Safari
+ * otherwise waits for most of the file over the network before it starts. Plays only while on screen.
+ * Reduced motion: no download, the poster stays.
  */
 interface Props {
   name: string;
   label: string;
   mobile?: '1x1' | '4x3';
-  /** The studio tone at the clip's edges, so the frame matches before the poster or video paints. */
+  /** The studio tone at the clip's edges, so the frame matches before the poster paints. */
   bg?: string;
   class?: string;
 }
@@ -28,32 +32,54 @@ const f = `/film/${name}`;
       disableRemotePlayback
       aria-label={label}
       data-loop
+      data-src-wide={`${f}-16x9.mp4`}
+      data-src-tall={`${f}-${mobile}.mp4`}
       data-poster-wide={`${f}-start-16x9.webp`}
       data-poster-tall={`${f}-start-${mobile}.webp`}
-      data-poster-wide-end={`${f}-end-16x9.webp`}
-      data-poster-tall-end={`${f}-end-${mobile}.webp`}
-    >
-      <source src={`${f}-${mobile}.mp4`} type="video/mp4" media="(max-width: 767px)" />
-      <source src={`${f}-16x9.mp4`} type="video/mp4" />
-    </video>
+    ></video>
   </div>
 </figure>
 
 <script>
+  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-loop]'));
   const tall = window.matchMedia('(max-width: 767px)').matches;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  for (const video of document.querySelectorAll<HTMLVideoElement>('[data-loop]')) {
-    const d = video.dataset;
-    video.poster = (reduce ? (tall ? d.posterTallEnd : d.posterWideEnd) : (tall ? d.posterTall : d.posterWide)) || '';
-    if (reduce || !('IntersectionObserver' in window)) continue;
-    let started = false;
-    new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          if (!started) { started = true; video.preload = 'auto'; video.load(); }
-          video.play().catch(() => {});
-        } else if (started) video.pause();
-      }
-    }, { threshold: 0.35 }).observe(video);
+  const visible = new Set<HTMLVideoElement>();
+  const state = new Map<HTMLVideoElement, 'idle' | 'loading' | 'ready'>();
+
+  const play = (v: HTMLVideoElement) => { if (state.get(v) === 'ready' && visible.has(v)) v.play().catch(() => {}); };
+  const pending = new Map<HTMLVideoElement, Promise<void>>();
+  const load = (v: HTMLVideoElement): Promise<void> => {
+    if (state.get(v) !== 'idle') return pending.get(v) || Promise.resolve();
+    state.set(v, 'loading');
+    const url = (tall ? v.dataset.srcTall : v.dataset.srcWide) || '';
+    const attach = (src: string) => { v.src = src; state.set(v, 'ready'); play(v); };
+    const job = fetch(url)
+      .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+      .then((b) => attach(URL.createObjectURL(b)))
+      .catch(() => { v.preload = 'auto'; attach(url); }); // network hiccup: let the element stream it
+    pending.set(v, job);
+    return job;
+  };
+  // One at a time, in page order, so the first loop is ready as early as possible.
+  const loadAll = () => videos.reduce((chain, v) => chain.then(() => load(v)), Promise.resolve());
+
+  for (const v of videos) {
+    v.poster = (tall ? v.dataset.posterTall : v.dataset.posterWide) || '';
+    state.set(v, 'idle');
+  }
+  if (!reduce && videos.length) {
+    // First scroll or touch anywhere: fetch every loop (about 0.5 MB on a phone) while the visitor reads the hero.
+    addEventListener('scroll', loadAll, { once: true, passive: true });
+    addEventListener('touchstart', loadAll, { once: true, passive: true });
+    if ('IntersectionObserver' in window) {
+      // Backup for deep links: start loading when a loop is within ~3 screens.
+      const near = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && load(e.target as HTMLVideoElement)), { rootMargin: '300% 0px 300% 0px' });
+      const seen = new IntersectionObserver((es) => es.forEach((e) => {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) { visible.add(v); load(v); play(v); } else { visible.delete(v); v.pause(); }
+      }), { threshold: 0.2 });
+      videos.forEach((v) => { near.observe(v); seen.observe(v); });
+    } else loadAll();
   }
 </script>

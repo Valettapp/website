@@ -109,7 +109,7 @@ VALETT serif wordmark · Dubai, UAE · info@valett.si · LinkedIn · Privacy · 
 ## Product loops and film (30 Oct, live)
 - "How it works" (`HowItWorks.astro`) sits straight after the hero; the hero's second button is "See how it works" (#how).
   01 Handoff: valet's and guest's iPhones turn to camera (`scripts/film/handoff.md`). 02 Request My Car: the Defender render as a scale model drives up while the real screen goes Request My Car → Request received → Bringing (`scripts/film/request.md`).
-- Both use `LoopFigure.astro`: nothing downloads until near the viewport, plays only on screen, reduced motion shows the end poster. All digital, never paper tickets; iPhones always show the Dynamic Island and status bar.
+- Both use `LoopFigure.astro`: nothing downloads on page load; the first scroll fetches each loop (one after another, ~0.5 MB on a phone) into memory as a blob, so playback starts in under a second when it comes on screen. Loop files are rotated to begin on their finished frame, so the poster is never an empty-looking frame. Reduced motion shows the poster only. All digital, never paper tickets; iPhones always show the Dynamic Island and status bar.
 - The film is off (`site.film.show = false`): it stalled at 00:00 on Leon's iPhone. Files stay in public/film for when it returns.
 
 ## Assets in this folder
