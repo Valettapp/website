@@ -13,6 +13,7 @@ W, H, FPS = 1920, 1080, 30
 src = np.array(Image.open(f'{SCR}/promo2/statusbar.png').convert('RGBA')); bh, bw = src.shape[:2]; s = bw / 393
 isl = np.zeros((bh, bw), bool); isl[:, int((196.5 - 66) * s):int((196.5 + 66) * s)] = True
 bar = src.copy(); bar[~isl, :3] = 255; bar[isl, :3] = 0; bar = Image.fromarray(bar)  # white text over the photo
+if SEQ: b_ = np.array(bar); b_[isl, 3] = 0; bar = Image.fromarray(b_)  # the captured screen draws its own Dynamic Island (it morphs for Face ID)
 def with_bar(img, aspect):
     # Screens are captured at the phone's exact shape, so the status bar and Dynamic Island simply sit over the photo.
     # (If a capture were shorter than the phone, the photo's top edge would be extended to make up the difference.)

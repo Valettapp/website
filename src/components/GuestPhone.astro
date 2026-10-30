@@ -28,10 +28,12 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
 <div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })} {...(autoplay ? { 'data-autoplay': '' } : {})}>
   <div class:list={['phone-frame w-full max-w-[360px]', !isStatic && 'phone-fit']}>
     <div class="phone-screen bg-field text-ink" {...(isStatic ? {} : { 'aria-live': 'polite' })}>
+      <div class="ap-island" data-island aria-hidden="true"><span class="ap-orb"><i></i><i></i></span><svg class="ap-face" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><path class="ap-face-f" d="M17 18v4M31 18v4M25 18v9.5h-2.5M16.5 32c4.5 4 10.5 4 15 0"/></svg></div>
       {/* Header: car photo fading to the field */}
       <div class="absolute inset-x-0 top-0 h-[34%]">
         <Picture src={carGuest} formats={['avif', 'webp']} widths={[360, 720]} sizes="360px" alt="" class="guest-photo absolute inset-0 h-full w-full object-cover object-top" loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" />
-        <div class="absolute inset-x-0 top-0 flex items-start justify-between p-4">
+        <div class="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(rgba(0,0,0,.42),rgba(0,0,0,.22)_55%,rgba(0,0,0,0))]" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 top-0 flex items-start justify-between px-4 pb-4 pt-12">
           <span class="w-9"></span>
           <span class="t-wordmark shrink-0 whitespace-nowrap pt-1 text-[14px] text-white [text-shadow:0_1px_8px_rgba(0,0,0,.45)]">The Marquee</span>
           <span class="inline-flex items-center gap-1 rounded-pill bg-white/80 px-2.5 py-1 text-[11px] text-ink" aria-hidden="true">
@@ -192,11 +194,10 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
             <div class="ap-confirm">
               <span class="ap-glyph" aria-hidden="true">
                 <svg class="ap-g-side" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="5" width="18" height="30" rx="4"/><path class="ap-g-btn" d="M30 13v6"/><path class="ap-g-arrow" d="M34 12l3 4-3 4"/></svg>
-                <svg class="ap-g-face" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path class="ap-g-corners" d="M4 13V9a5 5 0 0 1 5-5h4M27 4h4a5 5 0 0 1 5 5v4M36 27v4a5 5 0 0 1-5 5h-4M13 36H9a5 5 0 0 1-5-5v-4"/><path class="ap-g-features" d="M14 15v3M26 15v3M20 15v8h-2M15 27c3 2.5 7 2.5 10 0"/></svg>
                 <svg class="ap-g-spin" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="20" r="15" stroke-dasharray="70 100"/></svg>
                 <svg class="ap-g-check" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle class="ap-g-ring" cx="20" cy="20" r="17" transform="rotate(-90 20 20)"/><path class="ap-g-tick" d="M12.5 20.5l5 5 10-11"/></svg>
               </span>
-              <span class="ap-status"><span class="ap-s-confirm">Confirm with Side Button</span><span class="ap-s-faceid">Face ID</span><span class="ap-s-processing">Processing</span><span class="ap-s-done">Done</span></span>
+              <span class="ap-status"><span class="ap-s-confirm">Confirm with Side Button</span><span class="ap-s-faceid">Pay with Face ID</span><span class="ap-s-processing">Processing</span><span class="ap-s-done">Done</span></span>
             </div>
           </div>
         </div>
@@ -261,7 +262,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   .ap-glyph { position: relative; width: 40px; height: 40px; color: #3c3c43; }
   .ap-glyph svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transform: scale(0.85);
     transition: opacity 260ms ease, transform 420ms cubic-bezier(0.16, 1, 0.3, 1); }
-  .ap-g-face, .ap-g-spin, .ap-g-check { color: #0a84ff; }
+  .ap-g-spin, .ap-g-check { color: #0a84ff; }
   .ap-g-ring { stroke-dasharray: 107; stroke-dashoffset: 107; transition: stroke-dashoffset 460ms cubic-bezier(0.65, 0, 0.35, 1); }
   .ap-g-tick { stroke-dasharray: 26; stroke-dashoffset: 26; transition: stroke-dashoffset 280ms cubic-bezier(0.65, 0, 0.35, 1) 300ms; }
   .ap-status { position: relative; height: 16px; width: 100%; font-size: 13px; text-align: center; color: #3c3c43; }
@@ -277,9 +278,21 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   .ap[data-phase='confirm'] .ap-side { opacity: 1; }
   .ap[data-phase='confirm'] .ap-side { animation: ap-nudge 1.15s cubic-bezier(0.45, 0, 0.55, 1) 300ms infinite; }
   .ap[data-phase='confirm'] .ap-g-arrow { animation: ap-arrow 1.15s cubic-bezier(0.45, 0, 0.55, 1) 300ms infinite; }
-  .ap[data-phase='faceid'] .ap-g-face { opacity: 1; transform: none; }
-  .ap[data-phase='faceid'] .ap-g-corners { transform-origin: 20px 20px; animation: ap-scan 560ms ease-in-out infinite alternate; }
-  .ap[data-phase='faceid'] .ap-g-features { animation: ap-blink 560ms ease-in-out infinite alternate; }
+  /* Dynamic Island: pill → black square with a 3D green ring that settles into the Face ID face → pill (as on iOS). */
+  .ap-island { position: absolute; top: 10px; left: 50%; z-index: 40; display: grid; place-items: center; width: 31%; height: 30px; border-radius: 15px; background: #000;
+    transform: translateX(-50%); transition: width 420ms cubic-bezier(0.32, 1.25, 0.5, 1), height 420ms cubic-bezier(0.32, 1.25, 0.5, 1), border-radius 420ms cubic-bezier(0.32, 1.25, 0.5, 1); font-family: -apple-system, system-ui, sans-serif; }
+  .ap-island[data-island='open'], .ap-island[data-island='face'] { width: 30%; height: 104px; border-radius: 34px; }
+  .ap-island[data-island='close'] { transition-duration: 320ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1); }
+  .ap-orb, .ap-face { position: absolute; width: 48px; height: 48px; color: #7af97c; opacity: 0; }
+  .ap-orb { perspective: 160px; transform-style: preserve-3d; }
+  .ap-orb i { position: absolute; inset: 1.5px; border-radius: 50%; border: 3px solid #7af97c; box-shadow: 0 0 10px rgba(122, 249, 124, 0.55), inset 0 0 8px rgba(122, 249, 124, 0.35); }
+  .ap-island[data-island='open'] .ap-orb { opacity: 1; transition: opacity 260ms ease 120ms; }
+  .ap-island[data-island='open'] .ap-orb i:first-child { animation: ap-gyro-a 620ms cubic-bezier(0.45, 0, 0.3, 1) 120ms both; }
+  .ap-island[data-island='open'] .ap-orb i:last-child { animation: ap-gyro-b 620ms cubic-bezier(0.45, 0, 0.3, 1) 120ms both; }
+  .ap-island[data-island='face'] .ap-orb { opacity: 0; transition: opacity 220ms ease; }
+  .ap-island[data-island='face'] .ap-face { opacity: 1; transition: opacity 160ms ease; }
+  .ap-island[data-island='face'] .ap-face-f { animation: ap-face-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ap-island[data-island='close'] .ap-face { opacity: 0; transition: opacity 90ms ease; }
   .ap[data-phase='faceid'] .ap-s-faceid { opacity: 1; transform: none; }
   .ap[data-phase='processing'] .ap-g-spin { opacity: 1; transform: none; }
   .ap[data-phase='processing'] .ap-g-spin circle { transform-origin: 20px 20px; animation: ap-spin 800ms linear infinite; }
@@ -291,8 +304,9 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   .ap[data-phase='out'] .ap-sheet { transform: translate3d(0, 110%, 0); transition: transform 440ms cubic-bezier(0.5, 0, 0.75, 0); }
   @keyframes ap-nudge { 0%, 100% { transform: translateX(0); } 45% { transform: translateX(-7px); } }
   @keyframes ap-arrow { 0%, 100% { transform: translateX(0); opacity: 1; } 45% { transform: translateX(2px); opacity: 0.4; } }
-  @keyframes ap-scan { from { transform: scale(1); } to { transform: scale(0.88); } }
-  @keyframes ap-blink { from { opacity: 1; } to { opacity: 0.35; } }
+  @keyframes ap-gyro-a { 0% { transform: rotateX(-540deg) rotateY(-30deg); filter: blur(3px); opacity: 0.3; } 35% { filter: blur(0); opacity: 1; } 100% { transform: rotateX(0deg) rotateY(0deg); } }
+  @keyframes ap-gyro-b { 0% { transform: rotateY(-180deg) rotateZ(40deg); filter: blur(3px); opacity: 0.3; } 35% { filter: blur(0); opacity: 1; } 100% { transform: rotateY(540deg) rotateZ(0deg); } }
+  @keyframes ap-face-in { from { opacity: 0; transform: scale(0.8); transform-origin: 24px 24px; } to { opacity: 1; transform: none; transform-origin: 24px 24px; } }
   @keyframes ap-spin { to { transform: rotate(360deg); } }
 </style>
 
@@ -333,8 +347,9 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
 
     // Apple Pay: sheet up, side-button hint, Face ID, Done, sheet away, then "All done". Reduced motion: straight to done.
     const ap = root.querySelector<HTMLElement>('[data-applepay]');
+    const island = root.querySelector<HTMLElement>('[data-island]');
     let apTimers: number[] = [];
-    const apStop = () => { apTimers.forEach((x) => window.clearTimeout(x)); apTimers = []; if (ap) { ap.hidden = true; ap.removeAttribute('data-phase'); } };
+    const apStop = () => { apTimers.forEach((x) => window.clearTimeout(x)); apTimers = []; if (ap) { ap.hidden = true; ap.removeAttribute('data-phase'); } island?.setAttribute('data-island', '');  };
     const pay = () => {
       if (!ap || reduce) { show(5); return; }
       apStop();
@@ -343,11 +358,14 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
       const at = (ms: number, fn: () => void) => apTimers.push(window.setTimeout(fn, ms));
       requestAnimationFrame(() => requestAnimationFrame(() => ap.setAttribute('data-phase', 'in')));
       at(560, () => ap.setAttribute('data-phase', 'confirm'));     // sheet settled: Double Click to Pay
-      at(2100, () => ap.setAttribute('data-phase', 'faceid'));     // double-click: Face ID
-      at(2950, () => ap.setAttribute('data-phase', 'processing'));
-      at(3650, () => ap.setAttribute('data-phase', 'done'));       // ring, then tick
-      at(4750, () => ap.setAttribute('data-phase', 'out'));        // sheet away
-      at(5200, () => { apStop(); show(5); });
+      const isl = (v: string) => island?.setAttribute('data-island', v);
+      at(2100, () => { ap.setAttribute('data-phase', 'faceid'); isl('open'); }); // double-click: island opens, ring spins
+      at(2780, () => isl('face'));                                 // ring settles into the Face ID face
+      at(3400, () => isl('close'));                                // face out, island back to a pill
+      at(3500, () => ap.setAttribute('data-phase', 'processing'));
+      at(4150, () => ap.setAttribute('data-phase', 'done'));       // ring, then tick
+      at(5200, () => ap.setAttribute('data-phase', 'out'));        // sheet away
+      at(5650, () => { apStop(); show(5); });
     };
 
     root.addEventListener('click', (e) => {
