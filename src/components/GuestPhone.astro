@@ -169,7 +169,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
       {!isStatic && (
         <div class="ap" data-applepay hidden aria-hidden="true">
           <div class="ap-dim"></div>
-          <p class="ap-hint"><span>Double-click<br />to pay</span><i></i></p>
+          <div class="ap-side"><span class="ap-side-text">Double Click<br />to Pay</span><span class="ap-side-pill"></span></div>
           <div class="ap-sheet">
             <div class="ap-head">
               <span class="ap-mark"><Icon name="apple" size={17} />Pay</span>
@@ -190,14 +190,13 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
               <p class="ap-total"><span>Pay The Marquee</span><span>AED <span data-ap-amount>80</span>.00</span></p>
             </div>
             <div class="ap-confirm">
-              <span class="ap-faceid" aria-hidden="true">
-                <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-                  <path class="ap-fi-c" d="M4 13V9a5 5 0 0 1 5-5h4M27 4h4a5 5 0 0 1 5 5v4M36 27v4a5 5 0 0 1-5 5h-4M13 36H9a5 5 0 0 1-5-5v-4"/>
-                  <path class="ap-fi-f" d="M14 15v3M26 15v3M20 15v8h-2M15 27c3 2.5 7 2.5 10 0"/>
-                </svg>
-                <svg class="ap-check" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="17"/><path d="M12.5 20.5l5 5 10-11"/></svg>
+              <span class="ap-glyph" aria-hidden="true">
+                <svg class="ap-g-side" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="5" width="18" height="30" rx="4"/><path class="ap-g-btn" d="M30 13v6"/><path class="ap-g-arrow" d="M34 12l3 4-3 4"/></svg>
+                <svg class="ap-g-face" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path class="ap-g-corners" d="M4 13V9a5 5 0 0 1 5-5h4M27 4h4a5 5 0 0 1 5 5v4M36 27v4a5 5 0 0 1-5 5h-4M13 36H9a5 5 0 0 1-5-5v-4"/><path class="ap-g-features" d="M14 15v3M26 15v3M20 15v8h-2M15 27c3 2.5 7 2.5 10 0"/></svg>
+                <svg class="ap-g-spin" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="20" r="15" stroke-dasharray="70 100"/></svg>
+                <svg class="ap-g-check" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle class="ap-g-ring" cx="20" cy="20" r="17" transform="rotate(-90 20 20)"/><path class="ap-g-tick" d="M12.5 20.5l5 5 10-11"/></svg>
               </span>
-              <span class="ap-status"><span class="ap-s1">Confirm with Side Button</span><span class="ap-s2">Face ID</span><span class="ap-s3">Done</span></span>
+              <span class="ap-status"><span class="ap-s-confirm">Confirm with Side Button</span><span class="ap-s-faceid">Face ID</span><span class="ap-s-processing">Processing</span><span class="ap-s-done">Done</span></span>
             </div>
           </div>
         </div>
@@ -237,12 +236,13 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   [data-state]:not([hidden]) { animation: v-fade-up 300ms ease both; }
   @media (prefers-reduced-motion: reduce) { .sheet, [data-state]:not([hidden]) { animation: none; } }
 
-  /* Apple Pay sheet (light, iOS). Phases on [data-phase]: in → confirm → faceid → done → out. */
-  .ap { position: absolute; inset: 0; z-index: 30; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #000; }
+  /* Apple Pay sheet (light, iOS). Phases on [data-phase]: in → confirm → faceid → processing → done → out.
+     Sheet springs up (ease-out, no overshoot), side-button hint nudges, Face ID scans, spinner, ring then tick draw. */
+  .ap { position: absolute; inset: 0; z-index: 30; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #000; }
   .ap[hidden] { display: none; }
-  .ap-dim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.32); opacity: 0; transition: opacity 280ms ease; }
+  .ap-dim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.3); opacity: 0; transition: opacity 360ms ease; }
   .ap-sheet { position: absolute; inset-inline: 6px; bottom: 6px; border-radius: 26px; background: #fff; padding: 14px 16px 18px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
-    transform: translateY(105%); transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1); }
+    transform: translate3d(0, 110%, 0); transition: transform 560ms cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
   .ap-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
   .ap-mark { display: inline-flex; align-items: center; gap: 1px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
   .ap-mark :global(svg) { margin-top: -3px; }
@@ -258,29 +258,42 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
   .ap-sum p { display: flex; justify-content: space-between; }
   .ap-total { margin-top: 4px; font-size: 15px; font-weight: 600; }
   .ap-confirm { display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 16px; }
-  .ap-faceid { position: relative; width: 40px; height: 40px; color: #8a8a8e; }
-  .ap-faceid svg { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity 220ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .ap-check { opacity: 0; transform: scale(0.6); color: #0a84ff; }
-  .ap-check path, .ap-check circle { stroke-dasharray: 120; stroke-dashoffset: 120; transition: stroke-dashoffset 520ms cubic-bezier(0.65, 0, 0.35, 1); }
+  .ap-glyph { position: relative; width: 40px; height: 40px; color: #3c3c43; }
+  .ap-glyph svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transform: scale(0.85);
+    transition: opacity 260ms ease, transform 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .ap-g-face, .ap-g-spin, .ap-g-check { color: #0a84ff; }
+  .ap-g-ring { stroke-dasharray: 107; stroke-dashoffset: 107; transition: stroke-dashoffset 460ms cubic-bezier(0.65, 0, 0.35, 1); }
+  .ap-g-tick { stroke-dasharray: 26; stroke-dashoffset: 26; transition: stroke-dashoffset 280ms cubic-bezier(0.65, 0, 0.35, 1) 300ms; }
   .ap-status { position: relative; height: 16px; width: 100%; font-size: 13px; text-align: center; color: #3c3c43; }
-  .ap-status > span { position: absolute; inset: 0; opacity: 0; transition: opacity 200ms ease; }
-  .ap-hint { position: absolute; top: 16%; inset-inline-end: 0; z-index: 2; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 240ms ease;
-    font: 600 11px/1.15 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #fff; text-align: end; }
-  .ap-hint i { display: block; width: 4px; height: 44px; border-radius: 3px 0 0 3px; background: #fff; }
+  .ap-status > span { position: absolute; inset: 0; opacity: 0; transform: translateY(4px); transition: opacity 240ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .ap-side { position: absolute; top: 15%; inset-inline-end: 0; z-index: 2; display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 300ms ease; }
+  .ap-side-text { font: 600 11px/1.15 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: #fff; text-align: end; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25); }
+  .ap-side-pill { display: block; width: 5px; height: 46px; border-radius: 4px 0 0 4px; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+  /* phases */
   .ap[data-phase] .ap-dim { opacity: 1; }
-  .ap[data-phase] .ap-sheet { transform: none; }
-  .ap[data-phase='confirm'] .ap-hint { opacity: 1; animation: ap-pulse 900ms ease-in-out infinite; }
-  .ap[data-phase='confirm'] .ap-s1, .ap[data-phase='faceid'] .ap-s2, .ap[data-phase='done'] .ap-s3, .ap[data-phase='out'] .ap-s3 { opacity: 1; }
-  .ap[data-phase='faceid'] .ap-faceid { color: #0a84ff; }
-  .ap[data-phase='faceid'] .ap-faceid svg:first-child { animation: ap-scan 700ms ease-in-out infinite alternate; }
-  .ap[data-phase='done'] .ap-faceid svg:first-child, .ap[data-phase='out'] .ap-faceid svg:first-child { opacity: 0; transform: scale(1.3); }
-  .ap[data-phase='done'] .ap-check, .ap[data-phase='out'] .ap-check { opacity: 1; transform: none; }
-  .ap[data-phase='done'] .ap-check path, .ap[data-phase='done'] .ap-check circle, .ap[data-phase='out'] .ap-check path, .ap[data-phase='out'] .ap-check circle { stroke-dashoffset: 0; }
-  .ap[data-phase='done'] .ap-s3 { color: #0a84ff; font-weight: 600; }
+  .ap[data-phase] .ap-sheet { transform: translate3d(0, 0, 0); }
+  .ap[data-phase='in'] .ap-g-side, .ap[data-phase='confirm'] .ap-g-side { opacity: 1; transform: none; }
+  .ap[data-phase='in'] .ap-s-confirm, .ap[data-phase='confirm'] .ap-s-confirm { opacity: 1; transform: none; }
+  .ap[data-phase='confirm'] .ap-side { opacity: 1; }
+  .ap[data-phase='confirm'] .ap-side { animation: ap-nudge 1.15s cubic-bezier(0.45, 0, 0.55, 1) 300ms infinite; }
+  .ap[data-phase='confirm'] .ap-g-arrow { animation: ap-arrow 1.15s cubic-bezier(0.45, 0, 0.55, 1) 300ms infinite; }
+  .ap[data-phase='faceid'] .ap-g-face { opacity: 1; transform: none; }
+  .ap[data-phase='faceid'] .ap-g-corners { transform-origin: 20px 20px; animation: ap-scan 560ms ease-in-out infinite alternate; }
+  .ap[data-phase='faceid'] .ap-g-features { animation: ap-blink 560ms ease-in-out infinite alternate; }
+  .ap[data-phase='faceid'] .ap-s-faceid { opacity: 1; transform: none; }
+  .ap[data-phase='processing'] .ap-g-spin { opacity: 1; transform: none; }
+  .ap[data-phase='processing'] .ap-g-spin circle { transform-origin: 20px 20px; animation: ap-spin 800ms linear infinite; }
+  .ap[data-phase='processing'] .ap-s-processing { opacity: 1; transform: none; }
+  .ap[data-phase='done'] .ap-g-check, .ap[data-phase='out'] .ap-g-check { opacity: 1; transform: none; }
+  .ap[data-phase='done'] .ap-g-ring, .ap[data-phase='out'] .ap-g-ring, .ap[data-phase='done'] .ap-g-tick, .ap[data-phase='out'] .ap-g-tick { stroke-dashoffset: 0; }
+  .ap[data-phase='done'] .ap-s-done, .ap[data-phase='out'] .ap-s-done { opacity: 1; transform: none; color: #0a84ff; font-weight: 600; }
   .ap[data-phase='out'] .ap-dim { opacity: 0; }
-  .ap[data-phase='out'] .ap-sheet { transform: translateY(105%); }
-  @keyframes ap-pulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
-  @keyframes ap-scan { from { transform: scale(1); } to { transform: scale(0.9); } }
+  .ap[data-phase='out'] .ap-sheet { transform: translate3d(0, 110%, 0); transition: transform 440ms cubic-bezier(0.5, 0, 0.75, 0); }
+  @keyframes ap-nudge { 0%, 100% { transform: translateX(0); } 45% { transform: translateX(-7px); } }
+  @keyframes ap-arrow { 0%, 100% { transform: translateX(0); opacity: 1; } 45% { transform: translateX(2px); opacity: 0.4; } }
+  @keyframes ap-scan { from { transform: scale(1); } to { transform: scale(0.88); } }
+  @keyframes ap-blink { from { opacity: 1; } to { opacity: 0.35; } }
+  @keyframes ap-spin { to { transform: rotate(360deg); } }
 </style>
 
 <script>
@@ -329,11 +342,12 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
       ap.hidden = false;
       const at = (ms: number, fn: () => void) => apTimers.push(window.setTimeout(fn, ms));
       requestAnimationFrame(() => requestAnimationFrame(() => ap.setAttribute('data-phase', 'in')));
-      at(650, () => ap.setAttribute('data-phase', 'confirm'));
-      at(2050, () => ap.setAttribute('data-phase', 'faceid'));
-      at(2900, () => ap.setAttribute('data-phase', 'done'));
-      at(3900, () => ap.setAttribute('data-phase', 'out'));
-      at(4350, () => { apStop(); show(5); });
+      at(560, () => ap.setAttribute('data-phase', 'confirm'));     // sheet settled: Double Click to Pay
+      at(2100, () => ap.setAttribute('data-phase', 'faceid'));     // double-click: Face ID
+      at(2950, () => ap.setAttribute('data-phase', 'processing'));
+      at(3650, () => ap.setAttribute('data-phase', 'done'));       // ring, then tick
+      at(4750, () => ap.setAttribute('data-phase', 'out'));        // sheet away
+      at(5200, () => { apStop(); show(5); });
     };
 
     root.addEventListener('click', (e) => {

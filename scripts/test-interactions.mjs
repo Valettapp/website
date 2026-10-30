@@ -55,7 +55,7 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   check(await guest.locator('[data-applepay]').isVisible(), 'Apple Pay → sheet slides up');
   check((await guest.locator('[data-ap-amount]').first().textContent()) === '40', 'Apple Pay sheet shows the chosen tip (AED 40)');
   await page.waitForTimeout(1500); await guest.locator('.phone-screen').screenshot({ path: 'screenshots/states/guest-applepay.png' });
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(3900); // sheet → Double Click to Pay → Face ID → Processing → Done → away (5.2 s in all)
   check((await visible()) === '5' && !(await guest.locator('[data-applepay]').isVisible()), 'Apple Pay → Face ID → Done → state 5 (All done)');
   check((await guest.locator('[data-tip-out]').textContent()) === '40', 'tip selection carried to receipt');
   await page.waitForTimeout(400); await guest.locator('.phone-screen').screenshot({ path: 'screenshots/states/guest-5.png' });

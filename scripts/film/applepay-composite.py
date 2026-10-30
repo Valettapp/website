@@ -4,6 +4,7 @@
 import sys, json, cv2, numpy as np, subprocess
 from PIL import Image, ImageFilter
 clip, still_p, out_p = sys.argv[1:4]
+SEQ = sys.argv[4] if len(sys.argv) > 4 else None  # folder of frame-exact screen captures (30 fps)
 PHONE_ONLY = clip == 'STILL'  # no Kling clip: static studio still with just the phone, plus a slow push-in
 D = sys.path[0]; SCR = '/tmp/claude-0/-home-user-website/17dcb022-c78c-57d1-931f-5ad9c3653355/scratchpad'
 W, H, FPS = 1920, 1080, 30
@@ -21,11 +22,15 @@ def with_bar(img, aspect):
         img = Image.fromarray(np.vstack([np.array(top), np.array(img)]))
     bh_ = round(54 * w / 393); out = img.copy(); bb = bar.resize((w, bh_), Image.LANCZOS); out.paste(bb, (0, 0), bb)
     return np.array(out)[:, :, ::-1].copy()  # BGR
-cap = {n: Image.open(f'{D}/{n}.png') for n in ['s4', 's4tap', 'dim', 'ap-in', 'ap-confirm', 'ap-faceid', 'ap-done', 's5']}
+cap = {n: Image.open(f'{D}/{n}.png') for n in ['s4', 's4tap', 'dim', 'ap-in', 'ap-confirm', 'ap-faceid', 'ap-done', 's5']} if not SEQ else {'s4': Image.open(f'{SEQ}/f0000.png')}
 k3 = cap['s4'].width / 338.0
-r = json.load(open(f'{D}/rect.json')); sx, sy, sw, sh = [round(v * k3) for v in (r['x'], r['y'], r['w'], r['h'])]
-sheet = cap['ap-in'].convert('RGB').crop((sx, sy, sx + sw, sy + sh)); sheet_done = cap['ap-done'].convert('RGB').crop((sx, sy, sx + sw, sy + sh))
-mask = Image.new('L', (sw, sh), 0); from PIL import ImageDraw; ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw - 1, sh - 1), radius=round(26 * k3), fill=255)
+if not SEQ:
+    r = json.load(open(f'{D}/rect.json')); sx, sy, sw, sh = [round(v * k3) for v in (r['x'], r['y'], r['w'], r['h'])]
+    sheet = cap['ap-in'].convert('RGB').crop((sx, sy, sx + sw, sy + sh)); sheet_done = cap['ap-done'].convert('RGB').crop((sx, sy, sx + sw, sy + sh))
+else:
+    sx = sy = sw = sh = 2
+from PIL import ImageDraw
+mask = Image.new('L', (sw, sh), 0); ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw - 1, sh - 1), radius=min(round(26 * k3), sw // 2 - 1), fill=255)
 def ease(x): x = min(1, max(0, x)); return 1 - (1 - x) ** 3
 def sheet_frame(bg_a, bg_b, k_bg, sheet_img, off):
     bg = Image.blend(bg_a.convert('RGB'), bg_b.convert('RGB'), k_bg).copy()
@@ -75,7 +80,16 @@ def warp(pil):
 # ---- timeline (seconds) ----
 T_TAP, T_UP, T_CONF, T_FACE, T_DONE, T_OUT, T_S5, T_END, FADE = 1.2, 1.35, 1.85, 3.25, 4.1, 5.2, 5.75, 8.8, 0.7
 cache = {}
+import glob as _glob
+SEQ_FILES = sorted(_glob.glob(f'{SEQ}/f*.png')) if SEQ else []
+if SEQ: T_END = len(SEQ_FILES) / FPS + 0.4  # the capture already holds on Safe travels; short extra hold, then loop
 def screen_at(t):
+    if SEQ:
+        i = min(int(round(t * FPS)), len(SEQ_FILES) - 1)
+        if ('seq', i) not in cache:
+            if len(cache) > 6: cache.clear()
+            cache[('seq', i)] = warp(Image.open(SEQ_FILES[i]))
+        return cache[('seq', i)]
     if t < T_TAP: key = ('s4',)
     elif t < T_UP: key = ('s4tap',)
     elif t < T_CONF:
