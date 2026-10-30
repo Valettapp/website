@@ -107,6 +107,7 @@ H2: See it at your door. Body: Thirty minutes, on a call or at your venue, with 
 VALETT serif wordmark · Q East, by Alphabeta / Al Quoz / Dubai, UAE (address 30 Oct) · info@valett.si · Instagram (no LinkedIn; handle pending from Leon, `site.instagram`) · Privacy · © 2026 Valett · Valet, without the wait.
 
 ## Product loops and film (30 Oct, live)
+- Hero (31 Oct): one screen (`HeroFan.astro`): headline, line, two buttons, and three iPhones fanned out (driver ticket, guest page, new request) with two notification cards; the phones fan out once on load. The pinned scroll story was removed: it told the same four steps as How it works. Each section now has one job: How it works = the overview (three loops); guest section = try it yourself; staff section = the driver's side.
 - "How it works" (`HowItWorks.astro`) sits straight after the hero; the hero's second button is "See how it works" (#how).
   01 Handoff: valet's and guest's iPhones turn to camera (`scripts/film/handoff.md`). 02 Request My Car: the Defender render as a scale model drives up while the real screen goes Request My Car → Request received → Bringing (`scripts/film/request.md`).
   03 Tip by Apple Pay: the real Apple Pay sheet, Face ID in the Dynamic Island, then Safe travels (`scripts/film/applepay.md`).

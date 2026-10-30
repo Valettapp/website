@@ -1,0 +1,71 @@
+---
+/**
+ * Hero: one screen. Headline, line, two buttons, and the product at a glance: the driver's ticket, the guest's
+ * page and the new request, fanned out in real iPhone bodies, with two notifications. The step-by-step story is
+ * told once, below, in How it works. The phones fan out once on load; reduced motion shows them in place.
+ */
+import GuestPhone from './GuestPhone.astro';
+import StaffScreen from './StaffScreen.astro';
+import Icon from './Icon.astro';
+import Ambient from './Ambient.astro';
+import { site } from '../data/site';
+---
+<section class="hero relative overflow-x-clip pt-28 pb-16 md:pt-32 md:pb-24" aria-labelledby="hero-title">
+  <Ambient variant="hero" />
+  <div class="container-page relative flex flex-col items-center text-center">
+    <h1 id="hero-title" class="t-display max-w-[10em] lg:!text-[104px]" style="text-wrap: balance">{site.slogan}</h1>
+    <p class="mt-6 max-w-[26em] text-[17px] leading-relaxed text-ink-2 md:mt-8 md:text-[21px]">Valet management for Dubai’s best venues. One record of every car, from the first photo to the last text.</p>
+    <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:gap-4 md:mt-10">
+      <a href="#demo" class="btn-primary md:!px-7 md:!py-3.5 md:!text-[16px]">Book a demo</a>
+      <a href="#how" class="btn-ghost glass !px-6 !py-3.5 !text-[15px] md:!text-[16px]">See how it works</a>
+    </div>
+
+    <div class="fan mt-12 md:mt-14" role="img" aria-label="Valett on three phones: the valet's ticket V777 with its QR code, the guest's page showing their Land Rover Defender on its way, and the driver's new request for Zone P3, Bay 55.">
+      <div class="fan-phone fan-l" aria-hidden="true" inert><StaffScreen device screen="ticket" /></div>
+      <div class="fan-phone fan-r" aria-hidden="true" inert><StaffScreen device screen="request" /></div>
+      <div class="fan-phone fan-c" aria-hidden="true" inert><GuestPhone static device priority state={4} /></div>
+      <div class="fan-card glass-card fan-card-a" aria-hidden="true">
+        <span class="fan-card-icon bg-ink text-white"><Icon name="bolt" size={14} /></span>
+        <span class="min-w-0 text-start"><strong class="block font-semibold">Driver on it</strong><span class="block text-ink-2">Zone P3 · Bay 55 · keys from hook 55</span></span>
+      </div>
+      <div class="fan-card glass-card fan-card-b" aria-hidden="true">
+        <span class="fan-card-icon border border-gold text-gold"><Icon name="sms" size={14} /></span>
+        <span class="min-w-0 text-start"><strong class="block font-semibold">Text from The Marquee</strong><span class="block text-ink-2">Your driver is bringing your car. 4 min.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The fan is laid out at desktop size and zoomed down on smaller screens; the side phones may run off the edge. */
+  .fan { position: relative; width: 780px; height: 660px; flex-shrink: 0; }
+  .fan-phone { position: absolute; top: 0; left: 50%; width: 300px; }
+  .fan-c { z-index: 2; transform: translateX(-50%); }
+  .fan-l, .fan-r { z-index: 1; top: 40px; }
+  .fan-l { transform: translateX(calc(-50% - 235px)) rotate(-5deg) scale(0.86); }
+  .fan-r { transform: translateX(calc(-50% + 235px)) rotate(5deg) scale(0.86); }
+  .fan-card { position: absolute; z-index: 3; background: rgba(255, 255, 255, 0.94); display: flex; align-items: center; gap: 12px; width: 300px; padding: 12px 14px; border-radius: 16px; font-size: 13px; line-height: 1.35; }
+  .fan-card-a { left: -60px; top: 330px; }
+  .fan-card-b { right: -60px; top: 190px; }
+  .fan-card-icon { display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 999px; }
+  @media (max-width: 63.99rem) { .fan { zoom: 0.86; } }
+  @media (max-width: 47.99rem) {
+    .fan { zoom: 0.72; }
+    .fan-card { width: 330px; font-size: 15px; }
+    .fan-card-a { left: 135px; top: 560px; }
+    .fan-card-b { right: 135px; top: 400px; }
+  }
+
+  /* Entrance (text is not animated, so it paints at once): the side phones fan out from behind the guest's phone, the cards follow. */
+  @media (prefers-reduced-motion: no-preference) {
+    .fan-c { animation: hero-rise-c 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+    .fan-l { animation: fan-l 1100ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both; }
+    .fan-r { animation: fan-r 1100ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both; }
+    .fan-card-a { animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both; }
+    .fan-card-b { animation: hero-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) 1150ms both; }
+  }
+  @keyframes hero-rise { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+  @keyframes hero-rise-c { from { opacity: 0; translate: 0 40px; } to { opacity: 1; translate: 0 0; } }
+  @keyframes fan-l { from { opacity: 0; transform: translateX(-50%) rotate(0deg) scale(0.8); } to { opacity: 1; transform: translateX(calc(-50% - 235px)) rotate(-5deg) scale(0.86); } }
+  @keyframes fan-r { from { opacity: 0; transform: translateX(-50%) rotate(0deg) scale(0.8); } to { opacity: 1; transform: translateX(calc(-50% + 235px)) rotate(5deg) scale(0.86); } }
+</style>

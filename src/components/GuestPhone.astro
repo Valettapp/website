@@ -7,27 +7,31 @@
 import { Picture } from 'astro:assets';
 import carGuest from '../assets/car-guest.jpg';
 import Icon from './Icon.astro';
+import IosBar from './IosBar.astro';
 import Plate from './Plate.astro';
 
 interface Props {
-  /** Render one state with no controls or script. Used in the hero story. */
+  /** Render one state with no controls or script. Used in the hero. */
   static?: boolean;
   /** Which state a static phone shows (default 4, driver on the way). */
   state?: 1 | 2 | 3 | 4 | 5;
   /** Load the car photo eagerly (above the fold). */
   priority?: boolean;
+  /** A real iPhone body with status bar (as the staff phones), instead of the glass frame. */
+  device?: boolean;
   /** Cycle through the five states on a fixed clock until the visitor taps. */
   autoplay?: boolean;
   class?: string;
 }
-const { static: isStatic = false, state: staticState = 4, priority = false, autoplay = false, class: className = '' } = Astro.props;
+const { static: isStatic = false, state: staticState = 4, priority = false, autoplay = false, device = false, class: className = '' } = Astro.props;
 const stateNames = ['Parked', 'Get a text', 'Request received', 'Driver on the way', 'All done'];
 const track = ['Requested', 'On it', 'Bringing', 'Outside'];
 const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
 ---
 <div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })} {...(autoplay ? { 'data-autoplay': '' } : {})}>
-  <div class:list={['phone-frame w-full max-w-[360px]', !isStatic && 'phone-fit']}>
+  <div class:list={[device ? 'phone-device' : 'phone-frame', 'w-full max-w-[360px]', !isStatic && 'phone-fit']}>
     <div class="phone-screen bg-field text-ink" {...(isStatic ? {} : { 'aria-live': 'polite' })}>
+      {device && <IosBar time="1:08" island={false} />}
       <div class="ap-island" data-island aria-hidden="true"><span class="ap-orb"><i></i><i></i></span><svg class="ap-face" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="21"/><path class="ap-face-f" d="M17 18v4M31 18v4M25 18v9.5h-2.5M16.5 32c4.5 4 10.5 4 15 0"/></svg></div>
       {/* Header: car photo fading to the field */}
       <div class="absolute inset-x-0 top-0 h-[34%]">

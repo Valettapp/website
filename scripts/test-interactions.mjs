@@ -16,18 +16,12 @@ const check = (ok, msg) => { console.log(`${ok ? '✓' : '✗'} ${msg}`); if (!o
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on('pageerror', (e) => { console.log('pageerror', e.message); failures++; });
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'networkidle' });
-  // Hero story: scroll progress drives the beats; the phone changes screen.
-  const story = page.locator('[data-story]');
-  const total = await story.evaluate((el) => el.getBoundingClientRect().height - window.innerHeight);
-  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200);
-  const op = (sel) => story.locator(sel).evaluate((el) => Number(getComputedStyle(el).opacity));
-  const native = await page.evaluate(() => document.documentElement.classList.contains('story-sda'));
-  const s1 = await op('[data-screen="1"]'), g0 = await op('[data-screen="2"]');
-  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.56)); await page.waitForTimeout(300);
-  const s2 = await op('[data-screen="2"]'), s1b = await op('[data-screen="1"]');
-  check(s1 === 1 && g0 === 0 && s2 > 0.9 && s1b === 0, `hero story follows scroll (${native ? 'native timeline' : 'script'}: scan ${s1}→${s1b}, guest ${g0}→${s2})`);
-  await page.evaluate((y) => window.scrollTo(0, y), Math.round(total * 0.98)); await page.waitForTimeout(300);
-  check((await op('[data-screen="4"]')) > 0.9 && (await op('.story-cap:nth-child(4)')) > 0.9, 'hero story ends on beat 4 (safe travels)');
+  // Hero: one screen, three phones fanned out; nothing pinned, the next section follows straight after.
+  await page.waitForTimeout(1800);
+  const fan = await page.evaluate(() => [...document.querySelectorAll('.fan-phone')].map((e) => Number(getComputedStyle(e).opacity)));
+  const howTop = await page.evaluate(() => document.querySelector('#how').getBoundingClientRect().top / innerHeight);
+  check(fan.length === 3 && fan.every((o) => o > 0.9), `hero shows three phones (${fan.join(', ')})`);
+  check(howTop < 1.6, `How it works follows the hero (starts ${howTop.toFixed(2)} screens down)`);
   // Reveal: a section far down is hidden until scrolled to.
   const team = page.locator('#company > .container-page > *').first();
   const before = await team.evaluate((el) => getComputedStyle(el).opacity);

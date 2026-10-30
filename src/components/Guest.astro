@@ -10,8 +10,9 @@ import Ambient from './Ambient.astro';
       <div class="flex flex-col gap-6 lg:col-span-5 lg:sticky lg:top-28">
         <SectionHead id="guest-title" eyebrow="The guest page" title="Nothing to download. Nothing to remember." />
         <p class="t-body measure">
-          The valet photographs the car. The guest gets a ticket on their phone from the QR, with their car’s photo on it. From then on they can see where it is, ask for it from the table, message the shift manager and tip the driver, in English or Arabic, without creating an account.
+          One page on the guest’s phone, opened from the QR. They see where their car is, ask for it from the table, message the shift manager and tip the driver, in English or Arabic, without an account.
         </p>
+        <p class="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.12em] text-gold-text">Try it: tap Request My Car on the phone</p>
         <p class="t-caption measure">
           Private message line to the shift manager, hidden from the driver. Rate, tip and receipt by text.
         </p>
@@ -19,7 +20,7 @@ import Ambient from './Ambient.astro';
       <div class="lg:col-span-7" data-reveal="right">
         <div class="relative"><Ambient variant="wide" class="-inset-[8%]" />
         <div class="glass-panel !rounded-frame px-5 py-12 md:px-10 md:py-16">
-          <GuestPhone />
+          <GuestPhone device />
         </div>
         </div>
       </div>
