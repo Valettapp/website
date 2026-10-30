@@ -7,7 +7,6 @@ import BackOffice from '../components/BackOffice.astro';
 import Money from '../components/Money.astro';
 import Integrations from '../components/Integrations.astro';
 import Faq from '../components/Faq.astro';
-import Solutions from '../components/Solutions.astro';
 import Demo from '../components/Demo.astro';
 import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
@@ -72,7 +71,6 @@ const schema = [
     {s.sections.includes('integrations') && <Integrations />}
     <Faq faqs={s.faqs} />
     <Demo />
-    <Solutions current={s.slug} />
   </main>
   <Footer />
 </Base>
