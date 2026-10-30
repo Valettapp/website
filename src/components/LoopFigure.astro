@@ -6,12 +6,19 @@
  * Nothing downloads until the frame nears the viewport; plays only while on screen.
  * Reduced motion: no playback, the poster shows the final frame.
  */
-interface Props { name: string; label: string; mobile?: '1x1' | '4x3'; class?: string }
-const { name, label, mobile = '1x1', class: cls = '' } = Astro.props;
+interface Props {
+  name: string;
+  label: string;
+  mobile?: '1x1' | '4x3';
+  /** The studio tone at the clip's edges, so the frame matches before the poster or video paints. */
+  bg?: string;
+  class?: string;
+}
+const { name, label, mobile = '1x1', bg = '#ecede8', class: cls = '' } = Astro.props;
 const f = `/film/${name}`;
 ---
 <figure class:list={['glass rounded-frame p-2 md:p-3', cls]} data-reveal>
-  <div class:list={['relative overflow-hidden rounded-[14px] bg-[#e9e9e6] md:aspect-video', mobile === '4x3' ? 'aspect-[4/3]' : 'aspect-square']}>
+  <div class:list={['relative overflow-hidden rounded-[14px] md:aspect-video', mobile === '4x3' ? 'aspect-[4/3]' : 'aspect-square']} style={`background:${bg}`}>
     <video
       class="absolute inset-0 h-full w-full object-cover"
       muted

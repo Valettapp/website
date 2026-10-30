@@ -14,8 +14,8 @@ export const site = {
   dir: 'ltr',
   /** "From the valet’s phone to the guest’s." all-digital phone loop after the film (30 Oct). Off until Leon approves the preview. */
   ticketLoop: true,
-  /** "Request My Car" loop in the guest section: the Defender drives up as the screen moves to Bringing (30 Oct). Off until approved. */
-  requestLoop: false,
+  /** "Request My Car" loop in the guest section: the Defender drives up as the screen moves to Bringing (30 Oct, published 30 Oct). */
+  requestLoop: true,
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
   film: {
     mp4: '/film/valett-film-16x9.mp4' as string | null, // 16:9 desktop
