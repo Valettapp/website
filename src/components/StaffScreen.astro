@@ -9,8 +9,10 @@ import IosBar from './IosBar.astro';
 import carScan from '../assets/car-scan.jpg';
 import carGuest from '../assets/car-guest.jpg';
 /** device: a real iPhone body with status bar and Dynamic Island (staff section); off for the hero's glass phones. */
-interface Props { screen: 'ticket' | 'park' | 'request'; class?: string; device?: boolean }
-const { screen, class: className = '', device = false } = Astro.props;
+/** animate (request screen): the request arrives in the Dynamic Island, the ticket slides in, the driver taps On my way. */
+interface Props { screen: 'ticket' | 'park' | 'request'; class?: string; device?: boolean; animate?: boolean }
+const { screen, class: className = '', device = false, animate: anim = false } = Astro.props;
+const animate = anim && screen === 'request';
 const top = device ? 'top-[17%]' : 'top-[11%]';
 const time = { ticket: '1:06', park: '1:07', request: '1:42' }[screen];
 // Deterministic pseudo-QR pattern (not scannable; demo data).
@@ -30,7 +32,7 @@ const qr = (() => {
 })();
 ---
 <div class:list={[device ? 'phone-device' : 'phone-frame', 'w-full max-w-[300px]', className]}>
-  <div class="phone-screen bg-ink text-white">
+  <div class="phone-screen bg-ink text-white" {...(animate ? { 'data-rq': '' } : {})}>
     {device && <IosBar time={time} />}
     <div class:list={['absolute inset-x-0 top-0 flex items-center justify-center px-5', device ? 'pt-[52px]' : 'pt-5']}>
       <Wordmark variant="serif" class="text-[13px] text-white/90" />
@@ -106,19 +108,36 @@ const qr = (() => {
       </div>
     )}
 
+    {screen === 'request' && animate && (
+      <div class="rq-banner" aria-hidden="true">
+        <span class="rq-b-icon">V</span>
+        <span class="rq-b-text"><b>New request · V777</b><small>Defender · Zone P3 · Bay 55</small></span>
+        <span class="rq-b-time">now</span>
+      </div>
+    )}
+    {screen === 'request' && animate && <p class="rq-idle" aria-hidden="true">No requests waiting</p>}
     {screen === 'request' && (
       <div class:list={['absolute inset-x-5 bottom-5 flex flex-col items-center text-center', device ? 'top-[16%]' : 'top-[12%]']}>
-        <p class="text-[11px] font-medium uppercase tracking-[0.16em] text-gold">New request · Just now</p>
-        <p class="mt-2 text-[30px] font-normal leading-[1.05] tracking-[-0.02em]">Land Rover Defender</p>
-        <div class="mt-3"><Plate emirate="Dubai" code="M" number="95378" scale={0.68} /></div>
-        <Picture src={carPhoto} formats={['avif', 'webp']} widths={[400, 800]} sizes="240px" alt="" class="mt-3 w-[88%] rounded-[10px]" loading="lazy" decoding="async" />
-        <div class="mt-1 w-full text-start text-[13px]">
+        <p class="rq-a text-[11px] font-medium uppercase tracking-[0.16em] text-gold" style="--i:0">
+          {animate ? <span class="rq-sw"><span class="rq-1">New request · Just now</span><span class="rq-2">On my way · Zone P3</span></span> : 'New request · Just now'}
+        </p>
+        <p class="rq-a mt-2 text-[30px] font-normal leading-[1.05] tracking-[-0.02em]" style="--i:1">Land Rover Defender</p>
+        <div class="rq-a mt-3" style="--i:2"><Plate emirate="Dubai" code="M" number="95378" scale={0.68} /></div>
+        <div class="rq-a mt-3 w-[88%]" style="--i:3"><Picture src={carPhoto} formats={['avif', 'webp']} widths={[400, 800]} sizes="240px" alt="" class="w-full rounded-[10px]" loading="lazy" decoding="async" /></div>
+        <div class="rq-a mt-1 w-full text-start text-[13px]" style="--i:4">
           <div class="flex items-center justify-between border-b border-white/10 py-2.5"><span class="text-[11px] uppercase tracking-[0.14em] text-white/55">Parked</span><span>Zone P3 · Bay 55</span></div>
           <div class="flex items-center justify-between py-2.5"><span class="text-[11px] uppercase tracking-[0.14em] text-white/55">Colour</span><span>White</span></div>
         </div>
-        <div class="mt-auto w-full">
-          <span class="btn-primary w-full !bg-white !py-3 !text-[14px] !text-ink">On my way</span>
-          <p class="mt-2.5 text-[11px] text-white/50">On shift · 02:15:03</p>
+        <div class="rq-a relative mt-auto w-full" style="--i:5">
+          {animate ? (
+            <span class="rq-btn btn-primary w-full !py-3 !text-[14px]"><span class="rq-sw"><span class="rq-1">On my way</span><span class="rq-2 inline-flex items-center justify-center gap-1.5"><Icon name="check" size={14} /> On my way</span></span></span>
+          ) : (
+            <span class="btn-primary w-full !bg-white !py-3 !text-[14px] !text-ink">On my way</span>
+          )}
+          {animate && <span class="rq-tap" aria-hidden="true"></span>}
+          <p class="mt-2.5 text-[11px] text-white/50">
+            {animate ? <span class="rq-sw"><span class="rq-1">On shift · <span class="tabular-nums" data-rq-clock>02:15:03</span></span><span class="rq-2 text-white/75">Guest notified · their page says Bringing</span></span> : 'On shift · 02:15:03'}
+          </p>
         </div>
       </div>
     )}
@@ -128,4 +147,67 @@ const qr = (() => {
 <style>
   .plate-dark { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid rgba(255,255,255,.85); border-radius: 5px; padding: 2px 9px; font-weight: 600; font-size: 13px; letter-spacing: 0.06em; color: #fff; }
   .plate-dark i { display: inline-block; width: 1.5px; height: 14px; background: rgba(255,255,255,.85); }
+  /* Request screen animation. Phases on [data-rq][data-phase]: idle → notify → in → tap → sent. No phase (no JS): the static screen. */
+  .rq-banner { position: absolute; top: 10px; left: 50%; z-index: 31; display: flex; align-items: center; gap: 9px; width: 31%; height: 26px; padding: 0 12px; overflow: hidden;
+    border-radius: 13px; background: #000; transform: translateX(-50%); opacity: 0; white-space: nowrap;
+    transition: width 460ms cubic-bezier(0.32, 1.2, 0.5, 1), height 460ms cubic-bezier(0.32, 1.2, 0.5, 1), border-radius 460ms ease, opacity 120ms ease 400ms; }
+  .rq-banner > * { opacity: 0; transition: opacity 160ms ease; }
+  .rq-b-icon { display: grid; flex-shrink: 0; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: #1c1c1e; color: var(--color-gold); font: 400 18px/1 "Cormorant Garamond", serif; }
+  .rq-b-text { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; text-align: start; font-size: 12px; line-height: 1.2; }
+  .rq-b-text b { font-weight: 600; }
+  .rq-b-text small { overflow: hidden; text-overflow: ellipsis; font-size: 11px; color: rgba(255, 255, 255, 0.6); }
+  .rq-b-time { align-self: flex-start; padding-top: 14px; font-size: 10px; color: rgba(255, 255, 255, 0.45); }
+  [data-rq][data-phase='notify'] .rq-banner { width: 92%; height: 62px; border-radius: 24px; opacity: 1; transition-delay: 0ms; }
+  [data-rq][data-phase='notify'] .rq-banner > * { opacity: 1; transition-delay: 200ms; }
+  .rq-idle { position: absolute; inset-inline: 0; top: 47%; text-align: center; font-size: 12px; color: rgba(255, 255, 255, 0.38); opacity: 0; transition: opacity 400ms ease; }
+  [data-rq][data-phase='idle'] .rq-idle { opacity: 1; transition-delay: 300ms; }
+  [data-rq] .rq-a { transition: opacity 420ms ease, transform 560ms cubic-bezier(0.16, 1, 0.3, 1); transition-delay: calc(var(--i) * 70ms); }
+  [data-rq][data-phase='idle'] .rq-a, [data-rq][data-phase='notify'] .rq-a { opacity: 0; transform: translateY(12px); transition-duration: 280ms; transition-delay: 0ms; }
+  .rq-sw { display: inline-grid; }
+  .rq-sw > * { grid-area: 1 / 1; transition: opacity 280ms ease, transform 380ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .rq-sw > .rq-2 { opacity: 0; transform: translateY(6px); }
+  [data-rq][data-phase='sent'] .rq-sw > .rq-1 { opacity: 0; transform: translateY(-6px); }
+  [data-rq][data-phase='sent'] .rq-sw > .rq-2 { opacity: 1; transform: none; }
+  .rq-btn { background-color: #fff; color: var(--color-ink); transition: transform 140ms ease, background-color 320ms ease, color 320ms ease, box-shadow 320ms ease; }
+  [data-rq][data-phase='tap'] .rq-btn { transform: scale(0.96); }
+  [data-rq][data-phase='sent'] .rq-btn { background-color: rgba(197, 162, 83, 0.12); color: var(--color-gold); box-shadow: inset 0 0 0 1px var(--color-gold); }
+  .rq-tap { position: absolute; top: 22px; left: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(10, 10, 10, 0.16); box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.28); opacity: 0; pointer-events: none; }
+  [data-rq][data-phase='tap'] .rq-tap { animation: rq-tap 520ms ease-out both; }
+  @keyframes rq-tap { 0% { opacity: 0; transform: scale(0.5); } 25% { opacity: 1; transform: scale(0.8); } 100% { opacity: 0; transform: scale(1.5); } }
+  @media (prefers-reduced-motion: reduce) { .rq-banner, .rq-idle, .rq-tap { display: none; } [data-rq] * { transition: none !important; } }
 </style>
+
+
+<script>
+  // Request screen: loops while on screen. Reduced motion: the final state (On my way, guest notified).
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-rq]').forEach((el) => {
+    if (reduce) { el.dataset.phase = 'sent'; return; }
+    const clock = el.querySelector<HTMLElement>('[data-rq-clock]');
+    let secs = 2 * 3600 + 15 * 60 + 3;
+    let timers: number[] = [];
+    let tick: number | undefined;
+    const set = (ph: string) => { el.dataset.phase = ph; };
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    const run = () => {
+      set('idle');
+      at(800, () => set('notify'));   // the island opens into the request
+      at(2500, () => set('in'));      // ticket slides in
+      at(5000, () => set('tap'));     // the driver taps On my way
+      at(5250, () => set('sent'));    // guest's page moves to Bringing
+      at(9000, run);
+    };
+    const stop = () => { timers.forEach((t) => window.clearTimeout(t)); timers = []; window.clearInterval(tick); el.removeAttribute('data-phase'); };
+    new IntersectionObserver(([en]) => {
+      if (en.isIntersecting) {
+        if (timers.length) return;
+        run();
+        tick = window.setInterval(() => {
+          secs++; if (!clock) return;
+          const h = Math.floor(secs / 3600), m = Math.floor(secs / 60) % 60, sec = secs % 60;
+          clock.textContent = [h, m, sec].map((n) => String(n).padStart(2, '0')).join(':');
+        }, 1000);
+      } else stop();
+    }, { threshold: 0.35 }).observe(el);
+  });
+</script>
