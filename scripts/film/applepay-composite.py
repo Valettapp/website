@@ -10,15 +10,15 @@ W, H, FPS = 1920, 1080, 30
 # ---- screens with the iPhone status bar (dark text) over the photo top ----
 src = np.array(Image.open(f'{SCR}/promo2/statusbar.png').convert('RGBA')); bh, bw = src.shape[:2]; s = bw / 393
 isl = np.zeros((bh, bw), bool); isl[:, int((196.5 - 66) * s):int((196.5 + 66) * s)] = True
-bar = src.copy(); bar[~isl, :3] = 10; bar[isl, :3] = 0; bar = Image.fromarray(bar)
+bar = src.copy(); bar[~isl, :3] = 255; bar[isl, :3] = 0; bar = Image.fromarray(bar)  # white text over the photo
 def with_bar(img, aspect):
-    # Prepend a band extended from the photo's top edge so the screen has the phone's exact aspect (nothing cropped),
-    # then draw the status bar and Dynamic Island in the top 54 pt of it.
-    img = img.convert('RGB'); w, h = img.size; band = max(round(54 * w / 393), round(w / aspect) - h)
-    top = img.crop((0, 0, w, 24)).resize((w, band + 30), Image.BICUBIC).filter(ImageFilter.GaussianBlur(40))
-    a = np.vstack([np.array(top)[:band].astype(float), np.array(img).astype(float)]); t = np.array(top).astype(float)
-    for i in range(30): k = i / 30; a[band + i] = a[band + i] * k + t[band + i] * (1 - k)
-    out = Image.fromarray(a.clip(0, 255).astype(np.uint8)); bh_ = round(54 * w / 393); bb = bar.resize((w, bh_), Image.LANCZOS); out.paste(bb, (0, 0), bb)
+    # Screens are captured at the phone's exact shape, so the status bar and Dynamic Island simply sit over the photo.
+    # (If a capture were shorter than the phone, the photo's top edge would be extended to make up the difference.)
+    img = img.convert('RGB'); w, h = img.size; need = round(w / aspect) - h
+    if need > 4:
+        top = img.crop((0, 0, w, 24)).resize((w, need), Image.BICUBIC).filter(ImageFilter.GaussianBlur(40))
+        img = Image.fromarray(np.vstack([np.array(top), np.array(img)]))
+    bh_ = round(54 * w / 393); out = img.copy(); bb = bar.resize((w, bh_), Image.LANCZOS); out.paste(bb, (0, 0), bb)
     return np.array(out)[:, :, ::-1].copy()  # BGR
 cap = {n: Image.open(f'{D}/{n}.png') for n in ['s4', 's4tap', 'dim', 'ap-in', 'ap-confirm', 'ap-faceid', 'ap-done', 's5']}
 k3 = cap['s4'].width / 338.0
