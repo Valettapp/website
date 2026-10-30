@@ -19,32 +19,65 @@ const { demoHref = '#demo' } = Astro.props;
     <div class="flex items-center gap-1.5">
       <a href={demoHref} class="btn-primary !py-2.5 !px-5 text-[14px]">Book a demo</a>
       <button type="button" class="inline-flex size-10 items-center justify-center rounded-full text-ink lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" data-menu-toggle>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path class="menu-open" d="M4 7h16M4 12h16M4 17h16"/><path class="menu-close hidden" d="M6 6l12 12M18 6L6 18"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path class="menu-icon menu-open" d="M4 7h16M4 12h16M4 17h16"/><path class="menu-icon menu-close" d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
   </nav>
-  <div id="mobile-menu" class="glass pointer-events-auto mx-auto mt-2 hidden max-w-[1200px] rounded-[24px] p-3 lg:hidden" hidden>
+  <div id="mobile-menu" class="menu-panel glass pointer-events-auto mx-auto mt-2 max-w-[1200px] rounded-[24px] p-3 lg:hidden" hidden>
     <ul class="flex flex-col">
-      {nav.map((n) => (
-        <li><a class="block rounded-[14px] px-4 py-3 text-[17px] font-medium text-ink hover:bg-field" href={n.href} data-menu-link>{n.label}</a></li>
+      {nav.map((n, i) => (
+        <li style={`--i:${i}`}><a class="block rounded-[14px] px-4 py-3 text-[17px] font-medium text-ink hover:bg-field" href={n.href} data-menu-link>{n.label}</a></li>
       ))}
     </ul>
   </div>
 </header>
 
+<style>
+  /* Mobile menu: the panel glides down from the bar, links follow one after another, the icon turns into a cross. */
+  .menu-panel {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+    transform-origin: 50% 0;
+    transition: opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 340ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .menu-panel li { opacity: 0; transform: translateY(-6px); transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .menu-panel[data-open] { opacity: 1; transform: none; }
+  .menu-panel[data-open] li { opacity: 1; transform: none; transition-delay: calc(60ms + var(--i) * 40ms); }
+  .menu-icon { transform-box: fill-box; transform-origin: center; transition: opacity 200ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .menu-close { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+  [aria-expanded='true'] .menu-open { opacity: 0; transform: rotate(90deg) scale(0.6); }
+  [aria-expanded='true'] .menu-close { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .menu-panel, .menu-panel li, .menu-icon { transition: none; }
+  }
+</style>
+
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.getElementById('mobile-menu');
   if (toggle && menu) {
+    let timer = 0;
+    const isOpen = () => menu.hasAttribute('data-open');
     const set = (open: boolean) => {
-      menu.hidden = !open; menu.classList.toggle('hidden', !open);
+      if (open === isOpen()) return;
+      clearTimeout(timer);
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      toggle.querySelector('.menu-open')?.classList.toggle('hidden', open);
-      toggle.querySelector('.menu-close')?.classList.toggle('hidden', !open);
+      if (open) {
+        menu.hidden = false;
+        menu.getBoundingClientRect(); // commit the closed state so the transition runs
+        menu.setAttribute('data-open', '');
+      } else {
+        menu.removeAttribute('data-open');
+        timer = window.setTimeout(() => { if (!isOpen()) menu.hidden = true; }, 340);
+      }
     };
-    toggle.addEventListener('click', () => set(menu.hidden));
+    toggle.addEventListener('click', () => set(!isOpen()));
     menu.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => set(false)));
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+    // Tap anywhere outside the bar and the menu to close it.
+    document.addEventListener('pointerdown', (e) => {
+      if (isOpen() && !menu.contains(e.target as Node) && !toggle.contains(e.target as Node)) set(false);
+    });
   }
 </script>
