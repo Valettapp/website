@@ -10,6 +10,8 @@ export const site = {
   email: 'info@valett.si',
   linkedin: 'https://www.linkedin.com/company/valett', // pending confirmation
   location: 'Dubai, UAE',
+  /** Office address, one line per entry (30 Oct, from Leon). */
+  address: ['Q East, by Alphabeta', 'Al Quoz', 'Dubai, UAE'],
   lang: 'en',
   dir: 'ltr',
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
