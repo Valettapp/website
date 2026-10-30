@@ -1,8 +1,8 @@
 ---
 /**
- * How it works, straight after the hero: two short product loops, all digital.
- * 01 the guest scans the valet's phone; 02 Request My Car brings the Defender to the door.
- * Pipelines: scripts/film/handoff.md, scripts/film/request.md.
+ * How it works, straight after the hero: three short product loops, all digital.
+ * 01 the guest scans the valet's phone; 02 Request My Car brings the Defender to the door; 03 tip by Apple Pay.
+ * Pipelines: scripts/film/handoff.md, scripts/film/request.md, scripts/film/applepay.md.
  */
 import LoopFigure from './LoopFigure.astro';
 import SectionHead from './SectionHead.astro';
@@ -24,6 +24,15 @@ const steps = [
     mobile: '4x3' as const,
     bg: '#efeeea',
     label: 'The guest taps Request My Car. The screen moves to Request received, then Your driver is bringing your car, as a white Land Rover Defender pulls up beside the phone.',
+  },
+  {
+    n: '03',
+    title: 'A tip in two clicks, and a receipt by text.',
+    body: 'At the door, the guest tips the driver with Apple Pay and Face ID. The receipt arrives by text. No cash, no card machine.',
+    name: 'applepay',
+    mobile: '1x1' as const,
+    bg: '#ecece6',
+    label: 'On the guest’s phone, the Apple Pay sheet slides up for an 80 dirham tip, Face ID confirms in the Dynamic Island, and the page moves to All done, Safe travels.',
   },
 ];
 ---

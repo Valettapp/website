@@ -1,4 +1,4 @@
-# Apple Pay loop (spare, for the digital payments section; not on the site yet)
+# Apple Pay loop (How it works, step 03)
 
 A 9-second silent loop of the guest paying by Apple Pay on the real guest page. Phone only, no car (30 Oct 2026).
 Files: `media/applepay/applepay-16x9.mp4` (1600x900) and `applepay-1x1.mp4` (900x900).
@@ -15,3 +15,6 @@ Files: `media/applepay/applepay-16x9.mp4` (1600x900) and `applepay-1x1.mp4` (900
 
 To put it on the page: copy the files to public/film/ as applepay-16x9.mp4 / applepay-1x1.mp4, add start posters,
 and use <LoopFigure name="applepay" />.
+
+On the site (30 Oct): public/film/applepay-{16x9,1x1}.mp4 + start posters, rotated to begin at 7.5 s (Safe travels hold),
+cropped around the phone (16:9 `crop=1600:900:160:60`, square `crop=900:900:510:60,scale=720:720`), CRF 27.
