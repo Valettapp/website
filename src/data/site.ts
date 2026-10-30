@@ -12,7 +12,7 @@ export const site = {
   location: 'Dubai, UAE',
   lang: 'en',
   dir: 'ltr',
-  /** "The paper ticket, replaced." loop after the film (30 Oct). Off until Leon approves the preview. */
+  /** "From the valet’s phone to the guest’s." all-digital phone loop after the film (30 Oct). Off until Leon approves the preview. */
   ticketLoop: false,
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
   film: {
