@@ -98,7 +98,7 @@ Story: Valett started as an idea in summer 2025. By winter it was a vetted start
 Five-year plan: Grow. Capture the Dubai market. Expand across the service side of hospitality: concierge, parking automation and AI.
 Founders — Leon Lumley-Savile, co-founder: Real estate and commodity trading, with a network of ultra-high-net-worth clients who trust him to deliver vetted products and deals worldwide. · Tom Beenham, co-founder: Marketing. Built an email-marketing business that generated millions in revenue for top clients, and an online school that has taken students to the top of the industry.
 Investors and advisors — Abdulla Al Shaibani: Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East's Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto. · Mo Aziz (updated 30 Oct from Leon): Dubai-based serial technology entrepreneur, first UAE-based founder through Y Combinator (2019); co-founder and co-CEO of Sooner (proptech); co-founded Pluto (YC-backed spend management, exited), Dapi and Airscope; angel investor in fintech and proptech.
-Portraits: placeholders (initials on #F2F2F0 circles) until photos arrive.
+Portraits: all four in place (Mo added 30 Oct from a 200 px photo: cropped and sharpened, no AI retouching).
 
 ### 11 Book a demo (white, glass card)
 H2: See it at your door. Body: Thirty minutes, on a call or at your venue, with the real app in your hands. Button: Book a demo.
