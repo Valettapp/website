@@ -28,16 +28,22 @@ const rows = [
         {cols.map((c) => <span class="t-eyebrow">{c}</span>)}
       </div>
 
-      <dl class="ledger" data-reveal-stagger>
-        {rows.map((r) => (
+      <dl class="ledger" data-reveal-stagger data-ledger>
+        {rows.map((r, i) => (
           <div class="ledger-row">
             <dt class="ledger-title">
               <span class="t-h3 block">{r.title}</span>
               <span class:list={['pill mt-3', `pill-${r.kind}`]}>{kinds[r.kind]}</span>
             </dt>
-            <dd class="ledger-cell"><span class="ledger-label t-eyebrow lg:hidden">{cols[0]}</span><p>{r.today}</p></dd>
-            <dd class="ledger-cell ledger-cell-valett"><span class="ledger-label t-eyebrow lg:hidden">{cols[1]}</span><p>{r.valett}</p></dd>
-            <dd class="ledger-cell ledger-cell-keep"><span class="ledger-label t-eyebrow lg:hidden">{cols[2]}</span><p>{r.keep}</p></dd>
+            <dd class="ledger-cell ledger-more" id={`ledger-${i}-a`}><span class="ledger-label t-eyebrow lg:hidden">{cols[0]}</span><p>{r.today}</p></dd>
+            <dd class="ledger-cell ledger-cell-valett ledger-more" id={`ledger-${i}-b`}><span class="ledger-label t-eyebrow lg:hidden">{cols[1]}</span><p>{r.valett}</p></dd>
+            <dd class="ledger-cell ledger-cell-keep"><span class="ledger-label ledger-label-keep t-eyebrow lg:hidden">{cols[2]}</span><p>{r.keep}</p></dd>
+            <dd class="ledger-cta">
+              <button type="button" class="ledger-toggle" aria-expanded="false" aria-controls={`ledger-${i}-a ledger-${i}-b`} hidden>
+                <span class="ledger-toggle-open">See how</span><span class="ledger-toggle-close">Show less</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </dd>
           </div>
         ))}
       </dl>
@@ -75,4 +81,39 @@ const rows = [
     .ledger-cell-keep { position: relative; padding-inline-start: 24px; }
     .ledger-cell-keep::before { content: ''; position: absolute; inset-block: 4px; inset-inline-start: 0; width: 2px; border-radius: 2px; background: var(--color-gold); }
   }
+  /* Phones and tablets: each row shows its title and what the venue keeps; "See how" opens today vs. with Valett.
+     Only when the script has run ([data-collapsible]); without it every row is open. Desktop: the full ledger. */
+  .ledger-toggle { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 14px; font-weight: 500; color: var(--color-ink); }
+  .ledger-toggle svg { transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .ledger-toggle-close, .ledger-row[data-open] .ledger-toggle-open { display: none; }
+  .ledger-row[data-open] .ledger-toggle-close { display: inline; }
+  .ledger-row[data-open] .ledger-toggle svg { transform: rotate(180deg); }
+  @media (max-width: 63.99rem) {
+    [data-collapsible] .ledger-row { gap: 14px; padding-block: 24px; }
+    [data-collapsible] .ledger-label-keep { display: none; }
+    [data-collapsible] .ledger-cell-keep { order: 1; grid-column: 1 / -1; }
+    [data-collapsible] .ledger-more { order: 2; display: none; }
+    [data-collapsible] .ledger-row[data-open] .ledger-more { display: block; animation: ledger-open 360ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+    [data-collapsible] .ledger-cta { order: 3; grid-column: 1 / -1; }
+    [data-collapsible] .ledger-title { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+    [data-collapsible] .ledger-title .pill { margin-top: 0; }
+    .ledger-toggle { margin-top: 0; }
+  }
+  @media (min-width: 64rem) { .ledger-cta { display: none; } }
+  @keyframes ledger-open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-collapsible] .ledger-row[data-open] .ledger-more { animation: none; } }
 </style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ledger]').forEach((dl) => {
+    dl.setAttribute('data-collapsible', '');
+    dl.querySelectorAll<HTMLButtonElement>('.ledger-toggle').forEach((b) => {
+      b.hidden = false;
+      b.addEventListener('click', () => {
+        const row = b.closest<HTMLElement>('.ledger-row')!;
+        const open = !row.hasAttribute('data-open');
+        row.toggleAttribute('data-open', open);
+        b.setAttribute('aria-expanded', String(open));
+      });
+    });
+  });
+</script>

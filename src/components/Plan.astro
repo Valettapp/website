@@ -61,7 +61,8 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
               <Picture src={p.photo} formats={['avif', 'webp']} widths={[128, 256]} sizes="64px" alt={`Portrait of ${p.name}`} class="size-16 shrink-0 rounded-full object-cover md:size-20" pictureAttributes={{ class: "shrink-0" }} loading="lazy" decoding="async" />
               <div><h3 class="t-h3 !text-[20px]">{p.name}</h3><p class="t-caption mt-0.5">{p.role} · {p.focus}</p></div>
             </div>
-            <p class="text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
+            <div><p class="bio text-[16px] leading-relaxed text-ink-2" id={`bio-${p.name.split(' ')[0].toLowerCase()}`}>{p.bio}</p>
+              <button type="button" class="bio-toggle" aria-expanded="false" aria-controls={`bio-${p.name.split(' ')[0].toLowerCase()}`} hidden><span class="bio-more">Read more</span><span class="bio-less">Show less</span></button></div>
           </li>
         ))}
       </ul>
@@ -79,10 +80,35 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
               )}
               <div><h3 class="t-h3 !text-[20px]">{p.name}</h3><p class="t-caption mt-0.5">{p.role} · {p.focus}</p></div>
             </div>
-            <p class="text-[16px] leading-relaxed text-ink-2">{p.bio}</p>
+            <div><p class="bio text-[16px] leading-relaxed text-ink-2" id={`bio-${p.name.split(' ')[0].toLowerCase()}`}>{p.bio}</p>
+              <button type="button" class="bio-toggle" aria-expanded="false" aria-controls={`bio-${p.name.split(' ')[0].toLowerCase()}`} hidden><span class="bio-more">Read more</span><span class="bio-less">Show less</span></button></div>
           </li>
         ))}
       </ul>
     </div>
   </div>
 </section>
+
+<style>
+  /* Phones and tablets: three lines of each bio, "Read more" for the rest (only once the script has run). */
+  .bio-toggle { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .bio-less, [data-open] > .bio-toggle .bio-more { display: none; }
+  [data-open] > .bio-toggle .bio-less { display: inline; }
+  @media (max-width: 63.99rem) {
+    [data-clamp] > .bio { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+    [data-clamp][data-open] > .bio { display: block; -webkit-line-clamp: unset; line-clamp: none; }
+  }
+  @media (min-width: 64rem) { .bio-toggle { display: none !important; } }
+</style>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.bio-toggle').forEach((b) => {
+    const box = b.parentElement!;
+    box.setAttribute('data-clamp', '');
+    b.hidden = false;
+    b.addEventListener('click', () => {
+      const open = !box.hasAttribute('data-open');
+      box.toggleAttribute('data-open', open);
+      b.setAttribute('aria-expanded', String(open));
+    });
+  });
+</script>

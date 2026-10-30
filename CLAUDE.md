@@ -125,3 +125,6 @@ VALETT serif wordmark · Q East, by Alphabeta / Al Quoz / Dubai, UAE (address 30
 2. §4–§12, form wired, placeholders where assets are pending.
 3. KeyBoard sample, scan animation, reduced-motion pass.
 4. Lighthouse pass, OG/favicon/sitemap, domain.
+
+## Restore points
+- `3ae48b6` (31 Oct): one-screen hero, before the savings rows were collapsed and team bios clamped on phones. To go back: `git revert` the commits after it (keeps history), then push.
