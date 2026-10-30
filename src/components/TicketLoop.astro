@@ -1,0 +1,60 @@
+---
+/**
+ * "The paper ticket, replaced." A short silent loop: a paper valet ticket slides into a phone, which turns
+ * to show the real Valett guest ticket (the end hold is the real interface, composited, not generated).
+ * Muted, looping, plays only while on screen; nothing downloads until it nears the viewport.
+ * Reduced motion: no playback, the poster shows the final frame (the guest ticket).
+ * Source: scripts/film/ticket-loop.md.
+ */
+---
+<section data-reveal-group id="ticket" class="section-pad !pb-0 scroll-mt-20" aria-labelledby="ticket-title">
+  <div class="container-page">
+    <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-12">
+      <h2 id="ticket-title" class="t-h2 max-w-[12em]">The paper ticket, replaced.</h2>
+      <p class="t-body max-w-[26em] text-ink-2">One photo at the door. The ticket arrives on the guest’s phone with their car on it. Nothing to lose, nothing to download.</p>
+    </div>
+    <figure class="glass mt-10 rounded-frame p-2 md:mt-14 md:p-3" data-reveal>
+      <div class="relative aspect-[4/5] overflow-hidden rounded-[14px] bg-[#e9e9e6] md:aspect-video">
+        <video
+          class="absolute inset-0 h-full w-full object-cover"
+          muted
+          loop
+          playsinline
+          preload="none"
+          disableremoteplayback
+          aria-label="A paper valet ticket slides into a phone, which turns to show the Valett guest ticket for a Land Rover Defender."
+          data-ticket-loop
+          data-poster-wide="/film/ticket-loop-start-16x9.webp"
+          data-poster-tall="/film/ticket-loop-start-4x5.webp"
+          data-poster-wide-end="/film/ticket-loop-end-16x9.webp"
+          data-poster-tall-end="/film/ticket-loop-end-4x5.webp"
+        >
+          <source src="/film/ticket-loop-4x5.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src="/film/ticket-loop-16x9.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('[data-ticket-loop]');
+  if (video) {
+    const tall = window.matchMedia('(max-width: 767px)').matches;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const d = video.dataset;
+    // Reduced motion: no playback, show the guest ticket. Otherwise the opening frame (paper ticket).
+    video.poster = (reduce ? (tall ? d.posterTallEnd : d.posterWideEnd) : (tall ? d.posterTall : d.posterWide)) || '';
+    if (!reduce && 'IntersectionObserver' in window) {
+      let started = false;
+      new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            if (!started) { started = true; video.preload = 'auto'; video.load(); }
+            video.play().catch(() => {});
+          } else if (started) video.pause();
+        }
+      }, { threshold: 0.35 }).observe(video);
+    }
+  }
+</script>
