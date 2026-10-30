@@ -1,15 +1,17 @@
 #!/bin/bash
 # usage: assemble.sh clip.mp4 end-still.png outdir
 # Turn to camera (Kling) -> 0.35 s dissolve to the sharp composited still -> hold -> 0.35 s dissolve into the
-# same turn played backwards (1.25x), which ends on the first frame, so the loop has no visible join.
+# same turn played backwards, which ends on the first frame, so the loop has no visible join.
+# Kept at Kling's native 24 fps and the reverse at 1x: converting to 30 fps repeated every 4th frame (visible judder).
+# The finished loop is rotated to start on the hold, so the poster is the lit end frame.
 set -e
 CLIP=$1; STILL=$2; OUT=$3; T=$(mktemp -d)
-ffmpeg -v error -y -i "$CLIP" -vf "scale=1920:1080:flags=lanczos,fps=30,format=yuv420p" -an "$T/a.mp4"
-ffmpeg -v error -y -i "$T/a.mp4" -vf "reverse,setpts=PTS/1.25,fps=30,format=yuv420p" -an "$T/r.mp4"
+ffmpeg -v error -y -i "$CLIP" -vf "scale=1920:1080:flags=lanczos,fps=24,format=yuv420p" -an "$T/a.mp4"
+ffmpeg -v error -y -i "$T/a.mp4" -vf "reverse,fps=24,format=yuv420p" -an "$T/r.mp4"
 D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$T/a.mp4")
 ffmpeg -v error -y -i "$T/a.mp4" -frames:v 1 "$T/first.png"
 HOLD=2.6
-ffmpeg -v error -y -loop 1 -t $HOLD -i "$STILL" -vf "scale=1920:1080:flags=lanczos,fps=30,format=yuv420p" "$T/s.mp4"
+ffmpeg -v error -y -loop 1 -t $HOLD -i "$STILL" -vf "scale=1920:1080:flags=lanczos,fps=24,format=yuv420p" "$T/s.mp4"
 O1=$(python3 -c "print(round($D-0.35,3))"); O2=$(python3 -c "print(round($D-0.35+$HOLD-0.35,3))")
 ffmpeg -v error -y -i "$T/a.mp4" -i "$T/s.mp4" -i "$T/r.mp4" -filter_complex \
  "[0][1]xfade=transition=fade:duration=0.35:offset=$O1[x];[x][2]xfade=transition=fade:duration=0.35:offset=$O2,format=yuv420p[v]" \

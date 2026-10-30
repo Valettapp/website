@@ -6,9 +6,11 @@
  * so the poster never looks empty and playback picks up from exactly what is already showing.
  *
  * Loading: nothing on page load. On the visitor's first scroll the right file for the screen size is fetched
- * into memory (iOS Safari otherwise waits for most of the file over the network before it starts); it is handed
- * to the video as a blob URL only when the loop is about a screen away, so nothing decodes during the hero.
- * Plays only while on screen.
+ * into memory (iOS Safari otherwise waits for most of the file over the network before it starts). It is handed
+ * to the video (preload auto, so the first frames are decoded) when the loop is within about a screen and a half,
+ * and it starts playing half a screen before it scrolls into view, so it is already moving when it appears.
+ * The frame is a plain white card, not backdrop-blurred glass: a blur around a playing video costs iOS frames.
+ * Loops are encoded at their native 24 fps (a 30 fps conversion repeated every 4th frame and juddered).
  * Reduced motion: no download, the poster stays.
  */
 interface Props {
@@ -22,7 +24,7 @@ interface Props {
 const { name, label, mobile = '1x1', bg = '#ecede8', class: cls = '' } = Astro.props;
 const f = `/film/${name}`;
 ---
-<figure class:list={['glass rounded-frame p-2 md:p-3', cls]} data-reveal>
+<figure class:list={['loop-frame rounded-frame p-2 md:p-3', cls]} data-reveal>
   <div class:list={['relative overflow-hidden rounded-[14px] md:aspect-video', mobile === '4x3' ? 'aspect-[4/3]' : 'aspect-square']} style={`background:${bg}`}>
     <video
       class="absolute inset-0 h-full w-full object-cover"
@@ -45,17 +47,17 @@ const f = `/film/${name}`;
   const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-loop]'));
   const tall = window.matchMedia('(max-width: 767px)').matches;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const visible = new Set<HTMLVideoElement>();
-  const near = new Set<HTMLVideoElement>();
+  const playing = new Set<HTMLVideoElement>(); // within half a screen of the viewport
+  const near = new Set<HTMLVideoElement>(); // within a screen and a half
   const src = new Map<HTMLVideoElement, string>(); // fetched blob URLs, waiting to be attached
   const jobs = new Map<HTMLVideoElement, Promise<void>>();
 
-  // Attach only when the loop is about a screen away, so no video decodes while the visitor is still in the hero.
   const attach = (v: HTMLVideoElement) => {
     const u = src.get(v);
     if (!u || !near.has(v) || v.getAttribute('src')) return;
+    v.preload = 'auto'; // decode ahead, so play() starts at once
     v.src = u;
-    if (visible.has(v)) v.play().catch(() => {});
+    if (playing.has(v)) v.play().catch(() => {});
   };
   const fetchOne = (v: HTMLVideoElement): Promise<void> => {
     if (!jobs.has(v)) {
@@ -63,7 +65,7 @@ const f = `/film/${name}`;
       jobs.set(v, fetch(url)
         .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
         .then((b) => { src.set(v, URL.createObjectURL(b)); })
-        .catch(() => { v.preload = 'auto'; src.set(v, url); }) // network hiccup: let the element stream it
+        .catch(() => { src.set(v, url); }) // network hiccup: let the element stream it
         .then(() => attach(v)));
     }
     return jobs.get(v)!;
@@ -73,20 +75,24 @@ const f = `/film/${name}`;
 
   for (const v of videos) v.poster = (tall ? v.dataset.posterTall : v.dataset.posterWide) || '';
   if (!reduce && videos.length) {
-    // First scroll or touch anywhere: download every loop (about 0.5 MB on a phone) while the visitor reads the hero.
+    // First scroll or touch anywhere: download every loop (under 1 MB on a phone) while the visitor reads the hero.
     addEventListener('scroll', fetchAll, { once: true, passive: true });
     addEventListener('touchstart', fetchAll, { once: true, passive: true });
     if ('IntersectionObserver' in window) {
       const nearIO = new IntersectionObserver((es) => es.forEach((e) => {
         const v = e.target as HTMLVideoElement;
         if (e.isIntersecting) { near.add(v); fetchOne(v); attach(v); } else near.delete(v);
-      }), { rootMargin: '100% 0px 100% 0px' });
-      const seenIO = new IntersectionObserver((es) => es.forEach((e) => {
+      }), { rootMargin: '150% 0px 150% 0px' });
+      const playIO = new IntersectionObserver((es) => es.forEach((e) => {
         const v = e.target as HTMLVideoElement;
-        if (e.isIntersecting) { visible.add(v); near.add(v); fetchOne(v); attach(v); if (v.getAttribute('src')) v.play().catch(() => {}); }
-        else { visible.delete(v); v.pause(); }
-      }), { threshold: 0.2 });
-      videos.forEach((v) => { nearIO.observe(v); seenIO.observe(v); });
-    } else { videos.forEach((v) => near.add(v)); fetchAll(); }
+        if (e.isIntersecting) { playing.add(v); near.add(v); fetchOne(v); attach(v); if (v.getAttribute('src')) v.play().catch(() => {}); }
+        else { playing.delete(v); v.pause(); }
+      }), { rootMargin: '50% 0px 50% 0px' });
+      videos.forEach((v) => { nearIO.observe(v); playIO.observe(v); });
+    } else { videos.forEach((v) => { near.add(v); playing.add(v); }); fetchAll(); }
   }
 </script>
+
+<style>
+  .loop-frame { background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.06); }
+</style>
