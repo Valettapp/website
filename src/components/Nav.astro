@@ -23,7 +23,7 @@ const { demoHref = '#demo' } = Astro.props;
       </button>
     </div>
   </nav>
-  <div id="mobile-menu" class="menu-panel glass pointer-events-auto mx-auto mt-2 max-w-[1200px] rounded-[24px] p-3 lg:hidden" hidden>
+  <div id="mobile-menu" class="menu-panel pointer-events-auto mx-auto mt-2 max-w-[1200px] rounded-[24px] border border-line p-3 lg:hidden" hidden>
     <ul class="flex flex-col">
       {nav.map((n, i) => (
         <li style={`--i:${i}`}><a class="block rounded-[14px] px-4 py-3 text-[17px] font-medium text-ink hover:bg-field" href={n.href} data-menu-link>{n.label}</a></li>
@@ -33,16 +33,20 @@ const { demoHref = '#demo' } = Astro.props;
 </header>
 
 <style>
-  /* Mobile menu: the panel glides down from the bar, links follow one after another, the icon turns into a cross. */
+  /* Mobile menu: the panel unrolls down from the bar (clip-path), links follow one after another, the icon turns
+     into a cross. Solid panel, no backdrop blur: blurring a moving layer is what stutters on iPhone. */
   .menu-panel {
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 24px 48px -24px rgba(0, 0, 0, 0.18);
     opacity: 0;
-    transform: translateY(-10px) scale(0.98);
-    transform-origin: 50% 0;
-    transition: opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 340ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform: translateY(-12px);
+    clip-path: inset(0 0 100% 0 round 24px);
+    transition: opacity 240ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1), clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, opacity, clip-path;
   }
-  .menu-panel li { opacity: 0; transform: translateY(-6px); transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .menu-panel[data-open] { opacity: 1; transform: none; }
-  .menu-panel[data-open] li { opacity: 1; transform: none; transition-delay: calc(60ms + var(--i) * 40ms); }
+  .menu-panel li { opacity: 0; transform: translateY(-8px); transition: opacity 240ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .menu-panel[data-open] { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 24px); }
+  .menu-panel[data-open] li { opacity: 1; transform: none; transition-delay: calc(90ms + var(--i) * 45ms); }
   .menu-icon { transform-box: fill-box; transform-origin: center; transition: opacity 200ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1); }
   .menu-close { opacity: 0; transform: rotate(-90deg) scale(0.6); }
   [aria-expanded='true'] .menu-open { opacity: 0; transform: rotate(90deg) scale(0.6); }
@@ -57,7 +61,7 @@ const { demoHref = '#demo' } = Astro.props;
   const menu = document.getElementById('mobile-menu');
   if (toggle && menu) {
     let timer = 0;
-    const isOpen = () => menu.hasAttribute('data-open');
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
     const set = (open: boolean) => {
       if (open === isOpen()) return;
       clearTimeout(timer);
@@ -65,11 +69,12 @@ const { demoHref = '#demo' } = Astro.props;
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       if (open) {
         menu.hidden = false;
-        menu.getBoundingClientRect(); // commit the closed state so the transition runs
-        menu.setAttribute('data-open', '');
+        // Two frames: the first paints the closed state, the second starts the transition (one reflow is not
+        // always enough for iOS Safari to animate an element that was display:none).
+        requestAnimationFrame(() => requestAnimationFrame(() => { if (toggle.getAttribute('aria-expanded') === 'true') menu.setAttribute('data-open', ''); }));
       } else {
         menu.removeAttribute('data-open');
-        timer = window.setTimeout(() => { if (!isOpen()) menu.hidden = true; }, 340);
+        timer = window.setTimeout(() => { if (!isOpen()) menu.hidden = true; }, 440);
       }
     };
     toggle.addEventListener('click', () => set(!isOpen()));

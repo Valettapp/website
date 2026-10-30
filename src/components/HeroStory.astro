@@ -27,39 +27,35 @@ const beats = [
 ];
 const fields = [['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White']];
 
-/* Every fade-in-then-out is ONE animation over the whole story range, with the windows as keyframe offsets.
-   (Two scroll-driven animations on one element, e.g. `in both, out forwards`, misbehave on some iOS Safari
-   versions: the phone stuck on one screen and captions 02/03 never showed.) */
+/* Every fade-in-then-out is ONE animation, ranged over just its own window (in start → out end), with the
+   in and out as keyframe offsets inside it. (Two scroll-driven animations on one element, e.g. `in both, out
+   forwards`, misbehave on some iOS Safari versions: the phone stuck on one screen and captions 02/03 never
+   showed.) Keyframes carry no var(): the cards' counter-scale is the separate `scale` property, so Safari
+   can keep every one of these on the compositor. */
 type W = [number, number] | null;
-const pct = (v: number) => `${Math.round(v * 1000) / 10}%`;
-const kf = (name: string, inW: W, outW: W, a: string, b: string, c: string) => {
-  const stops: string[] = [];
-  if (inW) stops.push(`0% { ${a} }`, `${pct(inW[0])} { ${a} }`, `${pct(inW[1])} { ${b} }`);
-  else stops.push(`0% { ${b} }`);
-  if (outW) stops.push(`${pct(outW[0])} { ${b} }`, `${pct(outW[1])} { ${c} }`, `100% { ${c} }`);
-  else stops.push(`100% { ${b} }`);
-  return `@keyframes ${name} { ${stops.join(' ')} }`;
-};
+const pc = (v: number) => `${Math.round(v * 1000) / 10}%`;
 const win = (v?: string): W => (v ? (v.split(',').map(Number) as [number, number]) : null);
 const sdaRules: string[] = [];
-const sda = (sel: string, name: string) =>
-  sdaRules.push(`html.story-sda ${sel} { animation: ${name} ease-in-out both; animation-timeline: scroll(root); animation-range: var(--story-top) calc(var(--story-top) + var(--story-len)); }`);
+const at = (v: number) => `calc(var(--story-top) + var(--story-len) * ${v})`;
+const fadeRule = (sel: string, name: string, inW: W, outW: W, a: string, b: string, c: string) => {
+  const r0 = inW ? inW[0] : outW![0], r1 = outW ? outW[1] : inW![1];
+  const rel = (v: number) => pc((v - r0) / (r1 - r0));
+  const stops: string[] = [];
+  if (inW) stops.push(`0% { ${a} }`, `${rel(inW[1])} { ${b} }`); else stops.push(`0% { ${b} }`);
+  if (outW) stops.push(`${rel(outW[0])} { ${b} }`, `100% { ${c} }`); else stops.push(`100% { ${b} }`);
+  sdaRules.push(`@keyframes ${name} { ${stops.join(' ')} }`);
+  sdaRules.push(`html.story-sda ${sel} { animation: ${name} ease-in-out both; animation-timeline: scroll(root); animation-range: ${at(r0)} ${at(r1)}; }`);
+};
 const screenWins: [W, W][] = [[null, [0.43, 0.49]], [[0.43, 0.49], [0.62, 0.68]], [[0.62, 0.68], [0.82, 0.88]], [[0.82, 0.88], null]];
-screenWins.forEach(([i, o], k) => {
-  sdaRules.push(kf(`sy-s${k + 1}`, i, o, 'opacity: 0; transform: translateY(28px);', 'opacity: 1; transform: none;', 'opacity: 0; transform: translateY(-10px);'));
-  sda(`.story-screen[data-screen="${k + 1}"]`, `sy-s${k + 1}`);
-});
+screenWins.forEach(([i, o], k) => fadeRule(`.story-screen[data-screen="${k + 1}"]`, `sy-s${k + 1}`, i, o,
+  'opacity: 0; transform: translateY(28px);', 'opacity: 1; transform: none;', 'opacity: 0; transform: translateY(-10px);'));
 const cardWins: Record<string, [W, W]> = { a: [[0.36, 0.42], [0.43, 0.49]], b: [[0.50, 0.56], [0.62, 0.68]], c: [[0.68, 0.73], [0.82, 0.88]], d: [[0.73, 0.78], [0.82, 0.88]], e: [[0.89, 0.95], null] };
-for (const [k, [i, o]] of Object.entries(cardWins)) {
-  sdaRules.push(kf(`sy-c${k}`, i, o, 'opacity: 0; transform: scale(var(--story-inv, 1)) translateY(36px);', 'opacity: 1; transform: scale(var(--story-inv, 1)) translateY(0);', 'opacity: 0; transform: scale(var(--story-inv, 1)) translateY(-20px);'));
-  sda(`.story-card-${k}`, `sy-c${k}`);
-}
-beats.forEach((b, k) => {
-  sdaRules.push(kf(`sy-cap${k + 1}`, win(b.in), win(b.out), 'opacity: 0; transform: translateY(32px);', 'opacity: 1; transform: none;', 'opacity: 0; transform: translateY(-24px);'));
-  sda(`.story-cap:nth-child(${k + 1})`, `sy-cap${k + 1}`);
-});
-sdaRules.push(kf('sy-t1', [0.13, 0.17], [0.30, 0.34], 'opacity: 0;', 'opacity: 1;', 'opacity: 0;'));
-sda('.hero-story .scan-t1', 'sy-t1');
+for (const [k, [i, o]] of Object.entries(cardWins)) fadeRule(`.story-card-${k}`, `sy-c${k}`, i, o,
+  'opacity: 0; transform: translateY(36px);', 'opacity: 1; transform: none;', 'opacity: 0; transform: translateY(-20px);');
+sdaRules.push('html.story-sda .story-card { scale: var(--story-inv, 1); }');
+beats.forEach((b, k) => fadeRule(`.story-cap:nth-child(${k + 1})`, `sy-cap${k + 1}`, win(b.in), win(b.out),
+  'opacity: 0; transform: translateY(32px);', 'opacity: 1; transform: none;', 'opacity: 0; transform: translateY(-24px);'));
+fadeRule('.hero-story .scan-t1', 'sy-t1', [0.13, 0.17], [0.30, 0.34], 'opacity: 0;', 'opacity: 1;', 'opacity: 0;');
 const sdaCss = sdaRules.join('\n');
 ---
 {/* Runs before the section is parsed, so the pinned layout is in place at first paint (no layout shift). */}

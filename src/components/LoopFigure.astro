@@ -5,9 +5,10 @@
  * /film/<name>-start-{16x9,<mobile>}.webp. Each loop file begins on its finished frame (both screens lit),
  * so the poster never looks empty and playback picks up from exactly what is already showing.
  *
- * Loading: nothing on page load. On the visitor's first scroll (or when a loop is within ~3 screens) the
- * right file for the screen size is fetched into memory and handed to the video as a blob URL; iOS Safari
- * otherwise waits for most of the file over the network before it starts. Plays only while on screen.
+ * Loading: nothing on page load. On the visitor's first scroll the right file for the screen size is fetched
+ * into memory (iOS Safari otherwise waits for most of the file over the network before it starts); it is handed
+ * to the video as a blob URL only when the loop is about a screen away, so nothing decodes during the hero.
+ * Plays only while on screen.
  * Reduced motion: no download, the poster stays.
  */
 interface Props {
@@ -45,41 +46,47 @@ const f = `/film/${name}`;
   const tall = window.matchMedia('(max-width: 767px)').matches;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const visible = new Set<HTMLVideoElement>();
-  const state = new Map<HTMLVideoElement, 'idle' | 'loading' | 'ready'>();
+  const near = new Set<HTMLVideoElement>();
+  const src = new Map<HTMLVideoElement, string>(); // fetched blob URLs, waiting to be attached
+  const jobs = new Map<HTMLVideoElement, Promise<void>>();
 
-  const play = (v: HTMLVideoElement) => { if (state.get(v) === 'ready' && visible.has(v)) v.play().catch(() => {}); };
-  const pending = new Map<HTMLVideoElement, Promise<void>>();
-  const load = (v: HTMLVideoElement): Promise<void> => {
-    if (state.get(v) !== 'idle') return pending.get(v) || Promise.resolve();
-    state.set(v, 'loading');
-    const url = (tall ? v.dataset.srcTall : v.dataset.srcWide) || '';
-    const attach = (src: string) => { v.src = src; state.set(v, 'ready'); play(v); };
-    const job = fetch(url)
-      .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
-      .then((b) => attach(URL.createObjectURL(b)))
-      .catch(() => { v.preload = 'auto'; attach(url); }); // network hiccup: let the element stream it
-    pending.set(v, job);
-    return job;
+  // Attach only when the loop is about a screen away, so no video decodes while the visitor is still in the hero.
+  const attach = (v: HTMLVideoElement) => {
+    const u = src.get(v);
+    if (!u || !near.has(v) || v.getAttribute('src')) return;
+    v.src = u;
+    if (visible.has(v)) v.play().catch(() => {});
+  };
+  const fetchOne = (v: HTMLVideoElement): Promise<void> => {
+    if (!jobs.has(v)) {
+      const url = (tall ? v.dataset.srcTall : v.dataset.srcWide) || '';
+      jobs.set(v, fetch(url)
+        .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+        .then((b) => { src.set(v, URL.createObjectURL(b)); })
+        .catch(() => { v.preload = 'auto'; src.set(v, url); }) // network hiccup: let the element stream it
+        .then(() => attach(v)));
+    }
+    return jobs.get(v)!;
   };
   // One at a time, in page order, so the first loop is ready as early as possible.
-  const loadAll = () => videos.reduce((chain, v) => chain.then(() => load(v)), Promise.resolve());
+  const fetchAll = () => { videos.reduce((chain, v) => chain.then(() => fetchOne(v)), Promise.resolve()); };
 
-  for (const v of videos) {
-    v.poster = (tall ? v.dataset.posterTall : v.dataset.posterWide) || '';
-    state.set(v, 'idle');
-  }
+  for (const v of videos) v.poster = (tall ? v.dataset.posterTall : v.dataset.posterWide) || '';
   if (!reduce && videos.length) {
-    // First scroll or touch anywhere: fetch every loop (about 0.5 MB on a phone) while the visitor reads the hero.
-    addEventListener('scroll', loadAll, { once: true, passive: true });
-    addEventListener('touchstart', loadAll, { once: true, passive: true });
+    // First scroll or touch anywhere: download every loop (about 0.5 MB on a phone) while the visitor reads the hero.
+    addEventListener('scroll', fetchAll, { once: true, passive: true });
+    addEventListener('touchstart', fetchAll, { once: true, passive: true });
     if ('IntersectionObserver' in window) {
-      // Backup for deep links: start loading when a loop is within ~3 screens.
-      const near = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && load(e.target as HTMLVideoElement)), { rootMargin: '300% 0px 300% 0px' });
-      const seen = new IntersectionObserver((es) => es.forEach((e) => {
+      const nearIO = new IntersectionObserver((es) => es.forEach((e) => {
         const v = e.target as HTMLVideoElement;
-        if (e.isIntersecting) { visible.add(v); load(v); play(v); } else { visible.delete(v); v.pause(); }
+        if (e.isIntersecting) { near.add(v); fetchOne(v); attach(v); } else near.delete(v);
+      }), { rootMargin: '100% 0px 100% 0px' });
+      const seenIO = new IntersectionObserver((es) => es.forEach((e) => {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) { visible.add(v); near.add(v); fetchOne(v); attach(v); if (v.getAttribute('src')) v.play().catch(() => {}); }
+        else { visible.delete(v); v.pause(); }
       }), { threshold: 0.2 });
-      videos.forEach((v) => { near.observe(v); seen.observe(v); });
-    } else loadAll();
+      videos.forEach((v) => { nearIO.observe(v); seenIO.observe(v); });
+    } else { videos.forEach((v) => near.add(v)); fetchAll(); }
   }
 </script>
