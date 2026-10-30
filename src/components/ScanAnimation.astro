@@ -9,8 +9,10 @@ import carScan from '../assets/car-scan.jpg';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
 import Plate from './Plate.astro';
-interface Props { class?: string; framed?: boolean; dark?: boolean }
-const { class: className = '', framed = true, dark = false } = Astro.props;
+import IosBar from './IosBar.astro';
+/** device: a real iPhone body with status bar and Dynamic Island. */
+interface Props { class?: string; framed?: boolean; dark?: boolean; device?: boolean }
+const { class: className = '', framed = true, dark = false, device = false } = Astro.props;
 const fields = [
   ['Plate', 'DUBAI M 95378'],
   ['Make', 'Land Rover'],
@@ -18,7 +20,7 @@ const fields = [
   ['Colour', 'White'],
 ];
 ---
-<div class:list={[framed ? (dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
+<div class:list={[framed ? (device ? 'phone-device w-full max-w-[300px]' : dark ? 'phone-frame phone-frame-dark w-full max-w-[300px]' : 'phone-frame w-full max-w-[300px]') : '', className]}>
   <div class:list={['scan bg-ink text-white', framed ? 'phone-screen' : 'relative aspect-[9/16] overflow-hidden rounded-[14px]']} data-scan data-phase="0" role="img" aria-label="Staff app camera: one photo of the car reads the plate, make, model and colour">
     {/* Camera feed: the Defender, plate M 95378. Viewfinder and plate box ride with the feed. */}
     <div class="scan-feed absolute inset-0">
@@ -34,9 +36,10 @@ const fields = [
     </div>
     <div class="scan-shade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
-    <div class="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5 pt-5">
+    {device && <IosBar time="1:05" />}
+    <div class:list={['absolute inset-x-0 top-0 z-10 flex items-center justify-between px-5', device ? 'pt-[52px]' : 'pt-5']}>
       <Wordmark variant="serif" class="text-[12px] text-white/90" />
-      <span class="text-[11px] text-white/70">01:05</span>
+      {!device && <span class="text-[11px] text-white/70">01:05</span>}
     </div>
 
     {/* Captions */}

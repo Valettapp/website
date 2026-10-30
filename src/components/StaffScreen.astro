@@ -5,8 +5,14 @@ import Wordmark from './Wordmark.astro';
 import { Picture } from 'astro:assets';
 import carPhoto from '../assets/car-photo.jpg';
 import Plate from './Plate.astro';
-interface Props { screen: 'ticket' | 'park' | 'request'; class?: string }
-const { screen, class: className = '' } = Astro.props;
+import IosBar from './IosBar.astro';
+import carScan from '../assets/car-scan.jpg';
+import carGuest from '../assets/car-guest.jpg';
+/** device: a real iPhone body with status bar and Dynamic Island (staff section); off for the hero's glass phones. */
+interface Props { screen: 'ticket' | 'park' | 'request'; class?: string; device?: boolean }
+const { screen, class: className = '', device = false } = Astro.props;
+const top = device ? 'top-[17%]' : 'top-[11%]';
+const time = { ticket: '1:06', park: '1:07', request: '1:42' }[screen];
 // Deterministic pseudo-QR pattern (not scannable; demo data).
 const qr = (() => {
   const n = 21; let seed = 7; const cells: string[] = [];
@@ -23,14 +29,15 @@ const qr = (() => {
   return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" fill="#0a0a0a" aria-hidden="true">${cells.join('')}</svg>`;
 })();
 ---
-<div class:list={['phone-frame w-full max-w-[300px]', className]}>
+<div class:list={[device ? 'phone-device' : 'phone-frame', 'w-full max-w-[300px]', className]}>
   <div class="phone-screen bg-ink text-white">
-    <div class="absolute inset-x-0 top-0 flex items-center justify-center px-5 pt-5">
+    {device && <IosBar time={time} />}
+    <div class:list={['absolute inset-x-0 top-0 flex items-center justify-center px-5', device ? 'pt-[52px]' : 'pt-5']}>
       <Wordmark variant="serif" class="text-[13px] text-white/90" />
     </div>
 
     {screen === 'ticket' && (
-      <div class="absolute inset-x-5 top-[11%] bottom-5 flex flex-col items-center text-center">
+      <div class:list={['absolute inset-x-5 bottom-5 flex flex-col items-center text-center', top]}>
         <p class="text-[12px] text-white/60">Checked in · 01:06</p>
         <p class="mt-1 text-[44px] font-light leading-none tracking-[0.12em]">V777</p>
         <div class="mt-4 rounded-[10px] bg-white p-2.5" style="width:50%">
@@ -39,6 +46,13 @@ const qr = (() => {
         <p class="mt-4 text-[17px] font-medium">Land Rover Defender</p>
         <p class="text-[12px] text-white/50">White · Dubai</p>
         <div class="mt-3"><Plate emirate="Dubai" code="M" number="95378" scale={0.68} /></div>
+        {device && (
+          <div class="mt-4 flex w-full items-center gap-3 rounded-[12px] border border-white/10 bg-white/[.06] p-2 text-start">
+            <Picture src={carPhoto} formats={['avif', 'webp']} widths={[160]} sizes="64px" alt="" class="h-10 w-14 shrink-0 rounded-[7px] object-cover" loading="lazy" decoding="async" />
+            <span class="min-w-0 flex-1 text-[11px] leading-snug"><span class="block text-white/90">Read from one photo</span><span class="block text-white/50">Plate · model · colour</span></span>
+            <Icon name="check" size={14} class="me-1 shrink-0 text-gold" />
+          </div>
+        )}
         <div class="mt-auto w-full">
           <span class="btn-primary w-full !bg-white !py-3 !text-[14px] !text-ink">Park car</span>
           <p class="mt-3 text-center text-[11px] text-white/50">Wrong car? <u>Retake</u> · <u>Send by SMS</u> · <u>Print</u></p>
@@ -47,7 +61,7 @@ const qr = (() => {
     )}
 
     {screen === 'park' && (
-      <div class="absolute inset-x-5 top-[11%] bottom-5 flex flex-col">
+      <div class:list={['absolute inset-x-5 bottom-5 flex flex-col', top]}>
         <p class="text-[12px] text-white/60">V777 · Land Rover Defender</p>
         <p class="mt-2 text-[22px] font-medium leading-tight tracking-[-0.02em]">Where did you park?</p>
         <div class="mt-5 grid grid-cols-2 gap-2">
@@ -66,9 +80,23 @@ const qr = (() => {
         <div class="mt-3 flex items-center justify-between rounded-[10px] border border-white/10 px-3 py-2.5 text-[12px]">
           <span class="text-white/60">Keys</span><span>Hook 55</span>
         </div>
-        <div class="mt-2 flex items-center justify-between rounded-[10px] border border-white/10 px-3 py-2.5 text-[12px]">
-          <span class="text-white/60">Walkaround</span><span class="inline-flex items-center gap-1"><Icon name="camera" size={12} /> 6 photos</span>
-        </div>
+        {device ? (
+          <div class="mt-2 rounded-[10px] border border-white/10 p-2.5 text-[12px]">
+            <div class="flex items-center justify-between px-0.5"><span class="text-white/60">Walkaround</span><span class="inline-flex items-center gap-1"><Icon name="camera" size={12} /> 6 photos</span></div>
+            <div class="mt-2 grid grid-cols-3 gap-1.5">
+              {[[carPhoto, 'object-[30%_50%]', '01:07:02'], [carScan, 'object-[50%_12%]', '01:07:09'], [carGuest, 'object-[70%_40%]', '01:07:15']].map(([img, pos, t]) => (
+                <span class="relative block overflow-hidden rounded-[6px]">
+                  <Picture src={img as any} formats={['avif', 'webp']} widths={[160]} sizes="80px" alt="" class:list={['aspect-[4/3] w-full object-cover', pos as string]} loading="lazy" decoding="async" />
+                  <span class="absolute inset-x-0 bottom-0 bg-black/55 px-1 py-px text-[8px] tabular-nums text-white/85">{t}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="mt-2 flex items-center justify-between rounded-[10px] border border-white/10 px-3 py-2.5 text-[12px]">
+            <span class="text-white/60">Walkaround</span><span class="inline-flex items-center gap-1"><Icon name="camera" size={12} /> 6 photos</span>
+          </div>
+        )}
         <div class="mt-auto">
           <div class="flex items-center gap-2 rounded-[10px] border border-gold/60 px-3 py-2.5 text-[12px]">
             <Icon name="check" size={13} class="text-gold" />
@@ -79,7 +107,7 @@ const qr = (() => {
     )}
 
     {screen === 'request' && (
-      <div class="absolute inset-x-5 top-[12%] bottom-5 flex flex-col items-center text-center">
+      <div class:list={['absolute inset-x-5 bottom-5 flex flex-col items-center text-center', device ? 'top-[16%]' : 'top-[12%]']}>
         <p class="text-[11px] font-medium uppercase tracking-[0.16em] text-gold">New request · Just now</p>
         <p class="mt-2 text-[30px] font-normal leading-[1.05] tracking-[-0.02em]">Land Rover Defender</p>
         <div class="mt-3"><Plate emirate="Dubai" code="M" number="95378" scale={0.68} /></div>
