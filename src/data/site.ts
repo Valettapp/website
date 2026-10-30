@@ -12,6 +12,8 @@ export const site = {
   location: 'Dubai, UAE',
   lang: 'en',
   dir: 'ltr',
+  /** "The paper ticket, replaced." loop after the film (30 Oct). Off until Leon approves the preview. */
+  ticketLoop: false,
   /** Film assets. Null until the Higgsfield film exists; the poster placeholder is used meanwhile. */
   film: {
     mp4: '/film/valett-film-16x9.mp4' as string | null, // 16:9 desktop

@@ -17,6 +17,7 @@ import Faq from '../components/Faq.astro';
 import Solutions from '../components/Solutions.astro';
 import Demo from '../components/Demo.astro';
 import { faqHome } from '../data/solutions';
+import { site } from '../data/site';
 import Footer from '../components/Footer.astro';
 ---
 <Base>
@@ -24,7 +25,7 @@ import Footer from '../components/Footer.astro';
   <main id="main">
     <Hero />
     <Why />
-    <TicketLoop />
+    {site.ticketLoop && <TicketLoop />}
     <Guest />
     <Staff />
     <BackOffice />
