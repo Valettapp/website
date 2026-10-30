@@ -4,6 +4,7 @@
 import sys, json, cv2, numpy as np, subprocess
 from PIL import Image, ImageFilter
 clip, still_p, out_p = sys.argv[1:4]
+PHONE_ONLY = clip == 'STILL'  # no Kling clip: static studio still with just the phone, plus a slow push-in
 D = sys.path[0]; SCR = '/tmp/claude-0/-home-user-website/17dcb022-c78c-57d1-931f-5ad9c3653355/scratchpad'
 W, H, FPS = 1920, 1080, 30
 
@@ -33,7 +34,8 @@ def sheet_frame(bg_a, bg_b, k_bg, sheet_img, off):
 # ---- phone geometry in the still (same method as the Request My Car loop) ----
 def quad_of_phone(img):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV); h, w = img.shape[:2]
-    dark = (hsv[..., 2] < 45).astype(np.uint8); dark[:, w // 2:] = 0
+    dark = (hsv[..., 2] < 45).astype(np.uint8)
+    if not PHONE_ONLY: dark[:, w // 2:] = 0  # the scene with the car: the phone is on the left
     dark = cv2.morphologyEx(dark, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
     n, lab, st, _ = cv2.connectedComponentsWithStats(dark); i = max(range(1, n), key=lambda k: st[k, cv2.CC_STAT_AREA])
     m = cv2.dilate(cv2.morphologyEx((lab == i).astype(np.uint8), cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8)), np.ones((3, 3), np.uint8))
@@ -93,8 +95,17 @@ def screen_at(t):
         cache[key] = warp(img)
     return cache[key]
 
-raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', clip, '-vf', f'scale={W}:{H}:flags=lanczos,fps={FPS}', '-f', 'rawvideo', '-pix_fmt', 'bgr24', '-'], capture_output=True).stdout
-frames = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3)
+if PHONE_ONLY:
+    frames = still[None]
+else:
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', clip, '-vf', f'scale={W}:{H}:flags=lanczos,fps={FPS}', '-f', 'rawvideo', '-pix_fmt', 'bgr24', '-'], capture_output=True).stdout
+    frames = np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3)
+pc = q.mean(0)
+def push(img, t):  # slow push-in towards the phone (phone-only version)
+    if not PHONE_ONLY: return img
+    k = min(1.0, t / (T_END - FADE)); k = k * k * (3 - 2 * k); sc = 1 + 0.05 * k
+    M = np.float32([[sc, 0, pc[0] * (1 - sc)], [0, sc, pc[1] * (1 - sc)]])
+    return cv2.warpAffine(img, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 OFF = int(T_UP * FPS)  # Kling clip starts when the sheet comes up, so the lights come on around Done
 N = int(T_END * FPS)
 first = (frames[0].astype(np.float32) * (1 - mask_s if mask_s is not None else 1))
@@ -104,7 +115,7 @@ start_frame = None
 for i in range(N):
     t = i / FPS; bgi = min(max(i - OFF, 0), len(frames) - 1)
     bg = frames[bgi].astype(np.float32); scr = screen_at(t)
-    out = bg * (1 - mask_s) + scr * mask_s
+    out = push(bg * (1 - mask_s) + scr * mask_s, t)
     if i == 0: start_frame = out.copy()
     if t >= T_END - FADE:
         k = (t - (T_END - FADE)) / FADE; k = k * k * (3 - 2 * k); out = out * (1 - k) + start_frame * k
