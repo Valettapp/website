@@ -287,6 +287,11 @@
   backdrop-filter: blur(24px) saturate(1.4);
   padding: 10px;
 }
+/* Phones on small screens: shrink the whole mockup proportionally (text, plate, buttons and all) so it reads as
+   a phone on the page, not a full-screen takeover. Hero phones are scaled by the story itself and do not use this. */
+@utility phone-fit {
+  @media (max-width: 47.99rem) { zoom: 0.78; }
+}
 @utility phone-frame-dark {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.12);

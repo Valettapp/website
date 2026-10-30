@@ -26,7 +26,7 @@ const track = ['Requested', 'On it', 'Bringing', 'Outside'];
 const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
 ---
 <div class:list={['guest-phone flex flex-col items-center gap-6', className]} {...(isStatic ? {} : { 'data-guest': '' })} {...(autoplay ? { 'data-autoplay': '' } : {})}>
-  <div class="phone-frame w-full max-w-[360px]">
+  <div class:list={['phone-frame w-full max-w-[360px]', !isStatic && 'phone-fit']}>
     <div class="phone-screen bg-field text-ink" {...(isStatic ? {} : { 'aria-live': 'polite' })}>
       {/* Header: car photo fading to the field */}
       <div class="absolute inset-x-0 top-0 h-[34%]">
