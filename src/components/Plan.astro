@@ -13,11 +13,11 @@ const founders = [
 ];
 const investors = [
   { name: 'Abdulla Al Shaibani', photo: abdulla as ImageMetadata | undefined, role: 'Investor and advisor', focus: 'Real estate and development', bio: 'Managing partner of Alphabeta Properties, which he founded in 2016 while at the American University of Sharjah; named among Forbes Middle East’s Most Impactful Real Estate Leaders 2025. Developments include C6, M77 and the Q-East mixed-use complex in Al Quoz. Also founder of Axeed and Fanak Auto.' },
-  { name: 'Mo Aziz', photo: undefined as ImageMetadata | undefined, role: 'Investor and advisor', focus: 'Fintech and operations', bio: 'Third-generation serial technology entrepreneur with deep operational expertise. Fintech specialist, and the first UAE-based founder to go through Y Combinator, in 2019.' },
+  { name: 'Mo Aziz', photo: undefined as ImageMetadata | undefined, role: 'Investor and advisor', focus: 'Fintech and proptech', bio: 'Dubai-based serial tech entrepreneur and the first UAE-based founder through Y Combinator, in 2019. Co-founder and co-CEO of Sooner, the proptech platform taking first-time buyers from renting to owning. Co-founded Pluto, the Y Combinator-backed spend management platform, through to its exit, and Dapi and Airscope before it. Angel investor in the region’s fintech and proptech founders.' },
 ];
 const divisions = [
   { title: 'Founders', body: 'Leon leads the company, partnerships and capital. Tom leads technology. The two people who waited thirty minutes for a car and decided to fix it.' },
-  { title: 'Investors and advisors', body: 'Real estate, development, fintech and operations. The people who opened the doors in Dubai.' },
+  { title: 'Investors and advisors', body: 'Real estate, development, fintech and proptech. The people who opened the doors in Dubai.' },
   { title: 'Technology and AI', body: 'Led by Tom. The engineering team behind Valett’s vehicle recognition, its AI models and the platform that runs every venue. Profiles to follow.' },
 ];
 const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).slice(0, 2).join('');
