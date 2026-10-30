@@ -28,7 +28,7 @@ const jsonLd = {
       email: site.email,
       address: { '@type': 'PostalAddress', streetAddress: 'Q East by Alphabeta, Al Quoz', addressLocality: 'Dubai', addressCountry: 'AE' },
       areaServed: [{ '@type': 'City', name: 'Dubai' }, { '@type': 'Country', name: 'United Arab Emirates' }],
-      sameAs: [site.linkedin],
+      ...(site.instagram ? { sameAs: [site.instagram] } : {}),
       slogan: site.tagline,
       description: site.description,
       foundingDate: '2025',

@@ -13,7 +13,7 @@ const year = 2026;
       </div>
       <ul class="flex flex-wrap gap-x-8 gap-y-3 text-[15px] text-ink-text-2">
         <li><a class="hover:text-white transition-colors" href={`mailto:${site.email}`}>{site.email}</a></li>
-        <li><a class="hover:text-white transition-colors" href={site.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        {site.instagram && <li><a class="hover:text-white transition-colors" href={site.instagram} rel="noopener" target="_blank">Instagram</a></li>}
         <li><a class="hover:text-white transition-colors" href="/privacy">Privacy</a></li>
       </ul>
     </div>

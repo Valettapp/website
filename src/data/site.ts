@@ -8,7 +8,8 @@ export const site = {
   tagline: 'A new era for a timeless service.',
   slogan: 'A new era for a timeless service.',
   email: 'info@valett.si',
-  linkedin: 'https://www.linkedin.com/company/valett', // pending confirmation
+  /** Instagram profile URL (30 Oct: Valett uses Instagram, not LinkedIn). Empty hides the link until Leon sends the handle. */
+  instagram: '',
   location: 'Dubai, UAE',
   /** Office address, one line per entry (30 Oct, from Leon). */
   address: ['Q East, by Alphabeta', 'Al Quoz', 'Dubai, UAE'],

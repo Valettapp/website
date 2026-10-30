@@ -104,7 +104,7 @@ Portraits: all four in place (Mo added 30 Oct from a 200 px photo: cropped and s
 H2: See it at your door. Body: Thirty minutes, on a call or at your venue, with the real app in your hands. Button: Book a demo.
 
 ### 12 Footer (black)
-VALETT serif wordmark · Q East, by Alphabeta / Al Quoz / Dubai, UAE (address 30 Oct) · info@valett.si · LinkedIn · Privacy · © 2026 Valett · Valet, without the wait.
+VALETT serif wordmark · Q East, by Alphabeta / Al Quoz / Dubai, UAE (address 30 Oct) · info@valett.si · Instagram (no LinkedIn; handle pending from Leon, `site.instagram`) · Privacy · © 2026 Valett · Valet, without the wait.
 
 ## Product loops and film (30 Oct, live)
 - "How it works" (`HowItWorks.astro`) sits straight after the hero; the hero's second button is "See how it works" (#how).
