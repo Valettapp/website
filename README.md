@@ -1,6 +1,19 @@
-# Valett website
+# Valett: digital valet parking software, Dubai
 
-One long page at valettuae.com. Astro 5 + Tailwind 4, static output, deployed to Vercel.
+**Live site: [valett.si](https://valett.si)**
+
+Valett is valet management software built in Dubai for hotels, malls, restaurants and residences. One photo checks the car in, the ticket lives on the guest’s phone with no app to download, and every car, key and minute is on the record.
+
+- [Valet parking in Dubai](https://valett.si/valet-parking-dubai)
+- [Digital valet software](https://valett.si/digital-valet-software)
+- [Valet management software](https://valett.si/valet-management-software-dubai)
+- [Hotel valet and parking](https://valett.si/hotel-valet-app) · [Malls](https://valett.si/mall-valet-parking-system) · [Restaurants](https://valett.si/restaurant-valet-service) · [Residences](https://valett.si/residential-valet-parking)
+
+Contact: [info@valett.si](mailto:info@valett.si)
+
+## This repository
+
+The website’s source. Astro 5 + Tailwind 4, static output, deployed to GitHub Pages at valett.si on every push.
 
 ```
 npm install
