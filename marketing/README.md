@@ -2,7 +2,11 @@
 
 Instagram (Reels, feed, Stories) and TikTok. Apple-style product ads built only from the real Valett app screens
 (no AI scenes): the interface floats in 3D, a slow camera glides over it, short lines of copy fade in, end card.
-All videos are 9:16, 1080×1920, silent; add a calm trending track in the Instagram or TikTok editor.
+All videos are 9:16, 1080×1920. Each comes twice: `*-voice.mp4` with the voiceover (post these) and a silent version
+(for your own edits). Add a soft instrumental track under the voice in the Instagram or TikTok editor, about 15 % volume.
+
+**Voice:** "Luna" on ElevenLabs v4 via Higgsfield: young American woman, light and warm, natural pacing.
+Lines are in `marketing/voiceover/` (one mp3 per line), mixed by `marketing/tools/mix.sh` at -16 LUFS.
 
 ## Goal and audience
 - **Book demos** at valett.si with Dubai hotel general managers, F&B and rooms directors, mall and residence operators,
@@ -74,7 +78,7 @@ Save this for your next night out in Dubai.
 From the repo root, after `npm run build`:
 - `node marketing/tools/ad-capture.mjs <tap|photo|board|tip> <frames dir>` records an ad frame by frame from the built site.
 - `node marketing/tools/tutorial-capture.mjs <frames dir>` records the tutorial.
-- Frames are joined with ffmpeg (H.264, CRF 18, 30 fps); see `marketing/tools/encode.sh`.
+- Frames are joined with ffmpeg (H.264, CRF 18, 30 fps); see `marketing/tools/encode.sh`, then `marketing/tools/mix.sh` adds the voice.
 Change copy, timing or camera moves in the scene definitions at the top of `ad-capture.mjs`.
 
 ## Not used (kept for later)
