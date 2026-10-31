@@ -82,6 +82,8 @@
   }
   ::selection { background: rgba(197, 162, 83, 0.25); }
   button { font: inherit; color: inherit; }
+  /* Mouse and touch alike: clickable things look clickable, and taps fire at once (no double-tap-zoom wait). */
+  a[href], button:not(:disabled), summary, label[for], [role="button"], [data-go], [data-dot], [data-tip], [data-star] { cursor: pointer; touch-action: manipulation; }
   [hidden] { display: none !important; }
 }
 
@@ -363,6 +365,10 @@
   &::-webkit-scrollbar { display: none; }
   @media (min-width: 40rem) { overflow: visible; margin-inline: 0; padding-inline: 0; }
 }
+/* Mouse drag on the swipe rows (phones and tablets with a mouse or trackpad); set by the script in Base. */
+.snap-row[data-drag] { cursor: grab; }
+.snap-row[data-dragging] { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+.snap-row[data-dragging] * { pointer-events: none; }
 @utility snap-item {
   flex: 0 0 84%;
   scroll-snap-align: start;
