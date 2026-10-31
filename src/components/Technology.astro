@@ -8,6 +8,7 @@ import Ambient from './Ambient.astro';
 import type { Status } from '../data/site';
 const rows: { label: string; status: Status }[] = [
   { label: 'Vehicle recognition from one photo', status: 'live' },
+  { label: '1:1 plate replica, design and number, day and night', status: 'live' },
   { label: 'White-label branding per venue, English and Arabic', status: 'live' },
   { label: 'Fully configurable rules, tiers and validation', status: 'live' },
   { label: 'AI scanning camera on every driver’s device', status: 'live' }, // pending Leon: wording
@@ -52,7 +53,7 @@ const reads = [
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="flex flex-col gap-3">
           <p class="t-eyebrow">Plate recognition</p>
-          <h3 class="t-h3 max-w-[26em]">Reads the plate as the valet frames it: emirate, code and number, then the make, model and colour of the car behind it.</h3>
+          <h3 class="t-h3 max-w-[26em]">Reads the plate day and night, then rebuilds it: a full 1:1 replica of the plate’s design and number, with the make, model and colour of the car behind it.</h3>
         </div>
       </div>
       <ul class="snap-row mt-10 sm:grid sm:grid-cols-2 sm:gap-5 lg:grid-cols-4" data-reveal-stagger="scale">
@@ -66,7 +67,7 @@ const reads = [
           </li>
         ))}
       </ul>
-      <p class="t-caption mt-6 max-w-[40em]">Recognition runs on the photo the valet takes at the door, in daylight and at night.</p>
+      <p class="t-caption mt-6 max-w-[40em]">Recognition runs on the photo the valet takes at the door, in daylight and at night. The plates above are drawn the way Valett draws them: a 1:1 replica generated from that photo, emirate design, code and number, shown on the ticket, the board and the guest’s page.</p>
     </div>
   </div>
 </section>

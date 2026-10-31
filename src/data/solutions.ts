@@ -111,6 +111,7 @@ export const solutions: Solution[] = [
       { q: 'Can the valet app show our hotel’s brand instead of Valett’s?', a: 'Yes. Every venue runs its own white-label brand on the guest page: your wordmark, your colours, your name on the ticket. Guests see the hotel, not us.' },
       { q: 'How do hotel guests request their car?', a: 'From the page on their phone, with one tap, from wherever they are in the hotel. They see the request received, the driver on the way, and a text when the car is at the door.' },
       { q: 'Does Valett integrate with hotel property management systems?', a: 'Yes. Hotel PMS integration is live: room charge and guest profile. Online card payments, Apple Pay, digital tipping and crypto payments are live too.' },
+      { q: 'Does Valett work with Oracle OPERA?', a: 'It is next. Valett is building its connection to Oracle OPERA Cloud: the guest profile on the ticket, valet fees on the room bill, the car queued for the door at check-out, and VIP tiers that follow the guest. Other major hotel systems follow.' },
       { q: 'What hotel parking solutions does Valett cover?', a: 'Valet at the porte-cochère, guest and visitor parking, residents’ permanent plans for branded residences, validation by outlet, and the reporting behind them, on one record per property.' },
       { q: 'What about damage disputes?', a: 'Every car is photographed at check-in and on the walkaround, with timestamps and the driver’s name. Check-out is photographed too. The dispute is settled by the record, not by argument.' },
     ],

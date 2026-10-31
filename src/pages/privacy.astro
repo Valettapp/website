@@ -3,18 +3,63 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
+// Draft privacy notice for valett.si (31 Oct 2026). Written against the UAE Personal Data Protection Law
+// (Federal Decree-Law No. 45 of 2021) and the services this site actually uses. To be reviewed by Valett's lawyer.
+const mail = `mailto:${site.email}`;
+const sections: { h: string; p: string[] }[] = [
+  { h: 'Who we are', p: [
+    `Valett (“we”, “us”) makes valet management software for venues in Dubai. Our office is at ${site.address.join(', ')}. For anything in this notice, write to ${site.email}.`,
+    'This notice covers this website, valett.si. The Valett app used at venues, by staff and by guests, has its own notice.',
+  ] },
+  { h: 'What we collect', p: [
+    'What you send us. When you book a demo we receive your name, venue, role, phone number and the time that suits you. If you email us, we receive your email address and what you write.',
+    'Visits, counted without tracking. We use Plausible Analytics to count page views. It sets no cookies, does not store your IP address and cannot identify you. We see totals, not people.',
+    'Technical logs. Our hosting provider records standard request data (IP address, browser, time of request) to keep the site running and secure.',
+  ] },
+  { h: 'Why we use it', p: [
+    'To reply to your demo request and arrange the demo, which you asked us to do.',
+    'To keep the site secure and working, and to understand in aggregate which pages are read. These are our legitimate interests.',
+    'We do not sell personal data, do not use it for advertising and do not build profiles.',
+  ] },
+  { h: 'Who handles it for us', p: [
+    'Formspree receives the demo form and forwards it to our inbox. GitHub hosts the website. Plausible counts visits. Cloudflare Turnstile may check that a form was sent by a person, not a bot. Our email provider holds the messages we exchange.',
+    'Some of these providers store data outside the UAE. We use them only where the data stays protected to the standard UAE law requires.',
+  ] },
+  { h: 'How long we keep it', p: [
+    'Demo requests and the emails around them are kept for up to 24 months after our last contact, then deleted. If your venue becomes a customer, we keep what is needed for the length of the contract. You can ask us to delete your data sooner.',
+  ] },
+  { h: 'Your rights', p: [
+    'Under the UAE Personal Data Protection Law you can ask to see the personal data we hold about you, correct it, delete it, restrict or object to how we use it, receive a copy in a common format, and withdraw any consent you gave. If you are in the European Union, the GDPR gives you the same rights.',
+    `Write to ${site.email}. We reply within 30 days. If you are not satisfied, you can complain to the UAE Data Office.`,
+  ] },
+  { h: 'Cookies', p: [
+    'We do not set cookies for analytics or advertising. If the spam check on the demo form is switched on, Cloudflare may use what it strictly needs to tell a person from a bot.',
+  ] },
+  { h: 'Security', p: [
+    'The site is served over HTTPS only, and access to demo requests is limited to the people who arrange demos.',
+  ] },
+  { h: 'Children', p: [
+    'This website is for businesses. It is not meant for anyone under 18, and we do not knowingly collect their data.',
+  ] },
+  { h: 'Changes', p: [
+    'If this notice changes, the new version will be on this page with a new date.',
+  ] },
+];
 ---
-<Base title="Privacy — Valett" description="How Valett handles personal data on this website." path="/privacy">
+<Base title="Privacy notice — Valett" description="How Valett handles personal data on valett.si: what we collect, why, who processes it, how long we keep it and your rights under UAE law." path="/privacy">
   <Nav demoHref="/#demo" />
   <main id="main" class="section-pad">
     <div class="container-page">
       <p class="t-eyebrow">Privacy</p>
       <h1 class="t-h2 mt-4">Privacy notice.</h1>
-      <div class="measure mt-8 flex flex-col gap-5 text-ink-2 t-body">
-        <p>This website collects only what you give us through the demo form: your name, venue, role, phone number and preferred time. We use it to arrange your demo and for nothing else.</p>
-        <p>Form submissions are processed by Formspree and protected by Cloudflare Turnstile. Site analytics run on Plausible, which does not use cookies and does not collect personal data.</p>
-        <p>To see, correct or delete your data, email <a class="underline underline-offset-2 text-ink" href={`mailto:${site.email}`}>{site.email}</a>.</p>
-        <p class="t-caption">This notice is a placeholder pending legal review.</p>
+      <p class="t-caption mt-4">Last updated 31 October 2026</p>
+      <div class="measure mt-10 flex flex-col gap-10">
+        {sections.map((s) => (
+          <section class="flex flex-col gap-3">
+            <h2 class="t-h3">{s.h}</h2>
+            {s.p.map((t) => <p class="t-body text-ink-2" set:html={t.replace(site.email, `<a class="underline underline-offset-2 text-ink" href="${mail}">${site.email}</a>`)} />)}
+          </section>
+        ))}
       </div>
     </div>
   </main>

@@ -10,11 +10,11 @@ Items the site needs before launch, in the order they block work. Each has a pla
 | LinkedIn URL | `src/data/site.ts` → `linkedin` | linkedin.com/company/valett |
 | The film | done 27 Oct: `public/film/valett-film-16x9.mp4` (1080p, 11.8 MB), `valett-film-9x16.mp4` (720p, 4.4 MB), `valett-film.en.vtt`; plays in §2 with controls. `site.film.inHero` is false, so the scroll story stays as the hero; flip it to put the film there instead | — |
 | Logo SVG | `public/favicon.svg`, `Wordmark.astro` | Serif VALETT wordmark set live in Cormorant Garamond; geometric V favicon. Drop the official SVG in when it exists |
-| Reports mockup PDF | received 27 Oct; §5 uses crops of pages 1, 3, 6, 7, 10, 11, 14, 16, 17, 18 (`src/assets/reports/`). Pages carry tenant names Q East by Alphabeta, AXeed and The Palace Downtown; confirm those may appear | — |
+| Reports mockup PDF | received 27 Oct; §5 uses crops of pages 1, 3, 6, 7, 10, 11, 14, 16, 17, 18 (`src/assets/reports/`). 31 Oct: The Palace Downtown and the TEST tenants repainted as the fictional The Marquee, Arcadia Mall, One Marina and Maison Lune on the Network and Residents tiles (`scripts/reports-rename.py`); Q East by Alphabeta and AXeed stay | — |
 | Mo Aziz photo | `Plan.astro` | Initials circle (Leon, Tom and Abdulla photos received 27 Oct, in `src/assets/team/`) |
 | Wording for "AI scanning camera on every driver's device" | `Technology.astro` | Shown as written, pill `live` |
 | Partner names (PMS, barrier systems, car care) | `Integrations.astro` | Generic names, statuses from the brief |
-| Privacy policy text | `src/pages/privacy.astro` | Short honest notice marked as placeholder |
+| Privacy policy text | `src/pages/privacy.astro` | 31 Oct: full draft against UAE PDPL (what we collect, processors, 24-month retention, rights); needs the company's legal name and a lawyer's read |
 | Domain DNS for valettuae.com | Vercel project settings | — |
 
 ## Notes on the uploaded media (26 Oct)

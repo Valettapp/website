@@ -80,12 +80,12 @@ Staff time — No tickets to write, no radios to call, no bays to search. The bo
 
 ### 7 Integrations and partners (white)
 H2: Built to plug into the venue.
-Fully digital system [live] · AI scanning technology [live] · Online card payments, Apple Pay and digital tipping [live] · Hotel PMS [live] · Crypto payments [live] · Car care while parked (cleaning, fuel) [live] · Parking and barrier systems [in development] · Salik and Dubai payments [exploring] (statuses updated by Leon 30 Oct). No partner names until Leon confirms in writing.
+Fully digital system [live] · AI scanning technology [live] · Online card payments, Apple Pay and digital tipping [live] · Hotel PMS [live] · Crypto payments [live] · Car care while parked (cleaning, fuel) [live] · Parking and barrier systems [in development] · Salik and Dubai payments [exploring] (statuses updated by Leon 30 Oct). No partner names until Leon confirms in writing. 31 Oct, Leon: Hotel systems block under the integrations panel: Oracle OPERA (Cloud) integration plan, four steps (guest profile on the ticket, valet on the room bill, ready at check-out, VIP tiers), pill `in development`, Oracle trademark line; not a partnership claim.
 
 ### 8 Technology (white; this and the staff section may use a dark card for the scan animation)
 Eyebrow: AI-led from the first line of code · H2: A valet operation that learns.
 Body: Valett is an AI company that happens to park cars. Vehicle recognition reads every plate, make, model and colour from one photo. Every venue runs its own white-label brand on the guest page. Every rule, from VIP tiers to validation to residents' plans, is configurable without a developer. We are building the operation that runs itself: predicting demand, assigning drivers, flagging incidents before a guest notices.
-Vehicle recognition from one photo [live] · White-label branding per venue, English and Arabic [live] · Fully configurable rules, tiers and validation [live] · AI scanning camera on every driver's device [pending Leon: wording] · Demand prediction and automatic driver assignment [in development]
+Vehicle recognition from one photo [live] · 1:1 plate replica, design and number, day and night [live] (31 Oct, Leon: recognition works day and night and generates a full 1:1 replica of the plate design and number) · White-label branding per venue, English and Arabic [live] · Fully configurable rules, tiers and validation [live] · AI scanning camera on every driver's device [pending Leon: wording] · Demand prediction and automatic driver assignment [in development]
 Reuse the scan animation from §4 (camera frame → "Scanning vehicle…" → plate, make, model, colour filling in).
 
 ### 9 Who it's for (white)

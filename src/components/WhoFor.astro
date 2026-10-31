@@ -2,6 +2,7 @@
 import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
 import Ambient from './Ambient.astro';
+import IosBar from './IosBar.astro';
 // Fictional venues: the guest page carries each venue's own wordmark (white-label).
 const doors = [
   { venue: 'The Marquee', href: '/hotel-valet-app', title: 'Hotels and resorts', body: 'The guest page carries the hotel’s name, not ours. Concierge sees every car.', status: 'Parked · 01:06 AM', line: 'Validation · Ask your concierge' },
@@ -17,13 +18,16 @@ const doors = [
     <ul class="snap-row sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4" data-reveal-stagger="scale">
       {doors.map((d) => (
         <li class="snap-item flex flex-col">
-          <div class="glass-card !rounded-frame px-6 pt-6 pb-0 md:px-8 md:pt-8">
-            <div class="phone-frame mx-auto w-full max-w-[220px] !rounded-b-none !border-b-0 !pb-0" aria-hidden="true">
-              <div class="rounded-t-[26px] bg-field px-4 pt-4 pb-5 text-center">
-                <p class="t-wordmark text-[11px]">{d.venue}</p>
-                <p class="mt-5 text-[9px] font-medium uppercase tracking-[0.14em] text-ink-2">{d.status}</p>
-                <p class="mt-1.5 text-[14px] font-semibold tracking-[-0.01em]">Land Rover Defender</p>
-                <p class="mt-2 inline-flex items-center gap-1 rounded-pill bg-white px-2 py-1 text-[9px] text-ink-2"><Icon name="check" size={9} class="text-gold" />{d.line}</p>
+          <div class="glass-card !rounded-frame overflow-hidden px-6 pt-6 pb-0 md:px-8 md:pt-8">
+            <div class="door-wrap" aria-hidden="true">
+              <div class="door-phone phone-device">
+                <div class="door-screen bg-field">
+                  <IosBar time="1:06" tone="dark" />
+                  <p class="t-wordmark pt-[58px] text-[15px]">{d.venue}</p>
+                  <p class="mt-6 text-[12px] font-medium uppercase tracking-[0.14em] text-ink-2">{d.status}</p>
+                  <p class="mt-2 text-[19px] font-semibold tracking-[-0.01em]">Land Rover Defender</p>
+                  <p class="mt-3 inline-flex items-center gap-1.5 rounded-pill bg-white px-3 py-1.5 text-[12px] text-ink-2"><Icon name="check" size={12} class="text-gold" />{d.line}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -38,3 +42,11 @@ const doors = [
     </div>
   </div>
 </section>
+
+<style>
+  /* The top half of a real iPhone (status bar, Dynamic Island), drawn at 300 px and scaled to 220 px with the
+     scale property (never zoom: Safari zooms text and boxes differently). */
+  .door-wrap { display: flex; height: 170px; align-items: flex-start; justify-content: center; }
+  .door-phone { width: 300px; flex-shrink: 0; transform-origin: 50% 0; scale: 0.7333; padding-bottom: 0; border-end-start-radius: 0; border-end-end-radius: 0; }
+  .door-screen { position: relative; height: 236px; overflow: hidden; border-radius: 39px 39px 0 0; text-align: center; }
+</style>

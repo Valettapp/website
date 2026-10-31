@@ -14,6 +14,13 @@ const rows: { label: string; status: Status; note: string }[] = [
   { label: 'Parking and barrier systems', status: 'dev', note: 'Barriers open on the ticket' },
   { label: 'Salik and Dubai payments', status: 'exploring', note: '' },
 ];
+// Hotel systems plan (31 Oct, Leon): Oracle OPERA first. A plan, not a partnership claim: every step is in development.
+const opera: { n: string; title: string; body: string }[] = [
+  { n: '01', title: 'Guest profile on the ticket', body: 'The car is matched to the reservation: name, room, VIP status and departure date appear on the ticket and the board.' },
+  { n: '02', title: 'Valet on the room bill', body: 'Valet fees and validations post to the guest’s folio. No cash, no paper chit, nothing to reconcile at checkout.' },
+  { n: '03', title: 'Ready at check-out', body: 'When the guest checks out, the car is queued for the door, so it is waiting before they reach the lobby.' },
+  { n: '04', title: 'VIP and loyalty tiers', body: 'Tiers set in OPERA follow the guest to the kerb: priority bays, complimentary parking, the right welcome.' },
+];
 ---
 <section data-reveal-group id="integrations" class="section-pad scroll-mt-20" aria-labelledby="integrations-title">
   <div class="container-page">
@@ -48,5 +55,25 @@ const rows: { label: string; status: Status; note: string }[] = [
         </div>
       </div>
     </div>
+
+    {/* Hotel systems: the OPERA plan */}
+    <div class="mt-20 grid gap-10 md:mt-28 lg:grid-cols-12 lg:gap-16" data-reveal>
+      <div class="flex flex-col gap-4 lg:col-span-4">
+        <p class="t-eyebrow">Hotel systems</p>
+        <h3 class="t-h3 max-w-[18em]">Next: Oracle OPERA, so the valet desk and the front desk work from the same guest.</h3>
+        <p class="t-body measure text-ink-2">Most of Dubai’s luxury hotels run on Oracle Hospitality’s OPERA. Valett is building its connection to OPERA Cloud first, then the other major hotel systems.</p>
+        <Pill status="dev" class="self-start" />
+      </div>
+      <ol class="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
+        {opera.map((o) => (
+          <li class="hairline-t flex flex-col gap-2 py-6">
+            <p class="t-eyebrow"><span class="text-gold-text">{o.n}</span></p>
+            <h4 class="text-[18px] font-semibold tracking-[-0.01em] md:text-[19px]">{o.title}</h4>
+            <p class="text-[15px] leading-relaxed text-ink-2 md:text-[16px]">{o.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <p class="t-caption mt-6 max-w-[48em] lg:ms-[33.4%]">Oracle and OPERA are trademarks of Oracle. Valett is not affiliated with or endorsed by Oracle.</p>
   </div>
 </section>
