@@ -11,3 +11,6 @@ lighthouse/
 .DS_Store
 preview/
 preview-files.json
+
+# marketing: captured frames and full-size sources (regenerate with marketing/tools)
+marketing/raw/
