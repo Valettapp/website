@@ -12,8 +12,6 @@
  * The frame is a plain white card, not backdrop-blurred glass: a blur around a playing video costs iOS frames.
  * Loops are encoded at their native 24 fps (a 30 fps conversion repeated every 4th frame and juddered).
  * Reduced motion: no download, the poster stays.
- * iPhone Low Power Mode blocks every video that starts by itself: when play() is refused, a play button shows on
- * the loop, and the next tap anywhere on the page starts the loops on screen (a tap allows playback).
  */
 interface Props {
   name: string;
@@ -42,9 +40,6 @@ const f = `/film/${name}`;
       data-poster-wide={`${f}-start-16x9.webp`}
       data-poster-tall={`${f}-start-${mobile}.webp`}
     ></video>
-    <button type="button" class="loop-play" aria-label="Play" data-loop-play>
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
-    </button>
   </div>
 </figure>
 
@@ -57,14 +52,12 @@ const f = `/film/${name}`;
   const src = new Map<HTMLVideoElement, string>(); // fetched blob URLs, waiting to be attached
   const jobs = new Map<HTMLVideoElement, Promise<void>>();
 
-  const box = (v: HTMLVideoElement) => v.closest('figure')!;
-  const tryPlay = (v: HTMLVideoElement) => v.play().then(() => box(v).removeAttribute('data-blocked')).catch((e) => { if (e?.name === 'NotAllowedError') box(v).setAttribute('data-blocked', ''); });
   const attach = (v: HTMLVideoElement) => {
     const u = src.get(v);
     if (!u || !near.has(v) || v.getAttribute('src')) return;
     v.preload = 'auto'; // decode ahead, so play() starts at once
     v.src = u;
-    if (playing.has(v)) tryPlay(v);
+    if (playing.has(v)) v.play().catch(() => {});
   };
   const fetchOne = (v: HTMLVideoElement): Promise<void> => {
     if (!jobs.has(v)) {
@@ -92,23 +85,14 @@ const f = `/film/${name}`;
       }), { rootMargin: '150% 0px 150% 0px' });
       const playIO = new IntersectionObserver((es) => es.forEach((e) => {
         const v = e.target as HTMLVideoElement;
-        if (e.isIntersecting) { playing.add(v); near.add(v); fetchOne(v); attach(v); if (v.getAttribute('src')) tryPlay(v); }
+        if (e.isIntersecting) { playing.add(v); near.add(v); fetchOne(v); attach(v); if (v.getAttribute('src')) v.play().catch(() => {}); }
         else { playing.delete(v); v.pause(); }
       }), { rootMargin: '50% 0px 50% 0px' });
       videos.forEach((v) => { nearIO.observe(v); playIO.observe(v); });
-      // Low Power Mode: a tap is allowed to start playback, so retry the blocked loops on screen on any tap.
-      const retry = () => playing.forEach((v) => { if (v.getAttribute('src') && v.paused) tryPlay(v); });
-      addEventListener('touchend', retry, { passive: true });
-      addEventListener('click', retry);
-      videos.forEach((v) => box(v).querySelector('[data-loop-play]')?.addEventListener('click', () => { playing.add(v); near.add(v); fetchOne(v).then(() => tryPlay(v)); }));
     } else { videos.forEach((v) => { near.add(v); playing.add(v); }); fetchAll(); }
   }
 </script>
 
 <style>
-  .loop-play { position: absolute; inset: 0; margin: auto; display: none; width: 56px; height: 56px; align-items: center; justify-content: center; border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92); color: var(--color-ink); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px -8px rgba(0, 0, 0, 0.25); }
-  .loop-play svg { margin-inline-start: 3px; }
-  [data-blocked] .loop-play { display: inline-flex; }
   .loop-frame { background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.06); }
 </style>
