@@ -1,6 +1,6 @@
 ---
 import Film from './Film.astro';
-import HeroFan from './HeroFan.astro';
+import HeroStory from './HeroStory.astro';
 import { site } from '../data/site';
 const hasFilm = Boolean(site.film.mp4) && site.film.inHero;
 ---
@@ -16,4 +16,4 @@ const hasFilm = Boolean(site.film.mp4) && site.film.inHero;
       <Film variant="hero" priority class="mt-20 w-full max-w-[1100px] md:mt-28" />
     </div>
   </section>
-) : <HeroFan />}
+) : <HeroStory />}
