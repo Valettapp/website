@@ -130,7 +130,7 @@ const jsonLd = {
           Array.from(c.children).forEach((el, i) => targets.push({ el: el as HTMLElement, delay: Math.min(i, 7) * 90 }));
         });
         const io = new IntersectionObserver((entries) => {
-          entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
+          entries.forEach((e) => { if (e.isIntersecting) { const el = e.target as HTMLElement; el.classList.add('revealed'); io.unobserve(el); setTimeout(() => { el.style.transitionDelay = ''; }, 1500); } });
         }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
         document.documentElement.classList.add('reveal-ready');
         targets.forEach(({ el, delay }) => { el.style.transitionDelay = `${delay}ms`; io.observe(el); });

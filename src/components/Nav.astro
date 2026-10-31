@@ -13,7 +13,7 @@ const { demoHref = '#demo' } = Astro.props;
     <Wordmark as="a" href="/" class="text-[18px] md:text-[20px] text-ink" />
     <ul class="hidden lg:flex items-center gap-7 text-[15px] font-medium text-ink-2">
       {nav.map((n) => (
-        <li><a class="hover:text-ink transition-colors" href={n.href}>{n.label}</a></li>
+        <li><a class="nav-link hover:text-ink transition-colors" href={n.href}>{n.label}</a></li>
       ))}
     </ul>
     <div class="flex items-center gap-1.5">

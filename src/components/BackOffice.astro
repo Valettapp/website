@@ -55,7 +55,7 @@ const tiles = [
     <ul class="snap-row mt-16 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 md:mt-20" data-reveal-stagger="scale">
       {tiles.map((t) => (
         <li class="snap-item flex flex-col">
-          <div class="rounded-frame bg-field p-3 md:p-4">
+          <div class="lift lift-zoom rounded-frame bg-field p-3 md:p-4">
             <BrowserFrame dense url={`admin.valett.si/${t.url}`}>
               <Picture src={t.img} formats={['avif', 'webp']} widths={[400, 600, 900]} sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 84vw" alt={`${t.title} screen`} class="block w-full" loading="lazy" decoding="async" />
             </BrowserFrame>

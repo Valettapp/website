@@ -24,7 +24,7 @@ interface Props {
 const { name, label, mobile = '1x1', bg = '#ecede8', class: cls = '' } = Astro.props;
 const f = `/film/${name}`;
 ---
-<figure class:list={['loop-frame rounded-frame p-2 md:p-3', cls]} data-reveal>
+<figure class:list={['lift loop-frame rounded-frame p-2 md:p-3', cls]} data-reveal>
   <div class:list={['relative overflow-hidden rounded-[14px] md:aspect-video', mobile === '4x3' ? 'aspect-[4/3]' : 'aspect-square']} style={`background:${bg}`}>
     <video
       class="absolute inset-0 h-full w-full object-cover"

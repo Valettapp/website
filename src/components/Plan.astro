@@ -56,7 +56,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
       <p class="t-eyebrow">Founders</p>
       <ul class="mt-6 grid gap-6 md:grid-cols-2" data-reveal-stagger="scale">
         {founders.map((p) => (
-          <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
+          <li class="lift glass-card flex flex-col gap-5 p-6 md:p-8">
             <div class="flex items-center gap-4">
               <Picture src={p.photo} formats={['avif', 'webp']} widths={[128, 256]} sizes="64px" alt={`Portrait of ${p.name}`} class="size-16 shrink-0 rounded-full object-cover md:size-20" pictureAttributes={{ class: "shrink-0" }} loading="lazy" decoding="async" />
               <div><h3 class="t-h3 !text-[20px]">{p.name}</h3><p class="t-caption mt-0.5">{p.role} · {p.focus}</p></div>
@@ -71,7 +71,7 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
       <p class="t-eyebrow">Investors and advisors</p>
       <ul class="mt-6 grid gap-6 md:grid-cols-2" data-reveal-stagger="scale">
         {investors.map((p) => (
-          <li class="glass-card flex flex-col gap-5 p-6 md:p-8">
+          <li class="lift glass-card flex flex-col gap-5 p-6 md:p-8">
             <div class="flex items-center gap-4">
               {p.photo ? (
                 <Picture src={p.photo} formats={['avif', 'webp']} widths={[128, 256]} sizes="64px" alt={`Portrait of ${p.name}`} class="size-16 shrink-0 rounded-full object-cover md:size-20" pictureAttributes={{ class: "shrink-0" }} loading="lazy" decoding="async" />

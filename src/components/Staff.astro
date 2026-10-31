@@ -20,7 +20,7 @@ const steps = [
     <ol class="snap-row mt-16 md:mt-24 md:grid md:grid-cols-3 md:gap-8" data-reveal-stagger="scale">
       {steps.map((s, i) => (
         <li class="snap-item flex flex-col gap-6">
-          <div class="rounded-frame bg-field px-6 py-8 flex justify-center">
+          <div class="lift rounded-frame bg-field px-6 py-8 flex justify-center">
             {i === 0 ? <ScanAnimation device class="phone-fit" /> : i === 1 ? <StaffScreen device screen="ticket" class="phone-fit" /> : <StaffScreen device screen="park" class="phone-fit" />}
           </div>
           <div class="flex flex-col gap-2">
@@ -34,7 +34,7 @@ const steps = [
 
     <div class="mt-20 grid items-center gap-12 md:mt-28 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5 flex justify-center lg:justify-start" data-reveal="left">
-        <div class="rounded-frame bg-field px-6 py-8 w-full flex justify-center">
+        <div class="lift rounded-frame bg-field px-6 py-8 w-full flex justify-center">
           <StaffScreen device animate screen="request" class="phone-fit" />
         </div>
       </div>

@@ -137,7 +137,7 @@ const hiddenIf = (n: number) => (isStatic ? n !== staticState : n !== 1);
               <span class="me-1 text-[11px] font-medium uppercase tracking-[0.14em] text-ink-2">Tip</span>
               {[20, 40, 80].map((v) => {
                 const Tag = isStatic ? 'span' : 'button';
-                return <Tag {...(isStatic ? {} : { type: 'button' })} class="flex-1 rounded-pill border border-ink/15 bg-white py-2.5 min-h-[32px] text-center text-[14px] font-medium transition-colors data-[on]:border-ink data-[on]:bg-ink data-[on]:text-white" data-tip={v} {...(v === 80 ? { 'data-on': '' } : {})}>{v}</Tag>;
+                return <Tag {...(isStatic ? {} : { type: 'button' })} class="flex-1 rounded-pill border border-ink/15 bg-white py-2.5 min-h-[32px] text-center text-[14px] font-medium transition-colors hover:border-ink/50 data-[on]:border-ink data-[on]:bg-ink data-[on]:text-white" data-tip={v} {...(v === 80 ? { 'data-on': '' } : {})}>{v}</Tag>;
               })}
             </div>
             {isStatic ? (
