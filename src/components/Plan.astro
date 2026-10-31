@@ -90,25 +90,47 @@ const initials = (n: string) => n.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).m
 </section>
 
 <style>
-  /* Phones and tablets: three lines of each bio, "Read more" for the rest (only once the script has run). */
+  /* Phones and tablets: three lines of each bio, "Read more" for the rest (only once the script has run).
+     The script animates the height between the two, so the card glides open and closed. */
   .bio-toggle { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
   .bio-less, [data-open] > .bio-toggle .bio-more { display: none; }
   [data-open] > .bio-toggle .bio-less { display: inline; }
+  .bio-toggle span { animation: bio-label 260ms ease both; }
   @media (max-width: 63.99rem) {
-    [data-clamp] > .bio { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
-    [data-clamp][data-open] > .bio { display: block; -webkit-line-clamp: unset; line-clamp: none; }
+    [data-clamp] > .bio { overflow: hidden; }
+    [data-clamp]:not([data-open]):not([data-moving]) > .bio { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; }
+    [data-clamp] > .bio.bio-anim { transition: height 480ms cubic-bezier(0.22, 1, 0.36, 1); }
   }
   @media (min-width: 64rem) { .bio-toggle { display: none !important; } }
+  @keyframes bio-label { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { [data-clamp] > .bio.bio-anim { transition: none; } .bio-toggle span { animation: none; } }
 </style>
 <script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.querySelectorAll<HTMLButtonElement>('.bio-toggle').forEach((b) => {
     const box = b.parentElement!;
+    const bio = box.querySelector<HTMLElement>('.bio')!;
     box.setAttribute('data-clamp', '');
     b.hidden = false;
+    let done: (() => void) | null = null;
     b.addEventListener('click', () => {
-      const open = !box.hasAttribute('data-open');
-      box.toggleAttribute('data-open', open);
-      b.setAttribute('aria-expanded', String(open));
+      done?.();
+      const opening = !box.hasAttribute('data-open');
+      b.setAttribute('aria-expanded', String(opening));
+      if (reduce || window.matchMedia('(min-width: 64rem)').matches) { box.toggleAttribute('data-open', opening); return; }
+      const from = bio.offsetHeight;
+      box.setAttribute('data-moving', ''); // full text while it moves
+      box.toggleAttribute('data-open', opening);
+      const lines = parseFloat(getComputedStyle(bio).lineHeight) * 3;
+      const to = opening ? bio.scrollHeight : Math.round(lines);
+      bio.style.height = `${from}px`;
+      bio.offsetHeight; // commit the start height
+      bio.classList.add('bio-anim');
+      bio.style.height = `${to}px`;
+      const end = () => { bio.removeEventListener('transitionend', end); bio.classList.remove('bio-anim'); bio.style.height = ''; box.removeAttribute('data-moving'); done = null; };
+      done = end;
+      bio.addEventListener('transitionend', end);
+      window.setTimeout(() => done === end && end(), 700);
     });
   });
 </script>
