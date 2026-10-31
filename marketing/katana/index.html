@@ -1,0 +1,274 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: Inter; src: url(fonts/Inter.ttf); font-weight: 100 900; }
+@font-face { font-family: Cormorant; src: url(fonts/Cormorant.ttf); font-weight: 300 700; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0806; }
+#stage { position: absolute; inset: 0; overflow: hidden; font-family: Inter, sans-serif;
+  background: radial-gradient(120% 60% at 30% 30%, #3a2a1e 0%, #1c140e 45%, #0b0806 80%); }
+.plant { position: absolute; border-radius: 50%; background: #0e1209; filter: blur(14px); opacity: .85; }
+#spill { position: absolute; inset: 0; background: radial-gradient(70% 38% at 52% 34%, rgba(255,250,240,.55), rgba(255,250,240,0) 70%); opacity: 0; }
+#cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+#cap { position: absolute; top: 150px; left: 50%; transform: translateX(-50%); width: 860px; background: #fff; border-radius: 22px;
+  padding: 18px 26px 20px; text-align: center; font: 800 54px/1.08 Inter; letter-spacing: -0.035em; color: #0a0a0a; z-index: 5;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+#monWrap { position: absolute; left: -40px; top: 360px; width: 1180px; height: 700px; perspective: 2600px; }
+#mon { position: absolute; inset: 0; background: #050505; border-radius: 12px; padding: 12px; transform-origin: 60% 50%;
+  transform: rotateY(-9deg) rotateX(3deg) rotateZ(-1.4deg); box-shadow: 0 40px 120px rgba(0,0,0,.6); }
+#scr { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 4px; background: #0b1020; }
+#scr > * { position: absolute; }
+#lapWrap { position: absolute; left: 70px; top: 1120px; width: 1000px; height: 520px; perspective: 1400px; }
+#lap { position: absolute; inset: 0; transform-origin: 50% 100%; transform: rotateX(24deg) rotateZ(1deg); }
+#lapScr { position: absolute; left: 0; right: 0; top: 0; height: 380px; background: #070a12; border: 10px solid #111; border-radius: 14px; overflow: hidden; }
+#lapBase { position: absolute; left: -40px; right: -40px; top: 372px; height: 160px; background: linear-gradient(#1a1a1c, #0c0c0d); border-radius: 0 0 26px 26px; }
+.track { position: absolute; left: 60px; right: 20px; height: 26px; border-radius: 4px; }
+.clip { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: #2457c9; opacity: .85; }
+#playhead { position: absolute; top: 10px; bottom: 10px; width: 3px; background: #4ea1ff; box-shadow: 0 0 10px #4ea1ff; }
+.bub { border-radius: 40px; font: 500 40px/1.2 Inter; letter-spacing: -0.01em; padding: 22px 34px; white-space: nowrap; transform-origin: 50% 50%; }
+.dot3 { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background: #9a9aa0; margin: 0 5px; }
+#cursor { width: 54px; height: 70px; z-index: 30; }
+#flash { inset: 0; background: #fff; opacity: 0; z-index: 40; }
+.tile { border-radius: 40px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; }
+#map > div { position: absolute; }
+#lapScr { filter: saturate(.75) brightness(.7); }
+.card { background: #fff; border-radius: 30px; box-shadow: 0 2px 4px rgba(0,0,0,.05), 0 20px 50px -20px rgba(0,0,0,.2); }
+</style></head>
+<body><div id="stage">
+  <div class="plant" style="left:-120px;top:520px;width:300px;height:520px"></div>
+  <div class="plant" style="left:-60px;top:900px;width:260px;height:300px;background:#141a0c"></div>
+  <div id="spill"></div>
+  <div id="cam">
+    <div id="cap">POV: U never wait for<br>the valet again</div>
+    <div id="monWrap"><div id="mon"><div id="scr">
+      <!-- 1 messages -->
+      <div id="msgs" style="inset:0">
+        <div id="stamp" style="position:absolute;top:40px;width:100%;text-align:center;font:600 22px Inter;color:#8e8e93">Today 8:32 PM</div>
+        <div id="b1" class="bub" style="position:absolute;right:70px;top:110px;background:#1f8bff;color:#fff">Been waiting 30 min for the valet 🥵</div>
+        <div id="bt" class="bub" style="position:absolute;left:70px;top:245px;background:#2c2c2e;padding:28px 30px"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span></div>
+        <div id="b2" class="bub" style="position:absolute;left:70px;top:245px;background:#2c2c2e;color:#fff">Try Valett</div>
+      </div>
+      <!-- 2 tile / pill / bar -->
+      <div id="field" style="inset:0;background:#f2f2f0;opacity:0"></div>
+      <div id="shape" style="left:0;top:0;background:#0a0a0a"></div>
+      <div id="tileTxt" style="left:0;top:0;width:100%;text-align:center;font:500 46px Cormorant;letter-spacing:.3em;color:#fff;opacity:0">VALETT</div>
+      <div id="barLbl" style="width:100%;text-align:center;top:180px;font:600 34px Inter;color:#0a0a0a;letter-spacing:-0.01em;opacity:0">Get a text when it’s ready</div>
+      <div id="barTxt" style="left:170px;top:0;font:500 40px Inter;color:#0a0a0a;opacity:0;white-space:nowrap"></div>
+      <div id="btnTxt" style="width:100%;text-align:center;top:0;font:600 46px Inter;color:#fff;opacity:0">Request My Car</div>
+      <!-- 3 tiles -->
+      <div id="tiles" style="left:0;top:0;width:100%;height:100%;opacity:0"></div>
+      <!-- 4 card -->
+      <div id="card" class="card" style="left:170px;top:220px;width:836px;height:250px;opacity:0;padding:40px 46px">
+        <div id="cT1" style="font:600 42px Inter;letter-spacing:-0.02em;color:#0a0a0a">Request received</div>
+        <div id="cS1" style="margin-top:10px;font:400 28px Inter;color:#6b6b6b">Finding your valet, usually under a minute</div>
+        <div id="cT2" style="position:absolute;left:46px;top:40px;font:600 42px Inter;letter-spacing:-0.02em;color:#0a0a0a;opacity:0">Your driver is on the way</div>
+        <div id="cS2" style="position:absolute;left:46px;top:102px;font:400 28px Inter;color:#6b6b6b;opacity:0">Bringing your car to the main entrance · 4 min</div>
+        <div style="position:absolute;left:46px;right:46px;bottom:44px;height:8px;border-radius:4px;background:#e8e8e6"><div id="cBar" style="height:100%;width:0;border-radius:4px;background:#0a0a0a"></div></div>
+      </div>
+      <!-- 5 map -->
+      <div id="map" style="inset:0;opacity:0;background:#ecebe7">
+        <svg id="mapSvg" width="1600" height="1000" viewBox="0 0 1600 1000" style="position:absolute;left:-210px;top:-150px">
+          <path d="M-100 860 C 200 760, 260 600, 120 380 S 160 40, 340 -80 L -100 -80 Z" fill="#d6e2ea"/>
+          <rect x="1040" y="250" width="420" height="300" rx="30" fill="#dfe8d6"/>
+          <g stroke="#ffffff" stroke-width="38" fill="none" stroke-linecap="round">
+            <path d="M 200 980 L 520 700 L 760 500 L 1100 220"/>
+            <path d="M 300 380 L 1500 380"/><path d="M 760 -50 L 760 1050"/><path d="M 980 620 L 1500 620"/>
+          </g>
+          <g stroke="#e2e1dc" stroke-width="2" fill="none"><path d="M 420 120 h 260 v 180 h -260 z M 860 120 h 160 v 170 h -160 z M 860 440 h 120 v 120 h -120 z M 360 450 h 300 v 120 h -300 z"/></g>
+        </svg>
+        <div id="dotHalo" style="left:0;top:0;width:150px;height:150px;border-radius:50%;background:rgba(197,162,83,.28)"></div>
+        <div id="cone" style="left:0;top:0;width:0;height:0;border-left:44px solid transparent;border-right:44px solid transparent;border-bottom:90px solid rgba(197,162,83,.55);transform-origin:50% 100%"></div>
+        <div id="dot" style="left:0;top:0;width:46px;height:46px;border-radius:50%;background:#0a0a0a;border:7px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25)"></div>
+        <div id="entr" style="left:0;top:0;font:600 26px Inter;color:#0a0a0a;white-space:nowrap">Main entrance</div>
+        <div id="car" style="left:0;top:0;width:58px;height:104px;border-radius:16px;background:#fbfbfa;box-shadow:0 3px 8px rgba(0,0,0,.35);transform-origin:50% 50%">
+          <div style="position:absolute;left:7px;right:7px;top:26px;height:48px;border-radius:9px;background:#151515"></div>
+          <div style="position:absolute;left:10px;right:10px;top:12px;height:10px;border-radius:5px;background:#d8d8d8"></div>
+        </div>
+      </div>
+      <div id="notif" class="card" style="left:46px;top:46px;width:640px;padding:24px 28px;opacity:0;border-radius:26px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:44px;height:44px;border-radius:11px;background:#0a0a0a;color:#fff;display:flex;align-items:center;justify-content:center;font:500 26px Cormorant">V</div>
+          <div style="font:600 22px Inter;letter-spacing:.08em;color:#6b6b6b">VALETT · NOW</div>
+        </div>
+        <div style="margin-top:14px;font:700 34px Inter;letter-spacing:-0.02em;color:#0a0a0a">Your car is at the door</div>
+        <div style="margin-top:6px;font:400 26px Inter;color:#6b6b6b">Land Rover Defender · Tip your driver?</div>
+      </div>
+      <!-- 6 end -->
+      <div id="end" style="inset:0;background:#fff;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px">
+        <div style="font:500 112px Cormorant;letter-spacing:.3em;margin-left:.3em;color:#0a0a0a">VALETT</div>
+        <div style="font:500 36px Inter;letter-spacing:-0.01em;color:#0a0a0a">Valet, without the wait.</div>
+        <div style="font:600 26px Inter;letter-spacing:.12em;color:#c5a253">VALETT.SI</div>
+      </div>
+      <div id="cursor"><svg viewBox="0 0 24 31" width="54" height="70"><path d="M2 2 L2 25 L8 19.5 L12.5 29 L16.5 27 L12 18 L20 18 Z" fill="#fff" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      <div id="flash"></div>
+    </div></div></div>
+    <div id="lapWrap"><div id="lap">
+      <div id="lapScr"><div id="tracks"></div><div id="playhead"></div></div>
+      <div id="lapBase"></div>
+    </div></div>
+  </div>
+</div>
+<script>
+const W = 1156, H = 676; // screen inner size
+const $ = (id) => document.getElementById(id);
+const cl = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const seg = (t, a, b) => cl((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const eo = (k) => 1 - Math.pow(1 - k, 3);
+const eio = (k) => (k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+const back = (k, s = 1.6) => 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2);
+const set = (el, css) => { for (const k in css) el.style[k] = css[k]; };
+
+// laptop timeline: fixed seeded clips
+(() => {
+  let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const tr = $('tracks');
+  for (let r = 0; r < 9; r++) {
+    const row = document.createElement('div'); row.className = 'track'; row.style.top = (30 + r * 36) + 'px';
+    let x = 0;
+    while (x < 900) { const w = 40 + rnd() * 180; const c = document.createElement('div'); c.className = 'clip';
+      c.style.left = x + 'px'; c.style.width = w + 'px'; c.style.background = r % 4 === 3 ? '#b23a5e' : r % 3 === 0 ? '#1f8a6e' : '#2457c9';
+      c.style.opacity = (.55 + rnd() * .4).toFixed(2); row.appendChild(c); x += w + 6 + rnd() * 40; }
+    tr.appendChild(row);
+  }
+  // three step tiles
+  const icons = [
+    '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/></svg>',
+    '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#c5a253" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5M5 16h14M5 16v2M19 16v2"/><circle cx="8" cy="13" r="1"/><circle cx="16" cy="13" r="1"/></svg>'];
+  const labels = ['Requested', 'On it', 'Bringing'];
+  icons.forEach((ic, i) => { const d = document.createElement('div'); d.className = 'tile'; d.id = 'tile' + i;
+    d.style.cssText = 'position:absolute;width:250px;height:250px;background:#0a0a0a;gap:18px';
+    d.innerHTML = ic + `<div style="font:600 30px Inter;color:#fff">${labels[i]}</div>`; $('tiles').appendChild(d); });
+})();
+
+function render(t) {
+  // camera: handheld drift (deterministic)
+  const dx = 5 * Math.sin(t * 1.3) + 3 * Math.sin(t * 2.9 + 1), dy = 4 * Math.sin(t * 1.1 + 2) + 2 * Math.sin(t * 3.3);
+  const rz = 0.25 * Math.sin(t * 0.9 + .5);
+  $('cam').style.transform = `translate(${dx.toFixed(2)}px,${dy.toFixed(2)}px) rotate(${rz.toFixed(3)}deg) scale(1.02)`;
+  $('playhead').style.left = (60 + ((t * 70) % 900)).toFixed(1) + 'px';
+
+  // ---- 1 messages (0 - 3.08): every property is set on every frame
+  const msgsOut = eio(seg(t, 2.58, 2.82));
+  set($('msgs'), { opacity: t >= 3.08 ? '0' : '1', transform: 'none' });
+  $('stamp').style.opacity = (1 - msgsOut).toFixed(3);
+  const p1 = seg(t, 0.02, 0.5);
+  set($('b1'), { opacity: (cl(p1 * 4) * (1 - msgsOut)).toFixed(3), transformOrigin: '100% 100%',
+    transform: `translate(${(-200 * msgsOut).toFixed(1)}px,${(-120 * msgsOut).toFixed(1)}px) scale(${(t < .5 ? back(p1) : 1).toFixed(4)})` });
+  const pt = seg(t, 0.7, 0.98), ptOut = seg(t, 1.43, 1.55);
+  const pulse = 1 + 0.04 * Math.sin(t * 12);
+  set($('bt'), { opacity: (cl(pt * 3) * (1 - ptOut)).toFixed(3), transform: `scale(${(back(pt) * pulse * (1 - .3 * ptOut)).toFixed(4)})`, transformOrigin: '0% 100%' });
+  $('bt').querySelectorAll('.dot3').forEach((d, i) => { d.style.opacity = (.45 + .55 * Math.max(0, Math.sin(t * 9 - i * .9))).toFixed(3); });
+  const p2 = seg(t, 1.45, 1.75), click1 = seg(t, 2.45, 2.62), toPill = eio(seg(t, 2.62, 2.98));
+  const g = Math.round(lerp(click1 > 0 ? 72 : 44, 255, toPill));
+  set($('b2'), { opacity: cl(p2 * 3).toFixed(3), transformOrigin: '0% 100%',
+    transform: `translate(${(toPill * 350).toFixed(1)}px,${(toPill * 70).toFixed(1)}px) scale(${(back(p2) * (1 - .06 * Math.sin(Math.PI * click1)) * (1 + .25 * toPill)).toFixed(4)})`,
+    background: `rgb(${g},${g},${Math.round(lerp(click1 > 0 ? 74 : 46, 255, toPill))})`, color: toPill > .5 ? 'rgba(0,0,0,0)' : '#fff' });
+
+  // ---- screen background
+  const scrBg = t < 3.05 ? '#0b1020' : '#f2f2f0';
+  $('scr').style.background = scrBg;
+  $('field').style.opacity = t >= 3.05 && t < 7.55 ? '1' : '0';
+  const fl = t < 3.0 ? 0 : t < 3.1 ? 1 : 1 - eo(seg(t, 3.1, 3.45));
+  $('flash').style.opacity = fl.toFixed(3);
+
+  // ---- 2 morphing shape: tile -> pill -> bar -> pill -> button
+  const sh = $('shape'); let w = 0, h = 0, r = 0, col = '#0a0a0a', show = false;
+  const cx = W / 2, cy = H / 2;
+  if (t >= 3.05 && t < 5.95) {
+    show = true;
+    if (t < 3.65) { const k = back(seg(t, 3.05, 3.45), 1.3); w = h = 290 * lerp(.6, 1, k); r = 64; }
+    else if (t < 4.17) { const k = eio(seg(t, 3.65, 4.0)); w = lerp(290, 360, k); h = lerp(290, 96, k); r = lerp(64, 48, k);
+      col = `rgb(${Math.round(lerp(10, 232, k))},${Math.round(lerp(10, 232, k))},${Math.round(lerp(10, 234, k))})`; }
+    else if (t < 4.38) { const k = eio(seg(t, 4.17, 4.38)); w = lerp(360, 300, k); h = lerp(96, 84, k); r = 44; col = '#e8e8ea'; }
+    else if (t < 5.5) { const k = back(seg(t, 4.38, 4.7), 1.1); w = lerp(300, 840, k); h = lerp(84, 104, cl(k)); r = 52; col = '#e8e8ea'; }
+    else if (t < 5.66) { const k = eio(seg(t, 5.5, 5.66)); w = lerp(840, 300, k); h = lerp(104, 96, k); r = 48; col = '#e8e8ea'; }
+    else { const k = back(seg(t, 5.66, 5.9), 1.2), kc = seg(t, 5.62, 5.76); w = lerp(300, 820, k); h = lerp(96, 150, cl(k)); r = 75;
+      col = `rgb(${Math.round(lerp(232, 10, kc))},${Math.round(lerp(232, 10, kc))},${Math.round(lerp(234, 10, kc))})`; }
+  }
+  set(sh, { display: show ? 'block' : 'none', width: w.toFixed(1) + 'px', height: h.toFixed(1) + 'px', borderRadius: r.toFixed(1) + 'px', background: col,
+    left: (cx - w / 2).toFixed(1) + 'px', top: (cy - h / 2).toFixed(1) + 'px' });
+  const tileTxtOp = t >= 3.05 && t < 3.85 ? cl(seg(t, 3.12, 3.3)) * (1 - seg(t, 3.65, 3.8)) : 0;
+  set($('tileTxt'), { opacity: tileTxtOp.toFixed(3), top: (cy - 30).toFixed(1) + 'px', transform: `scale(${(t < 3.45 ? lerp(.6, 1, back(seg(t, 3.05, 3.45), 1.3)) : 1).toFixed(3)})` });
+  const lblOp = seg(t, 4.55, 4.75) * (1 - seg(t, 5.45, 5.55));
+  $('barLbl').style.opacity = lblOp.toFixed(3);
+  const digits = '+971  58 214 7730'; const ntyped = Math.floor(cl((t - 4.85) / 0.6) * digits.length);
+  const caret = Math.floor(t * 3) % 2 === 0 ? '|' : ' ';
+  set($('barTxt'), { opacity: (seg(t, 4.62, 4.75) * (1 - seg(t, 5.45, 5.52))).toFixed(3), top: (cy - 26).toFixed(1) + 'px',
+    color: ntyped ? '#0a0a0a' : '#8e8e93' });
+  $('barTxt').textContent = ntyped ? digits.slice(0, ntyped) + caret : 'Your number';
+  set($('btnTxt'), { opacity: (seg(t, 5.78, 5.88) * (1 - seg(t, 5.93, 5.97))).toFixed(3), top: (cy - 30).toFixed(1) + 'px' });
+
+  // ---- 3 three step tiles (5.95 - 6.35)
+  const tilesOn = t >= 5.93 && t < 6.36;
+  $('tiles').style.opacity = tilesOn ? '1' : '0';
+  for (let i = 0; i < 3; i++) {
+    const el = $('tile' + i); const k = back(seg(t, 5.93, 6.12), 1.2); const tx = cx - 125 + (i - 1) * 285 * k;
+    let op = 1, sx = 1, x = tx, blur = 0;
+    if (i === 2) { const m = eio(seg(t, 6.2, 6.33)); x = lerp(tx, cx - 125 - 285, m); sx = 1 + 1.4 * Math.sin(Math.PI * m); blur = 10 * Math.sin(Math.PI * m); }
+    else op = 1 - seg(t, 6.2, 6.3);
+    set(el, { left: x.toFixed(1) + 'px', top: (cy - 125).toFixed(1) + 'px', opacity: op.toFixed(3), transform: `scaleX(${sx.toFixed(3)})`, filter: `blur(${blur.toFixed(1)}px)` });
+  }
+
+  // ---- 4 card (6.33 - 7.6)
+  const cIn = eo(seg(t, 6.3, 6.5)), cOut = seg(t, 7.48, 7.6);
+  set($('card'), { opacity: (cIn * (1 - cOut)).toFixed(3), transform: `scale(${lerp(.92, 1, cIn).toFixed(3)})`, top: (cy - 125).toFixed(1) + 'px', left: (cx - 418).toFixed(1) + 'px' });
+  const sw = seg(t, 7.08, 7.2);
+  $('cT1').style.opacity = $('cS1').style.opacity = (1 - sw).toFixed(3);
+  $('cT2').style.opacity = $('cS2').style.opacity = sw.toFixed(3);
+  set($('cBar'), { width: (sw > 0 ? 100 : 100 * eio(seg(t, 6.5, 7.08))).toFixed(1) + '%', background: sw > 0 ? '#c5a253' : '#0a0a0a' });
+
+  // ---- 5 map (7.6 - 10.13)
+  const mapIn = seg(t, 7.66, 7.86), mapOn = t >= 7.58 && t < 10.13;
+  const whip = eio(seg(t, 8.67, 8.85));
+  const wide = whip;
+  set($('map'), { opacity: mapOn ? '1' : '0', background: t < 7.66 ? '#ffffff' : '#ecebe7' });
+  $('mapSvg').style.opacity = mapIn.toFixed(3);
+  const dotX = cx + 40, dotY = cy + 30;
+  const mapShift = `translate(${(whip * 470).toFixed(1)}px,${(whip * -10).toFixed(1)}px) scale(${lerp(1, .78, wide).toFixed(3)})`;
+  const blurX = 22 * Math.sin(Math.PI * seg(t, 8.67, 8.85));
+  $('map').style.transform = mapShift; $('map').style.transformOrigin = `${dotX}px ${dotY}px`;
+  $('map').style.filter = `blur(${blurX.toFixed(1)}px)`;
+  const dk = back(seg(t, 7.62, 7.82), 1.8);
+  set($('dot'), { left: (dotX - 23).toFixed(1) + 'px', top: (dotY - 23).toFixed(1) + 'px', transform: `scale(${(t < 7.62 ? 0 : dk).toFixed(3)})` });
+  const halo = (t * 0.9) % 1;
+  set($('dotHalo'), { left: (dotX - 75).toFixed(1) + 'px', top: (dotY - 75).toFixed(1) + 'px', opacity: (mapIn * (1 - halo)).toFixed(3), transform: `scale(${lerp(.4, 1.2, halo).toFixed(3)})` });
+  set($('cone'), { left: (dotX - 44).toFixed(1) + 'px', top: (dotY - 90).toFixed(1) + 'px', opacity: mapIn.toFixed(3), transform: `rotate(${(-140 + 40 * Math.sin(t * 1.4)).toFixed(1)}deg)` });
+  set($('entr'), { left: (dotX + 40).toFixed(1) + 'px', top: (dotY - 16).toFixed(1) + 'px', opacity: seg(t, 7.8, 7.95).toFixed(3) });
+  // car path: from lower left up the diagonal road to the dot
+  const ck = eio(seg(t, 7.75, 8.65));
+  const P = [[cx - 470, cy + 420], [cx - 200, cy + 200], [dotX - 70, dotY + 60]];
+  const qx = (1 - ck) * (1 - ck) * P[0][0] + 2 * (1 - ck) * ck * P[1][0] + ck * ck * P[2][0];
+  const qy = (1 - ck) * (1 - ck) * P[0][1] + 2 * (1 - ck) * ck * P[1][1] + ck * ck * P[2][1];
+  const dxp = 2 * (1 - ck) * (P[1][0] - P[0][0]) + 2 * ck * (P[2][0] - P[1][0]), dyp = 2 * (1 - ck) * (P[1][1] - P[0][1]) + 2 * ck * (P[2][1] - P[1][1]);
+  const ang = Math.atan2(dyp, dxp) * 180 / Math.PI + 90;
+  set($('car'), { left: (qx - 29).toFixed(1) + 'px', top: (qy - 52).toFixed(1) + 'px', transform: `rotate(${ang.toFixed(1)}deg)`, opacity: seg(t, 7.72, 7.8).toFixed(3) });
+  const nIn = eo(seg(t, 8.86, 9.12));
+  set($('notif'), { opacity: (t >= 10.13 ? 0 : nIn).toFixed(3), transform: `translateY(${lerp(-40, 0, nIn).toFixed(1)}px) scale(${lerp(.94, 1, nIn).toFixed(3)})` });
+
+  // ---- 6 end card
+  const eIn = seg(t, 10.13, 10.16);
+  $('end').style.opacity = eIn.toFixed(3);
+
+  // cursor: rises to the reply (1.88-2.45), rises to the pill (3.8-4.15)
+  let cxp = -100, cyp = -100, cs = 1, cop = 0;
+  if (t >= 1.88 && t < 2.75) { const k = eo(seg(t, 1.88, 2.42)); cxp = lerp(360, 250, k); cyp = lerp(H + 40, 300, k); cop = 1 - seg(t, 2.6, 2.72); cs = 1 - .15 * Math.sin(Math.PI * seg(t, 2.45, 2.6)); }
+  if (t >= 3.8 && t < 4.5) { const k = eo(seg(t, 3.8, 4.12)); cxp = lerp(cx + 120, cx + 30, k); cyp = lerp(H + 40, cy + 18, k); cop = 1 - seg(t, 4.35, 4.48); cs = 1 - .15 * Math.sin(Math.PI * seg(t, 4.14, 4.3)); }
+  set($('cursor'), { left: cxp.toFixed(1) + 'px', top: cyp.toFixed(1) + 'px', opacity: cop.toFixed(3), transform: `scale(${cs.toFixed(3)})` });
+
+  // room light spill from the screen
+  let spill = 0.1;
+  if (t >= 3.0) spill = 0.38; if (t >= 3.0 && t < 3.45) spill = lerp(.85, .38, seg(t, 3.1, 3.45)); if (t >= 7.58) spill = 0.34; if (t >= 10.13) spill = 0.42;
+  $('spill').style.opacity = spill.toFixed(3);
+}
+
+const FPS = 30, FRAMES = 345;
+window.hfPage = {
+  width: 1080, height: 1920, fps: FPS, frames: FRAMES,
+  ready: Promise.all([document.fonts.load('600 40px Inter'), document.fonts.load('500 46px Cormorant')]),
+  audio: 'audio/bed.m4a',
+  render(t) { render(t); },
+};
+</script>
+</body></html>
