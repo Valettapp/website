@@ -343,7 +343,13 @@ const sdaCss = sdaRules.join('\n');
   html.story-sda .hero-story .scan-t0 { animation: sy-fade-out linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
   html.story-sda .hero-story .scan-results { animation: sy-results ease-in-out both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.33) calc(var(--story-top) + var(--story-len) * 0.41); }
   html.story-sda .hero-story .scan-shutter { animation: sy-shutter linear both; animation-timeline: scroll(root); animation-range: calc(var(--story-top) + var(--story-len) * 0.12) calc(var(--story-top) + var(--story-len) * 0.16); }
-  @media (min-width: 64rem) { html.story-sda .story-hub { --arrive: calc(var(--story-vh, 100svh) * 0.6); --shift: -10vw; } }
+  /* Desktop: the headline is gone (0–7 %) before the phones start to rise (6–18 %), so the phone never passes through
+     the text; and it waits lower, a hint at the bottom edge, clear of the buttons on short laptop screens. */
+  @media (min-width: 64rem) {
+    html.story-sda .story-intro { animation-range: calc(var(--story-top) + var(--story-len) * 0) calc(var(--story-top) + var(--story-len) * 0.07); }
+    html.story-sda .story-hub { --arrive: calc(var(--story-vh, 100svh) * 0.62 + 120px); --shift: -10vw; }
+    html.story-sda .story-hub, html.story-sda .story-panel, html.story-sda .story-side-l, html.story-sda .story-side-r { animation-range: calc(var(--story-top) + var(--story-len) * 0.06) calc(var(--story-top) + var(--story-len) * 0.18); }
+  }
 
   @keyframes sy-intro { from { opacity: 1; transform: none; visibility: visible; } to { opacity: 0; transform: translateY(-56px); visibility: hidden; } }
   @keyframes sy-panel { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
@@ -405,7 +411,7 @@ const sdaCss = sdaRules.join('\n');
       const vh = stageH, vw = window.innerWidth, desktop = desktopMq.matches;
       const fit = desktop ? (vh - 200) / 740 : Math.min((vw - 32) / 744, (vh * 0.5) / 740);
       ps = Math.max(0.42, Math.min(1, fit));
-      arrive = desktop ? vh * 0.6 : vh * 0.58;
+      arrive = desktop ? vh * 0.62 + 120 : vh * 0.58;
       shift = desktop ? -vw * 0.1 : 0;
       last = -1;
     };
@@ -432,12 +438,13 @@ const sdaCss = sdaRules.join('\n');
       if (dots.dataset.beat !== beat) dots.dataset.beat = beat;
       dots.style.opacity = f3(ease((p - 0.14) / 0.06));
       // Headline out
-      const ti = seg(p, [0, 0.12]);
+      const desk = desktopMq.matches;
+      const ti = seg(p, [0, desk ? 0.07 : 0.12]);
       intro.style.opacity = f3(1 - ti);
       intro.style.transform = `translateY(${f3(-56 * ti)}px)`;
       intro.style.visibility = ti >= 1 ? 'hidden' : '';
       // Fan arrives: hub rises and grows, panel fades in, side phones fan out
-      const th = seg(p, [0.02, 0.18]);
+      const th = seg(p, desk ? [0.06, 0.18] : [0.02, 0.18]);
       hub.style.transform = `translate(-50%, -50%) translate(${f3((1 - th) * shift)}px, ${f3((1 - th) * arrive)}px) scale(${f3(ps)})`;
       panel.style.opacity = f3(th);
       panel.style.transform = `translateY(${f3((1 - th) * 40)}px)`;
