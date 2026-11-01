@@ -5,8 +5,10 @@ Instagram (Reels, feed, Stories) and TikTok. Apple-style product ads built only 
 All videos are 9:16, 1080×1920. Each comes twice: `*-voice.mp4` with the voiceover (post these) and a silent version
 (for your own edits). Add a soft instrumental track under the voice in the Instagram or TikTok editor, about 15 % volume.
 
-**Voice:** "Luna" on ElevenLabs v4 via Higgsfield: young American woman, light and warm, natural pacing.
-Lines are in `marketing/voiceover/` (one mp3 per line), mixed by `marketing/tools/mix.sh` at -16 LUFS.
+**Voice:** "Sienna" on ElevenLabs v4 via Higgsfield (1 Nov: Luna was too high, ~280 Hz; Sienna sits ~210 Hz,
+softer and calmer). Tutorial with her voice: `reels/05-tutorial-VOICE-SIENNA.mp4` (lines in `voiceover/sienna/`,
+-14 LUFS stereo, a 2 dB high-shelf cut above 7 kHz for softness). The other four reels still use the older
+"Luna" lines in `marketing/voiceover/`, mixed by `marketing/tools/mix.sh` at -16 LUFS. Alternative audition: `voiceover/audition-gia.mp3`.
 
 ## Goal and audience
 - **Book demos** at valett.si with Dubai hotel general managers, F&B and rooms directors, mall and residence operators,
