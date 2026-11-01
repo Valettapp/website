@@ -1,0 +1,375 @@
+---
+/**
+ * Valett devices: iOS and Android phones and tablets supplied with Valett pre-installed and white-labelled.
+ * Four 3D devices (CSS: stacked layers give real thickness), each running a real Valett screen. Drag to turn
+ * (mouse or touch), "Turn around" shows the branded back. The venue switcher re-brands every screen and back.
+ * No manufacturer names (no partner claims) and no prices: devices are part of each venue's agreed package.
+ * Reduced motion: no idle sway; turning still works on request.
+ */
+import { Picture } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import Plate from './Plate.astro';
+import Ambient from './Ambient.astro';
+import carPhoto from '../assets/car-photo.jpg';
+import carScan from '../assets/car-scan.jpg';
+
+const venues = [
+  { id: 'marquee', name: 'The Marquee' },
+  { id: 'arcadia', name: 'Arcadia Mall' },
+  { id: 'lune', name: 'Maison Lune' },
+  { id: 'marina', name: 'One Marina' },
+];
+// w/h/r/depth/bezel in stage pixels (the stage is 480 x 680 and scales to its card)
+const devices = [
+  { id: 'ios-phone', name: 'Door phone', os: 'iOS', body: 'The valet’s phone: one-photo check-in, tickets and requests.', w: 286, h: 596, r: 50, depth: 22, bezel: 9, sr: 41, rugged: false, label: 'An iOS phone running the Valett staff app, branded for the venue' },
+  { id: 'ios-tablet', name: 'Podium tablet', os: 'iPadOS', body: 'The key board at the podium: every car, every bay, every minute.', w: 400, h: 540, r: 30, depth: 10, bezel: 18, sr: 12, rugged: false, label: 'An iOS tablet showing the Valett key board, branded for the venue' },
+  { id: 'and-phone', name: 'Rugged phone', os: 'Android', body: 'For the kerb in August: drop-tested, sealed, with a swappable battery.', w: 300, h: 600, r: 40, depth: 34, bezel: 18, sr: 16, rugged: true, label: 'A rugged Android phone running the Valett camera check-in, branded for the venue' },
+  { id: 'and-tablet', name: 'Rugged tablet', os: 'Android', body: 'A guest kiosk at the door or a board in the key room, mounted or in hand.', w: 420, h: 560, r: 34, depth: 24, bezel: 26, sr: 14, rugged: true, label: 'A rugged Android tablet running the Valett guest kiosk, branded for the venue' },
+];
+const layers = (d: { depth: number }) => Array.from({ length: Math.ceil(d.depth / 2) }, (_, i) => i);
+
+// A deterministic QR-like pattern for the kiosk (decorative; three finder squares and seeded modules)
+const N = 25;
+let seed = 777;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const finder = (x: number, y: number) => (x < 7 && y < 7) || (x >= N - 7 && y < 7) || (x < 7 && y >= N - 7);
+const qrCells: string[] = [];
+for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+  if (finder(x, y)) continue;
+  if (rnd() > 0.52) qrCells.push(`M${x} ${y}h1v1h-1z`);
+}
+const finders = [[0, 0], [N - 7, 0], [0, N - 7]].map(([x, y]) => `M${x} ${y}h7v7h-7zM${x + 1} ${y + 1}v5h5v-5zM${x + 2} ${y + 2}h3v3h-3z`).join('');
+
+const rows = [
+  ['V771', 'Range Rover', 'P1 · 12', 'Parked', '—'],
+  ['V772', 'G 63', 'P2 · 08', 'Requested', '2 min'],
+  ['V774', 'Cullinan', 'P3 · 21', 'Bringing', '1 min'],
+  ['V775', '911 Carrera', 'P1 · 33', 'Parked', '—'],
+  ['V776', 'Model S', 'P2 · 40', 'Parked', '—'],
+  ['V777', 'Defender', 'P3 · 55', 'Overdue', '+1 min'],
+];
+---
+<section data-reveal-group id="devices" class="section-pad scroll-mt-20" aria-labelledby="devices-title" data-devices data-venue="marquee">
+  <div class="container-page">
+    <div class="grid items-end gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="flex flex-col gap-6 lg:col-span-6">
+        <SectionHead id="devices-title" eyebrow="Valett devices" title="Phones and tablets that arrive ready." />
+        <p class="t-body measure">
+          Valett supplies the devices too: iOS and Android phones and tablets with the software installed, signed in and locked to Valett before they reach the door. Each one carries the venue’s brand, on the start screen, in the app and on the back. Rugged models are there for the kerb. The devices are part of each venue’s agreed package.
+        </p>
+      </div>
+      <ul class="measure flex flex-col lg:col-span-6">
+        {['Installed, set up and locked to Valett before delivery', 'The venue’s name on the screen, the app and the back', 'iOS or Android, phone or tablet, standard or rugged', 'Included in each venue’s agreed package'].map((t) => (
+          <li class="hairline-t py-3 text-[16px] text-ink-2">{t}</li>
+        ))}
+        <li class="hairline-t"></li>
+      </ul>
+    </div>
+
+    {/* White-label switcher */}
+    <div class="mt-12 flex flex-wrap items-center gap-3 md:mt-16">
+      <span class="text-[14px] text-ink-2 me-1">See them in a venue’s brand:</span>
+      {venues.map((v, i) => (
+        <button type="button" class="dev-venue rounded-pill border border-ink/15 px-4 py-2 text-[14px] font-medium transition-colors aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white" aria-pressed={i === 0 ? 'true' : 'false'} data-venue-btn={v.id} data-name={v.name}>{v.name}</button>
+      ))}
+    </div>
+
+    {/* Device chooser: phones and small tablets show one device at a time */}
+    <div class="dev-tabs mt-6" role="tablist" aria-label="Devices">
+      {devices.map((d, i) => (
+        <button type="button" role="tab" class="dev-tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={d.id}>{d.name}<span>{d.os}</span></button>
+      ))}
+    </div>
+
+    <div class="relative mt-6 lg:mt-10"><Ambient variant="wide" class="-inset-y-[10%]" />
+    <ul class="dev-grid" data-reveal-stagger="scale">
+      {devices.map((d, i) => (
+        <li class="dev-card glass-card !rounded-frame" data-card={d.id} data-active={i === 0 ? '' : undefined}>
+          <div class="dev-wrap" data-wrap>
+            <div class="dev-scale">
+              <div class="dev-stage" data-stage title="Drag to turn">
+                <div class="dev-shadow" style={`width:${d.w * 0.9}px`}></div>
+                <div class:list={['dev', d.rugged && 'dev-rugged', `dev-${d.id}`]} role="img" aria-label={d.label} data-dev
+                  style={`width:${d.w}px;height:${d.h}px;--r:${d.r}px;--b:${d.bezel}px;--sr:${d.sr}px;--d:${d.depth}px;margin:${-d.h / 2}px 0 0 ${-d.w / 2}px`}>
+                  {layers(d).map((k) => (
+                    <div class="dev-layer" style={`transform:translateZ(${-(k + 1) * 2}px);--k:${(k / Math.max(1, layers(d).length - 1)).toFixed(2)}`}></div>
+                  ))}
+                  {/* Back: the venue's name, camera, "Powered by Valett" */}
+                  <div class="dev-back" style={`transform:translateZ(${-layers(d).length * 2 - 0.5}px) rotateY(180deg)`}>
+                    <div class:list={['dev-cam', d.id === 'ios-phone' && 'cam-trio', d.rugged && 'cam-strip']}><i></i><i></i><i></i></div>
+                    {d.rugged && <div class="dev-grip" aria-hidden="true"></div>}
+                    <p class="vw dev-back-name" data-vw>The Marquee</p>
+                    <p class="dev-back-by">Powered by Valett</p>
+                  </div>
+                  {/* Front */}
+                  <div class="dev-front">
+                    {d.rugged && <><i class="bump tl"></i><i class="bump tr"></i><i class="bump bl"></i><i class="bump br"></i></>}
+                    <div class="dev-screen">
+                      {d.id === 'ios-phone' && (
+                        <div class="scr scr-dark">
+                          <div class="sb"><span>1:06</span><i class="island"></i><span class="sb-ic">●●● ▮</span></div>
+                          <p class="vw scr-vw" data-vw>The Marquee</p>
+                          <p class="scr-eyebrow">New request · Just now</p>
+                          <div class="scr-photo"><Picture src={carPhoto} formats={['avif', 'webp']} widths={[300, 600]} sizes="300px" alt="" loading="lazy" decoding="async" /></div>
+                          <p class="scr-car">Land Rover Defender</p>
+                          <div class="scr-plate"><Plate emirate="Dubai" code="M" number="95378" scale={0.62} /></div>
+                          <p class="scr-sub">Parked · Zone P3 · Bay 55</p>
+                          <span class="scr-btn">On my way</span>
+                        </div>
+                      )}
+                      {d.id === 'ios-tablet' && (
+                        <div class="scr scr-light">
+                          <div class="sb sb-dark"><span>1:06</span><span class="sb-ic">●●● ▮</span></div>
+                          <div class="tb-head"><p class="vw" data-vw>The Marquee</p><p class="tb-meta">Key board · 6 cars</p></div>
+                          <div class="tb">
+                            <div class="tb-row tb-th"><span>Ticket</span><span>Car</span><span>Bay</span><span>Status</span><span>Due</span></div>
+                            {rows.map((r) => (
+                              <div class:list={['tb-row', r[3] === 'Overdue' && 'tb-late']}><span>{r[0]}</span><span>{r[1]}</span><span>{r[2]}</span><span class="tb-st">{r[3]}</span><span>{r[4]}</span></div>
+                            ))}
+                          </div>
+                          <div class="tb-toast">Shift manager pinged · V777</div>
+                        </div>
+                      )}
+                      {d.id === 'and-phone' && (
+                        <div class="scr scr-dark scr-cam">
+                          <Picture src={carScan} formats={['avif', 'webp']} widths={[300, 600]} sizes="300px" alt="" class="cam-feed" loading="lazy" decoding="async" />
+                          <div class="sb sb-and"><span>1:06</span><i class="punch"></i><span class="sb-ic">▾ ▮</span></div>
+                          <p class="vw scr-vw" data-vw>The Marquee</p>
+                          <div class="cam-frame"></div>
+                          <div class="cam-sheet">
+                            <p class="cam-title"><i></i>Vehicle recognised</p>
+                            {[['Plate', ''], ['Make', 'Land Rover'], ['Model', 'Defender'], ['Colour', 'White']].map(([k, v]) => (
+                              <div class="cam-row"><span>{k}</span>{k === 'Plate' ? <Plate emirate="Dubai" code="M" number="95378" scale={0.45} /> : <b>{v}</b>}</div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {d.id === 'and-tablet' && (
+                        <div class="scr scr-light scr-kiosk">
+                          <div class="sb sb-dark sb-and"><span>1:06</span><i class="punch"></i><span class="sb-ic">▾ ▮</span></div>
+                          <p class="vw kiosk-vw" data-vw>The Marquee</p>
+                          <p class="kiosk-h">Your car, one tap away.</p>
+                          <div class="kiosk-qr"><svg viewBox={`-2 -2 ${N + 4} ${N + 4}`} aria-hidden="true"><rect x="-2" y="-2" width={N + 4} height={N + 4} fill="#fff" /><path d={finders} fill="#0a0a0a" fill-rule="evenodd" /><path d={qrCells.join('')} fill="#0a0a0a" /></svg></div>
+                          <p class="kiosk-s">Scan for your ticket. No app.</p>
+                          <div class="kiosk-steps"><span>1 · Scan</span><span>2 · Request</span><span>3 · Walk out</span></div>
+                        </div>
+                      )}
+                      <div class="glare" aria-hidden="true"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5 px-6 pb-6 pt-2">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-[20px] font-semibold tracking-[-0.02em] whitespace-nowrap">{d.name}</h3>
+              <span class="dev-os">{d.os}</span>
+            </div>
+            <p class="text-[15px] leading-relaxed text-ink-2">{d.body}</p>
+            <div class="mt-2 flex items-center justify-between gap-3">
+              <span class="t-caption">White-labelled</span>
+              <button type="button" class="dev-flip whitespace-nowrap" data-flip aria-pressed="false">Turn around</button>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+    </div>
+    <p class="t-caption mt-5">Drag a device to turn it. Interactive sample, demo data.</p>
+  </div>
+</section>
+
+<style>
+  /* Layout: four cards on large screens; below that, one device at a time with tabs */
+  .dev-grid { display: grid; gap: 20px; grid-template-columns: 1fr; position: relative; }
+  .dev-card { display: none; overflow: hidden; }
+  .dev-card[data-active] { display: flex; flex-direction: column; }
+  @media (min-width: 64rem) {
+    .dev-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .dev-card { display: flex; flex-direction: column; }
+  }
+  .dev-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .dev-tabs::-webkit-scrollbar { display: none; }
+  @media (min-width: 64rem) { .dev-tabs { display: none; } }
+  .dev-tab { flex: none; display: inline-flex; align-items: baseline; gap: 6px; padding: 9px 14px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--color-ink-2, #666);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); transition: background-color .2s, color .2s; }
+  .dev-tab span { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+  .dev-tab[aria-selected="true"] { background: #0a0a0a; color: #fff; box-shadow: none; }
+
+  /* Stage: 480 x 680 base, scaled to the card width by script (scale, never zoom) */
+  .dev-wrap { position: relative; width: 100%; aspect-ratio: 480 / 670; overflow: hidden; }
+  @media (max-width: 63.99rem) { .dev-wrap { aspect-ratio: 480 / 670; } }
+  .dev-scale { position: absolute; left: 50%; top: 0; width: 480px; height: 680px; transform-origin: 50% 0; translate: -50% 0; scale: var(--s, .6); }
+  .dev-stage { position: absolute; inset: 0; perspective: 1500px; perspective-origin: 50% 45%; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .dev-stage[data-dragging] { cursor: grabbing; }
+  .dev-shadow { position: absolute; left: 50%; top: 92%; height: 40px; translate: -50% 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.22), rgba(0,0,0,0)); filter: blur(4px); scale: var(--shs, 1) 1; }
+
+  /* The device: front face, stacked edge layers, back face */
+  .dev { position: absolute; left: 50%; top: 48.5%; transform-style: preserve-3d; transform: rotateX(var(--rx, 6deg)) rotateY(var(--ry, -22deg)); will-change: transform; }
+  .dev-layer { position: absolute; inset: 0; border-radius: var(--r); background: color-mix(in srgb, #4a4a4e calc(100% - var(--k) * 70%), #141415); }
+  .dev-rugged .dev-layer { background: color-mix(in srgb, #39393b calc(100% - var(--k) * 60%), #111); box-shadow: inset 0 0 0 3px rgba(255,255,255,.04); }
+  .dev-front, .dev-back { position: absolute; inset: 0; border-radius: var(--r); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .dev-front { background: #0b0b0c; box-shadow: inset 0 0 0 1.5px #5a5a5e, inset 0 0 0 3px #1c1c1e; }
+  .dev-rugged .dev-front { background: #1a1a1b; box-shadow: inset 0 0 0 2px #3a3a3c; }
+  /* Safari ignores backface-visibility on composited children, so the hidden face is switched off by script */
+  .dev[data-facing="back"] .dev-front, .dev:not([data-facing="back"]) .dev-back { visibility: hidden; }
+  .dev-screen { position: absolute; inset: var(--b); border-radius: var(--sr); overflow: hidden; background: #000; }
+  .bump { position: absolute; width: 74px; height: 74px; background: #2b2b2d; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .bump.tl { left: 0; top: 0; border-radius: var(--r) 10px 10px 10px; } .bump.tr { right: 0; top: 0; border-radius: 10px var(--r) 10px 10px; }
+  .bump.bl { left: 0; bottom: 0; border-radius: 10px 10px 10px var(--r); } .bump.br { right: 0; bottom: 0; border-radius: 10px 10px var(--r) 10px; }
+  .glare { position: absolute; inset: 0; pointer-events: none; z-index: 40;
+    background: linear-gradient(calc(115deg + var(--gl, 0deg)), rgba(255,255,255,0) 30%, rgba(255,255,255,.14) 46%, rgba(255,255,255,0) 60%); }
+
+  .dev-back { background: linear-gradient(160deg, #2a2a2d, #151516); box-shadow: inset 0 0 0 1.5px #4a4a4e; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .dev-rugged .dev-back { background: #1b1b1c; box-shadow: inset 0 0 0 2px #333; }
+  .dev-back-name { color: rgba(255,255,255,.82); font-size: 26px; }
+  .dev-back-by { margin-top: 12px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+  .dev-cam { position: absolute; left: 22px; top: 22px; display: flex; gap: 8px; padding: 10px; border-radius: 18px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+  .dev-cam i { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #3a4a5a, #050505 60%); box-shadow: 0 0 0 3px #222, 0 0 0 4px #3a3a3c; }
+  .dev-cam i:nth-child(n+2) { display: none; }
+  .cam-trio { display: grid; grid-template-columns: repeat(2, 30px); gap: 10px; padding: 14px; border-radius: 26px; }
+  .cam-trio i { width: 30px; height: 30px; } .cam-trio i:nth-child(n+2) { display: block; }
+  .cam-strip { width: auto; border-radius: 14px; } .cam-strip i:nth-child(2) { display: block; }
+  .dev-grip { position: absolute; inset: 34% 18px 18%; border-radius: 16px; background: repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 6px, rgba(0,0,0,0) 6px 12px); }
+
+  /* Venue wordmarks: each venue has its own type (white-label) */
+  .vw { font-family: var(--font-serif); letter-spacing: .3em; text-transform: uppercase; font-weight: 400; line-height: 1.2; white-space: nowrap; }
+  [data-venue="arcadia"] .vw { font-family: var(--font-sans); font-weight: 700; letter-spacing: .1em; }
+  [data-venue="lune"] .vw { font-family: var(--font-serif); font-style: italic; text-transform: none; letter-spacing: .02em; font-size: 1.25em; }
+  [data-venue="marina"] .vw { font-family: var(--font-sans); font-weight: 300; letter-spacing: .38em; }
+  .vw { transition: opacity .25s ease; } [data-swapping] .vw { opacity: 0; }
+
+  /* Screens */
+  .scr { position: absolute; inset: 0; font-family: var(--font-sans); }
+  .scr-dark { background: #0a0a0a; color: #fff; }
+  .scr-light { background: #f2f2f0; color: #0a0a0a; }
+  .sb { position: absolute; inset-inline: 0; top: 0; height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font: 600 12px/1 -apple-system, system-ui, sans-serif; color: #fff; z-index: 5; }
+  .sb-dark { color: #0a0a0a; }
+  .sb-ic { font-size: 8px; letter-spacing: 2px; }
+  .island { position: absolute; left: 50%; top: 10px; width: 84px; height: 24px; translate: -50% 0; border-radius: 12px; background: #000; }
+  .punch { position: absolute; left: 50%; top: 13px; width: 13px; height: 13px; translate: -50% 0; border-radius: 50%; background: #000; box-shadow: 0 0 0 2px #1a1a1a; }
+  .sb-and { justify-content: space-between; }
+  .scr-vw { position: absolute; top: 52px; inset-inline: 0; text-align: center; font-size: 13px; color: rgba(255,255,255,.88); z-index: 5; }
+  .scr-eyebrow { position: absolute; top: 96px; left: 20px; font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #c5a253; }
+  .scr-photo { position: absolute; top: 120px; left: 16px; right: 16px; height: 150px; border-radius: 14px; overflow: hidden; }
+  .scr-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .scr-car { position: absolute; top: 286px; left: 20px; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  .scr-plate { position: absolute; top: 322px; left: 20px; }
+  .scr-sub { position: absolute; top: 370px; left: 20px; font-size: 12px; color: rgba(255,255,255,.6); }
+  .scr-btn { position: absolute; left: 16px; right: 16px; bottom: 34px; padding: 14px; border-radius: 999px; background: #fff; color: #0a0a0a; text-align: center; font-size: 14px; font-weight: 600; }
+
+  .tb-head { position: absolute; top: 46px; inset-inline: 22px; display: flex; align-items: baseline; justify-content: space-between; font-size: 14px; }
+  .tb-meta { font-size: 11px; color: #666; }
+  .tb { position: absolute; top: 84px; inset-inline: 16px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); overflow: hidden; }
+  .tb-row { display: grid; grid-template-columns: 46px 1fr 58px 70px 42px; gap: 6px; padding: 11px 12px; font-size: 11px; border-top: 1px solid rgba(0,0,0,.06); white-space: nowrap; }
+  .tb-th { border-top: 0; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: #999; padding-block: 9px; }
+  .tb-row span:first-child { font-weight: 600; }
+  .tb-st { color: #666; }
+  .tb-late { background: rgba(197,162,83,.16); } .tb-late .tb-st { color: #826b37; font-weight: 600; }
+  .tb-toast { position: absolute; left: 50%; bottom: 22px; translate: -50% 0; padding: 10px 16px; border-radius: 999px; background: #0a0a0a; color: #fff; font-size: 11px; white-space: nowrap; }
+
+  .scr-cam :global(.cam-feed), .scr-cam :global(.cam-feed img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scr-cam::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0) 22%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6)); }
+  .cam-frame { position: absolute; left: 12%; right: 12%; top: 36%; height: 22%; z-index: 4;
+    background: linear-gradient(#c5a253,#c5a253) 0 0/22px 3px, linear-gradient(#c5a253,#c5a253) 0 0/3px 22px, linear-gradient(#c5a253,#c5a253) 100% 0/22px 3px, linear-gradient(#c5a253,#c5a253) 100% 0/3px 22px,
+      linear-gradient(#c5a253,#c5a253) 0 100%/22px 3px, linear-gradient(#c5a253,#c5a253) 0 100%/3px 22px, linear-gradient(#c5a253,#c5a253) 100% 100%/22px 3px, linear-gradient(#c5a253,#c5a253) 100% 100%/3px 22px; background-repeat: no-repeat; }
+  .cam-sheet { position: absolute; inset-inline: 0; bottom: 0; z-index: 5; padding: 14px 14px 18px; border-radius: 20px 20px 0 0; background: rgba(10,10,10,.94); }
+  .cam-title { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .cam-title i { width: 7px; height: 7px; border-radius: 50%; background: #c5a253; }
+  .cam-row { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; padding: 7px 10px; border-radius: 8px; background: rgba(255,255,255,.06); font-size: 11px; color: rgba(255,255,255,.55); }
+  .cam-row b { color: #fff; font-weight: 500; }
+
+  .scr-kiosk { display: flex; flex-direction: column; align-items: center; background: #fff; }
+  .kiosk-vw { margin-top: 70px; font-size: 22px; }
+  .kiosk-h { margin-top: 26px; font-size: 26px; font-weight: 600; letter-spacing: -0.03em; }
+  .kiosk-qr { margin-top: 26px; width: 160px; height: 160px; padding: 10px; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .kiosk-qr svg { width: 100%; height: 100%; display: block; shape-rendering: crispEdges; }
+  .kiosk-s { margin-top: 16px; font-size: 13px; color: #666; }
+  .kiosk-steps { position: absolute; bottom: 26px; display: flex; gap: 8px; }
+  .kiosk-steps span { padding: 7px 11px; border-radius: 999px; background: #f2f2f0; font-size: 10px; font-weight: 500; }
+
+  .dev-os { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--color-gold-text); padding: 4px 10px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--color-gold); }
+  .dev-flip { font-size: 13px; font-weight: 500; padding: 7px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.14); transition: background-color .2s, color .2s; }
+  .dev-flip[aria-pressed="true"] { background: #0a0a0a; color: #fff; box-shadow: none; }
+  @media (hover: hover) and (pointer: fine) { .dev-flip:hover, .dev-tab:hover { box-shadow: inset 0 0 0 1px #0a0a0a; } .dev-venue:hover { border-color: #0a0a0a; } }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-devices]');
+  if (root) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-card]')];
+    type S = { el: HTMLElement; dev: HTMLElement; stage: HTMLElement; base: number; ry: number; rx: number; v: number; drag: boolean; lastX: number; idleAt: number; phase: number; flipBtn: HTMLButtonElement };
+    const states: S[] = cards.map((c, i) => ({
+      el: c, dev: c.querySelector<HTMLElement>('[data-dev]')!, stage: c.querySelector<HTMLElement>('[data-stage]')!,
+      base: -22, ry: -22, rx: 6, v: 0, drag: false, lastX: 0, idleAt: 0, phase: i * 1.7, flipBtn: c.querySelector<HTMLButtonElement>('[data-flip]')!,
+    }));
+
+    // Scale each stage to its card (scale, never zoom)
+    const ro = new ResizeObserver((es) => es.forEach((e) => {
+      const w = (e.target as HTMLElement).clientWidth; const s = Math.min(w / 480, 1.15);
+      (e.target as HTMLElement).style.setProperty('--s', s.toFixed(4));
+    }));
+    cards.forEach((c) => ro.observe(c.querySelector('[data-wrap]')!));
+
+    const apply = (s: S) => {
+      s.dev.style.setProperty('--ry', s.ry.toFixed(2) + 'deg');
+      s.dev.style.setProperty('--rx', s.rx.toFixed(2) + 'deg');
+      const n = ((s.ry % 360) + 360) % 360; const facing = n > 90 && n < 270;
+      s.dev.style.setProperty('--gl', (s.ry * 0.8).toFixed(1) + 'deg');
+      s.stage.parentElement!.style.setProperty('--shs', (0.75 + 0.25 * Math.abs(Math.cos(s.ry * Math.PI / 180))).toFixed(3));
+      s.flipBtn.setAttribute('aria-pressed', facing ? 'true' : 'false');
+      if (s.dev.dataset.facing !== (facing ? 'back' : 'front')) s.dev.dataset.facing = facing ? 'back' : 'front';
+    };
+
+    // Drag to turn (mouse and touch); vertical page scroll stays with the browser (touch-action: pan-y)
+    states.forEach((s) => {
+      apply(s);
+      s.stage.addEventListener('pointerdown', (e) => { s.drag = true; s.lastX = e.clientX; s.v = 0; s.stage.setPointerCapture(e.pointerId); s.stage.setAttribute('data-dragging', ''); });
+      s.stage.addEventListener('pointermove', (e) => { if (!s.drag) return; const dx = e.clientX - s.lastX; s.lastX = e.clientX; s.ry += dx * 0.6; s.v = dx * 0.6; apply(s); wake(); });
+      const end = () => { if (!s.drag) return; s.drag = false; s.stage.removeAttribute('data-dragging'); s.idleAt = performance.now();
+        s.base = Math.round((s.ry - (-22)) / 180) * 180 - 22; wake(); };
+      s.stage.addEventListener('pointerup', end); s.stage.addEventListener('pointercancel', end); s.stage.addEventListener('lostpointercapture', end);
+      s.flipBtn.addEventListener('click', () => { const n = ((s.ry % 360) + 360) % 360; const facing = n > 90 && n < 270; s.base = s.base + (facing ? -180 : 180); s.idleAt = performance.now(); s.v = 0;
+        if (reduce) { s.ry = s.base; apply(s); } wake(); });
+    });
+
+    // Idle sway and settle, only while the section is on screen
+    let visible = false, raf = 0;
+    const tick = (now: number) => {
+      raf = 0; let busy = false;
+      states.forEach((s) => {
+        if (s.drag || s.el.offsetParent === null) return;
+        const sway = reduce ? 0 : 10 * Math.sin(now / 1600 + s.phase);
+        if (Math.abs(s.v) > 0.05) { s.ry += s.v; s.v *= 0.92; busy = true; }
+        else { const target = s.base + sway; const d = target - s.ry; s.ry += d * (reduce ? 1 : 0.06); if (Math.abs(d) > 0.05) busy = true; }
+        s.rx = 6 + (reduce ? 0 : 2 * Math.sin(now / 2100 + s.phase));
+        apply(s);
+      });
+      if (visible && (busy || !reduce)) raf = requestAnimationFrame(tick);
+    };
+    const wake = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) wake(); }, { rootMargin: '100px' }).observe(root);
+
+    // Device tabs (below 64rem)
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    tabs.forEach((t) => t.addEventListener('click', () => {
+      tabs.forEach((x) => x.setAttribute('aria-selected', x === t ? 'true' : 'false'));
+      cards.forEach((c) => c.toggleAttribute('data-active', c.dataset.card === t.dataset.tab));
+      wake();
+    }));
+
+    // White-label switcher
+    const vbtns = [...root.querySelectorAll<HTMLButtonElement>('[data-venue-btn]')];
+    vbtns.forEach((b) => b.addEventListener('click', () => {
+      vbtns.forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      root.setAttribute('data-swapping', '');
+      setTimeout(() => {
+        root.dataset.venue = b.dataset.venueBtn;
+        root.querySelectorAll('[data-vw]').forEach((n) => { n.textContent = b.dataset.name || ''; });
+        root.removeAttribute('data-swapping');
+      }, reduce ? 0 : 220);
+    }));
+  }
+</script>
