@@ -14,3 +14,7 @@ preview-files.json
 
 # marketing: captured frames and full-size sources (regenerate with marketing/tools)
 marketing/raw/
+
+# copies published to the private Claude download page
+marketing/downloads/*.mp4
+marketing/downloads/*.jpg

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Valett ads: save to your phone</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Inter", sans-serif; background: #fff; color: #0a0a0a; }
+  main { max-width: 560px; margin: 0 auto; padding: 28px 18px 60px; }
+  h1 { font-size: 26px; letter-spacing: -0.02em; margin: 0 0 6px; }
+  .lead { color: #666; margin: 0 0 24px; font-size: 15px; }
+  .card { border: 1px solid rgba(0,0,0,.08); border-radius: 18px; padding: 14px; margin-bottom: 18px; }
+  .card h2 { font-size: 18px; margin: 0 0 2px; letter-spacing: -0.01em; }
+  .meta { color: #999; font-size: 13px; margin: 0 0 12px; }
+  video { width: 100%; aspect-ratio: 9/16; max-height: 70vh; background: #000; border-radius: 12px; display: block; }
+  button { margin-top: 12px; width: 100%; padding: 15px; border: 0; border-radius: 999px; background: #0a0a0a; color: #fff; font: 600 16px inherit; font-family: inherit; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  .msg { min-height: 20px; margin: 8px 0 0; font-size: 13px; color: #666; text-align: center; }
+  .msg.ok { color: #8a6d2a; }
+</style></head>
+<body><main>
+  <h1>Valett ads</h1>
+  <p class="lead">Tap <b>Save video</b>, then choose <b>Save Video</b> in the share sheet. It goes to Photos with the voiceover, ready for Instagram.</p>
+  <div id="list"></div>
+</main>
+<script>
+  const ADS = [
+    { file: 'ad-1-valet-without-the-wait.mp4', title: 'Ad 1 · Valet, without the wait', meta: '42 s · voiceover · 4.2 MB' },
+    { file: 'ad-2-snap-the-car.mp4', title: 'Ad 2 · Snap The Car', meta: '34 s · voiceover · 7.3 MB' },
+    { file: 'tutorial-how-to-get-your-car.mp4', title: 'Tutorial · How to get your car', meta: '32 s · voiceover · 2.6 MB' },
+  ];
+  const list = document.getElementById('list');
+  let dl = null;
+  const ready = (window.claude ? claude.use('downloads') : Promise.resolve(null)).then((d) => { dl = d; return d; });
+  ADS.forEach((a) => {
+    const c = document.createElement('section'); c.className = 'card';
+    const h = document.createElement('h2'); h.textContent = a.title;
+    const m = document.createElement('p'); m.className = 'meta'; m.textContent = a.meta;
+    const v = document.createElement('video'); v.controls = true; v.playsInline = true; v.preload = 'metadata';
+    v.poster = a.file.replace('.mp4', '.jpg'); v.src = a.file;
+    const b = document.createElement('button'); b.textContent = 'Save video';
+    const s = document.createElement('p'); s.className = 'msg';
+    b.addEventListener('click', async () => {
+      b.disabled = true; s.className = 'msg'; s.textContent = 'Preparing…';
+      try {
+        const d = dl || await ready;
+        if (!d) { s.textContent = 'Saving is not available here. Open this page in the Claude app.'; return; }
+        const blob = await (await fetch(a.file)).blob();
+        s.textContent = 'Confirm to save…';
+        await d.save({ filename: a.file, data: blob });
+        s.className = 'msg ok'; s.textContent = 'Sent to the share sheet. Choose Save Video.';
+      } catch (e) {
+        const code = e && e.code;
+        s.textContent = code === 'declined' ? 'Cancelled.' : code === 'rate_limited' ? 'One moment, then try again.' : 'Could not save here (' + (code || 'error') + ').';
+      } finally { b.disabled = false; }
+    });
+    c.append(h, m, v, b, s); list.appendChild(c);
+  });
+</script>
+</body></html>
