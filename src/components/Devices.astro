@@ -21,10 +21,10 @@ const venues = [
 ];
 // w/h/r/depth/bezel in stage pixels (the stage is 480 x 680 and scales to its card)
 const devices = [
-  { id: 'ios-phone', name: 'Door phone', os: 'iOS', body: 'The valet’s phone: one-photo check-in, tickets and requests.', w: 286, h: 596, r: 50, depth: 22, bezel: 9, sr: 41, rugged: false, label: 'An iOS phone running the Valett staff app, branded for the venue' },
-  { id: 'ios-tablet', name: 'Podium tablet', os: 'iPadOS', body: 'The key board at the podium: every car, every bay, every minute.', w: 400, h: 540, r: 30, depth: 10, bezel: 18, sr: 12, rugged: false, label: 'An iOS tablet showing the Valett key board, branded for the venue' },
-  { id: 'and-phone', name: 'Rugged phone', os: 'Android', body: 'For the kerb in August: drop-tested, sealed, with a swappable battery.', w: 300, h: 600, r: 40, depth: 34, bezel: 18, sr: 16, rugged: true, label: 'A rugged Android phone running the Valett camera check-in, branded for the venue' },
-  { id: 'and-tablet', name: 'Rugged tablet', os: 'Android', body: 'A guest kiosk at the door or a board in the key room, mounted or in hand.', w: 420, h: 560, r: 34, depth: 24, bezel: 26, sr: 14, rugged: true, label: 'A rugged Android tablet running the Valett guest kiosk, branded for the venue' },
+  { id: 'ios-phone', name: 'Door phone', os: 'iOS', model: 'Apple iPhone, current model', body: 'The valet’s phone: one-photo check-in, tickets and requests.', w: 286, h: 596, r: 50, depth: 22, bezel: 9, sr: 41, rugged: false, label: 'An iOS phone running the Valett staff app, branded for the venue' },
+  { id: 'ios-tablet', name: 'Podium tablet', os: 'iPadOS', model: 'Apple iPad, current model', body: 'The key board at the podium: every car, every bay, every minute.', w: 400, h: 540, r: 30, depth: 10, bezel: 18, sr: 12, rugged: false, label: 'An iOS tablet showing the Valett key board, branded for the venue' },
+  { id: 'and-phone', name: 'Rugged phone', os: 'Android', model: 'Samsung Galaxy XCover7 Pro', body: 'For the kerb in August: drop-tested, sealed, with a swappable battery.', w: 300, h: 600, r: 40, depth: 34, bezel: 18, sr: 16, rugged: true, label: 'A rugged Android phone running the Valett camera check-in, branded for the venue' },
+  { id: 'and-tablet', name: 'Rugged tablet', os: 'Android', model: 'Samsung Galaxy Tab Active5 Pro', body: 'A guest kiosk at the door or a board in the key room, mounted or in hand.', w: 420, h: 560, r: 34, depth: 24, bezel: 26, sr: 14, rugged: true, label: 'A rugged Android tablet running the Valett guest kiosk, branded for the venue' },
 ];
 const layers = (d: { depth: number }) => Array.from({ length: Math.ceil(d.depth / 2) }, (_, i) => i);
 
@@ -55,7 +55,7 @@ const rows = [
       <div class="flex flex-col gap-6 lg:col-span-6">
         <SectionHead id="devices-title" eyebrow="Valett devices" title="Phones and tablets that arrive ready." />
         <p class="t-body measure">
-          Valett supplies the devices too: iOS and Android phones and tablets with the software installed, signed in and locked to Valett before they reach the door. Each one carries the venue’s brand, on the start screen, in the app and on the back. Rugged models are there for the kerb. The devices are part of each venue’s agreed package.
+          Valett supplies the devices too: iPhone and iPad, or rugged Samsung Galaxy phones and tablets, with the software installed, signed in and locked to Valett before they reach the door. Each one carries the venue’s brand, on the start screen, in the app and on the back. Rugged models are there for the kerb. The devices are part of each venue’s agreed package.
         </p>
       </div>
       <ul class="measure flex flex-col lg:col-span-6">
@@ -166,6 +166,7 @@ const rows = [
               <h3 class="text-[20px] font-semibold tracking-[-0.02em] whitespace-nowrap">{d.name}</h3>
               <span class="dev-os">{d.os}</span>
             </div>
+            <p class="text-[13px] font-medium text-ink">{d.model}</p>
             <p class="text-[15px] leading-relaxed text-ink-2">{d.body}</p>
             <div class="mt-2 flex items-center justify-between gap-3">
               <span class="t-caption">White-labelled</span>
@@ -177,6 +178,7 @@ const rows = [
     </ul>
     </div>
     <p class="t-caption mt-5">Drag a device to turn it. Interactive sample, demo data.</p>
+    <p class="t-caption mt-2 max-w-[60em]">Apple, iPhone, iPad and iPadOS are trademarks of Apple Inc. Samsung, Galaxy, Galaxy XCover and Galaxy Tab Active are trademarks of Samsung Electronics Co., Ltd. The devices are named to describe the hardware Valett supplies; this is not a claim of partnership or endorsement. Models may change with availability.</p>
   </div>
 </section>
 
