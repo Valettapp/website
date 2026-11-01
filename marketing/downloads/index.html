@@ -13,19 +13,20 @@
   video { width: 100%; aspect-ratio: 9/16; max-height: 70vh; background: #000; border-radius: 12px; display: block; }
   button { margin-top: 12px; width: 100%; padding: 15px; border: 0; border-radius: 999px; background: #0a0a0a; color: #fff; font: 600 16px inherit; font-family: inherit; cursor: pointer; }
   button:disabled { opacity: .5; }
+  button.alt { margin-top: 8px; background: #fff; color: #0a0a0a; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); font-weight: 500; }
   .msg { min-height: 20px; margin: 8px 0 0; font-size: 13px; color: #666; text-align: center; }
   .msg.ok { color: #8a6d2a; }
 </style></head>
 <body><main>
   <h1>Valett ads</h1>
-  <p class="lead">Tap <b>Save video</b>, then choose <b>Save Video</b> in the share sheet. It goes to Photos with the voiceover, ready for Instagram.</p>
+  <p class="lead">Tap <b>Save video</b>, then choose <b>Save Video</b> in the share sheet. It goes to Photos with the voiceover and music, ready for Instagram.</p>
   <div id="list"></div>
 </main>
 <script>
   const ADS = [
-    { file: 'ad-1-valet-without-the-wait.mp4', title: 'Ad 1 · Valet, without the wait', meta: '42 s · voiceover · 4.2 MB' },
-    { file: 'ad-2-snap-the-car.mp4', title: 'Ad 2 · Snap The Car', meta: '34 s · voiceover · 7.3 MB' },
-    { file: 'tutorial-how-to-get-your-car.mp4', title: 'Tutorial · How to get your car', meta: '32 s · voiceover · 2.6 MB' },
+    { file: 'ad-1-valet-without-the-wait-music.mp4', alt: 'ad-1-valet-without-the-wait.mp4', title: 'Ad 1 · Valet, without the wait', meta: '42 s · voiceover + music · 4.4 MB' },
+    { file: 'ad-2-snap-the-car-music.mp4', alt: 'ad-2-snap-the-car.mp4', title: 'Ad 2 · Snap The Car', meta: '34 s · voiceover + music · 7.5 MB' },
+    { file: 'tutorial-how-to-get-your-car-music.mp4', alt: 'tutorial-how-to-get-your-car.mp4', title: 'Tutorial · How to get your car', meta: '32 s · voiceover + music · 2.8 MB' },
   ];
   const list = document.getElementById('list');
   let dl = null;
@@ -35,24 +36,27 @@
     const h = document.createElement('h2'); h.textContent = a.title;
     const m = document.createElement('p'); m.className = 'meta'; m.textContent = a.meta;
     const v = document.createElement('video'); v.controls = true; v.playsInline = true; v.preload = 'metadata';
-    v.poster = a.file.replace('.mp4', '.jpg'); v.src = a.file;
+    v.poster = a.alt.replace('.mp4', '.jpg'); v.src = a.file;
     const b = document.createElement('button'); b.textContent = 'Save video';
     const s = document.createElement('p'); s.className = 'msg';
-    b.addEventListener('click', async () => {
-      b.disabled = true; s.className = 'msg'; s.textContent = 'Preparing…';
+    const b2 = document.createElement('button'); b2.textContent = 'Save voice-only version'; b2.className = 'alt';
+    const save = async (btn, file) => {
+      btn.disabled = true; s.className = 'msg'; s.textContent = 'Preparing…';
       try {
         const d = dl || await ready;
         if (!d) { s.textContent = 'Saving is not available here. Open this page in the Claude app.'; return; }
-        const blob = await (await fetch(a.file)).blob();
+        const blob = await (await fetch(file)).blob();
         s.textContent = 'Confirm to save…';
-        await d.save({ filename: a.file, data: blob });
+        await d.save({ filename: file, data: blob });
         s.className = 'msg ok'; s.textContent = 'Sent to the share sheet. Choose Save Video.';
       } catch (e) {
         const code = e && e.code;
         s.textContent = code === 'declined' ? 'Cancelled.' : code === 'rate_limited' ? 'One moment, then try again.' : 'Could not save here (' + (code || 'error') + ').';
-      } finally { b.disabled = false; }
-    });
-    c.append(h, m, v, b, s); list.appendChild(c);
+      } finally { btn.disabled = false; }
+    };
+    b.addEventListener('click', () => save(b, a.file));
+    b2.addEventListener('click', () => save(b2, a.alt));
+    c.append(h, m, v, b, b2, s); list.appendChild(c);
   });
 </script>
 </body></html>
