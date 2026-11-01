@@ -73,7 +73,7 @@ await page.evaluate((A) => {
     <img class="tile" id="iCamera" src="${A.camera}"><img class="tile" id="iKey" src="${A.key}"><img class="tile" id="iCar" src="${A.car}"><img class="tile" id="iPin" src="${A.pin}">
     <div id="ripple"></div><img id="hand" src="${A.hand}">
     <div id="vig"></div>
-    <div id="end"><div id="endRings">${'<i></i>'.repeat(6)}</div><div class="wm">VALETT</div><div class="tag">Valet, without the wait.</div><div class="url">VALETT.SI</div></div>`;
+    <div id="end"><div id="endRings">${'<i></i>'.repeat(6)}</div><div class="wm">VALETT</div><div class="url">VALETT.SI</div></div>`;
   document.body.appendChild(ad);
 
   const scan = document.querySelector('#staff [data-scan]').closest('.phone-device');

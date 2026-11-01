@@ -60,7 +60,7 @@ await page.evaluate(() => {
     <div class="dots" id="dots">${'<i></i>'.repeat(7)}</div>
     <div class="url">valett.si</div>
     <div class="tap" id="tap"></div>
-    <div class="end" id="end"><div class="w">VALETT</div><div class="s">Valet, without the wait.</div><div class="u">valett.si</div></div>`;
+    <div class="end" id="end"><div class="w">VALETT</div><div class="u">valett.si</div></div>`;
   document.body.appendChild(reel);
   const ticket = [...document.querySelectorAll('#staff .phone-device')].find((p) => p.textContent.includes('V777') && p.textContent.includes('Park car'));
   document.getElementById('tstaff').appendChild(ticket.cloneNode(true));

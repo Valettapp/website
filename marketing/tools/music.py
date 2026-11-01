@@ -254,7 +254,7 @@ def render(dur, sections, end, events, bpm=104):
 CUES = {
     'ad1': dict(video='marketing/katana/valett-ad-v2.mp4', dur=42.5, end=38.5,
         sections=[(0.0, 0), (5.45, 2), (9.2, 1), (15.2, 2), (20.0, 2), (26.0, 1), (29.7, 2), (35.6, 3)],
-        events=[(0.6, 'ticks', 3.4), (3.4, 'stab'), (2.65, 'pop', 6), (4.85, 'whoosh'), (5.45, 'sparkle', 6), (6.8, 'swish'),
+        events=[(0.6, 'ticks', 3.4), (3.4, 'stab'), (2.65, 'pop', 6), (4.85, 'whoosh'), (5.45, 'sparkle', 6),
                 (9.25, 'whoosh'), (9.9, 'swish'), (10.8, 'scan', 1.7), (12.6, 'blip'), (11.5, 'pop', 2), (12.75, 'pop', 3), (13.5, 'pop', 4), (14.1, 'pop', 5),
                 (15.25, 'whoosh'), (15.75, 'swish'), (16.6, 'swish'), (17.4, 'pop', 4), (18.0, 'pop', 5), (18.6, 'pop', 6),
                 (20.0, 'whoosh'), (20.3, 'swish'), (22.7, 'tap'), (24.3, 'tap'), (26.0, 'swish'), (27.2, 'chime'),
@@ -266,11 +266,23 @@ CUES = {
                 (12.95, 'swish'), (14.45, 'tap'), (15.9, 'tap'),
                 (17.9, 'pop', 2), (18.22, 'pop', 3), (18.54, 'pop', 4), (18.6, 'pop', 6), (19.1, 'pop', 7),
                 (22.75, 'swish'), (23.6, 'tap'), (24.45, 'tap'), (26.67, 'faceid'), (28.72, 'success')]),
-    'tutorial': dict(video='marketing/reels/05-tutorial-VOICE-SIENNA.mp4', dur=31.7, end=27.8,
+    'tutorial': dict(video='marketing/reels/05-tutorial-VOICE-SIENNA.mp4', dur=32.1, end=27.8,
         sections=[(0.0, 1), (3.4, 1), (6.2, 2), (12.4, 2), (16.6, 2), (24.6, 3)],
         events=[(0.3, 'pop', 0), (3.4, 'pop', 1), (3.45, 'swish'), (6.2, 'pop', 2), (7.58, 'tap'), (9.4, 'pop', 3), (10.78, 'tap'),
                 (12.4, 'pop', 4), (16.6, 'pop', 5), (17.58, 'tap'), (18.78, 'tap'), (20.88, 'faceid'), (22.93, 'success'), (24.6, 'pop', 6)]),
 }
+
+
+def with_intro(c, sec=1.5):
+    """Shift a cue sheet for the 1.5 s VALETT intro: a calm opening section with a sparkle on the letters."""
+    c = dict(c); c['dur'] += sec; c['end'] += sec
+    c['sections'] = [(0.0, 3)] + [(t + sec, e) for t, e in c['sections']]
+    c['events'] = [(0.05, 'sparkle', 6), (sec - 0.05, 'whoosh')] + [(e[0] + sec, *e[1:]) for e in c['events']]
+    return c
+
+
+CUES['ad2'] = with_intro(CUES['ad2'])
+CUES['tutorial'] = with_intro(CUES['tutorial'])
 
 
 def read_wav(path):

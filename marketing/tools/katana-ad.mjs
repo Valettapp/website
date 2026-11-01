@@ -85,14 +85,14 @@ await page.evaluate(() => {
     <div class="timer" id="timer">00:00</div>
     <div class="wbar" id="wbar"><i id="wfill"></i></div>
     <div class="heat" id="heat"><span class="chip gold" style="font-size:44px"><i>●</i>40°C outside</span></div>
-    <div class="brand" id="brand"><div class="wm">${'VALETT'.split('').map((c) => `<span>${c}</span>`).join('')}</div><div class="tag" id="btag">Valet, without the wait.</div></div>
+    <div class="brand" id="brand"><div class="wm">${'VALETT'.split('').map((c) => `<span>${c}</span>`).join('')}</div><div class="tag" id="btag" style="display:none"></div></div>
     ${heads}
     <div class="ph" id="pScan"></div><div class="ph" id="pTicket"></div><div class="ph" id="pGuest"></div>
     <div class="chips" id="c3" style="top:1720px">${['Plate', 'Make', 'Model', 'Colour'].map((c) => `<span class="chip dark">${c}</span>`).join('')}</div>
     <div class="chips" id="c4" style="top:1700px">${['No app', 'No paper', 'No account'].map((c) => `<span class="chip gold">${c}</span>`).join('')}</div>
     <div class="toast" id="toast"><div class="k"><span>V</span>Messages · now</div><div class="m">Your Land Rover is on its way. 4 min.</div></div>
     <div class="tap" id="tap"></div>
-    <div class="end" id="end"><div class="wm">VALETT</div><div class="tag">Valet, without the wait.</div><div class="cta">Book a demo</div><div class="url">VALETT.SI</div></div>`;
+    <div class="end" id="end"><div class="wm">VALETT</div><div class="cta">Book a demo</div><div class="url">VALETT.SI</div></div>`;
   document.body.appendChild(ad);
 
   // Real components
